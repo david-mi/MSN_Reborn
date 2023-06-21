@@ -1,0 +1,47 @@
+.button {
+  position: relative;
+  height: clamp(25px, 45px - 2.8vw, 35px);
+  font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+  color: #001563;
+  border: solid 1px #C8C8C8;
+  padding-inline: 15px;
+}
+
+.button:is(:before, :after) {
+  position: absolute;
+  content: "";
+}
+
+.button:before {
+  inset: 0;
+  border: solid 1px white;
+}
+
+.button:after {
+  height: 2px;
+  inset: auto 1px 1px;
+  border-top: solid 1px #C0C8D0;
+  border-bottom: solid 1px #808888;
+}
+
+.monochrome {
+  background: linear-gradient(180deg,
+      #f0f0f0 0%,
+      #e8e8e8 53.46%,
+      #dbdbdb 57.17%,
+      #e8e8e8 82.5%);
+}
+
+.gradient {
+  background: linear-gradient(180deg,
+      #e0e8f0 0 50%,
+      #d8e8f0 50% 55%,
+      #c8e8f0 55% 95%,
+      #d8e8f0 95% 100%)
+}
+
+:is(.gradient, .monochrome):hover {
+  background: linear-gradient(180deg,
+      #c8e8f0 0 50%,
+      #c0e0f0 50% 100%)
+}
