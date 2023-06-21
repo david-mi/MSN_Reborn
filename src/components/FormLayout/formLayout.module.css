@@ -1,0 +1,36 @@
+.form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  --gap: 15px;
+  gap: var(--gap);
+  padding-block: clamp(1rem, 0.5vw, 1.5rem);
+  padding-inline: var(--padding-inline-form);
+  background-color: white;
+  flex: 1;
+  justify-content: center;
+  border-bottom: solid 1px var(--separators-clr);
+}
+
+.form label {
+  margin-bottom: -15px;
+  font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+}
+
+.form input {
+  border: solid 1px #AAB7C7;
+  height: clamp(25px, 35px - 1.5vw, 30px);
+  padding-inline: 5px;
+  font-size: 0.9rem;
+}
+
+.form input:focus {
+  outline-color: #AAB7C7;
+}
+
+.form small {
+  color: red;
+  margin-top: -15px;
+  font-style: italic;
+  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+}
