@@ -1,4 +1,11 @@
-.form {
+.layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.layout form {
+  flex: 1;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -12,23 +19,23 @@
   border-bottom: solid 1px var(--separators-clr);
 }
 
-.form label {
+.layout label {
   margin-bottom: -15px;
   font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
 }
 
-.form input {
+.layout input {
   border: solid 1px #AAB7C7;
   height: clamp(25px, 35px - 1.5vw, 30px);
   padding-inline: 5px;
   font-size: 0.9rem;
 }
 
-.form input:focus {
+.layout input:focus {
   outline-color: #AAB7C7;
 }
 
-.form small {
+.layout small {
   color: red;
   margin-top: -15px;
   font-style: italic;

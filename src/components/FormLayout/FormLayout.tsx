@@ -1,15 +1,14 @@
 import styles from "./formLayout.module.css"
 
 interface Props {
-  id: string
   children: JSX.Element | JSX.Element[]
 }
 
-const FormLayout = ({ children, id }: Props) => {
+const FormLayout = ({ children }: Props) => {
   return (
-    <form id={id} className={styles.form}>
+    <div className={styles.layout}>
       {children}
-    </form>
+    </div>
   )
 }
 export default FormLayout
