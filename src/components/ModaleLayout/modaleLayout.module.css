@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 275px;
+  max-width: 400px;
+  width: 100%;
+  border: solid 1px #55759C;
+  --padding-inline-form: clamp(0.5rem, 15vw - 3vmax, 4rem);
+  --separators-clr: #BED6E0;
+}
+
+.header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  background: url("./header-background.jpg");
+  background-size: cover;
+  height: 40px;
+  user-select: none;
+  border-bottom: solid 1px var(--separators-clr);
+}
+
+.header h1 {
+  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+  font-weight: bold;
+}
+
+.header img {
+  height: 31px;
+  margin-left: 10px;
+}
+
+.layout button[form] {
+  position: relative;
+  align-self: flex-end;
+  margin-block: 10px;
+  margin-right: var(--padding-inline-form);
+}
