@@ -1,43 +1,54 @@
-.layout {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.layout form {
+.form {
   flex: 1;
   position: relative;
   display: flex;
   flex-direction: column;
   --gap: 15px;
   gap: var(--gap);
-  padding-block: clamp(1rem, 0.5vw, 1.5rem);
+  padding-top: clamp(1rem, 0.5vw, 1.5rem);
   padding-inline: var(--padding-inline-form);
   background-color: white;
-  flex: 1;
   justify-content: center;
   border-bottom: solid 1px var(--separators-clr);
 }
 
-.layout label {
+.form label {
   margin-bottom: -15px;
   font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
 }
 
-.layout input {
+.form label:first-child {
+  margin-top: auto;
+}
+
+.form input {
   border: solid 1px #AAB7C7;
   height: clamp(25px, 35px - 1.5vw, 30px);
   padding-inline: 5px;
   font-size: 0.9rem;
 }
 
-.layout input:focus {
+.form input:focus {
   outline-color: #AAB7C7;
 }
 
-.layout small {
+.form small {
   color: red;
   margin-top: -15px;
   font-style: italic;
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+}
+
+.form hr {
+  margin-top: auto;
+  background-color: var(--separators-clr);
+  height: 1px;
+  border: none;
+  margin-bottom: calc(var(--gap) * -1);
+  margin-inline: calc(var(--padding-inline-form) * -1);
+}
+
+.form button:last-child {
+  align-self: flex-end;
+  margin-block: 10px;
 }

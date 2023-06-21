@@ -29,10 +29,3 @@
   height: 31px;
   margin-left: 10px;
 }
-
-.layout button[form] {
-  position: relative;
-  align-self: flex-end;
-  margin-block: 10px;
-  margin-right: var(--padding-inline-form);
-}
