@@ -1,29 +1,18 @@
 import styles from "./button.module.css"
 
-interface Props {
+type Props = React.ComponentProps<"button"> & {
   title: string
-  style: "monochrome" | "gradient"
-  disabled?: boolean
-  onClick: () => void
+  theme: "monochrome" | "gradient"
 }
 
-const Button = (props: Props) => {
-  const {
-    title,
-    style,
-    disabled = false,
-    onClick
-  } = props
-  const className = `${styles.button} ${styles[style]}`
+const Button = ({ title, theme, ...props }: Props) => {
+  const className = `${styles.button} ${styles[theme]}`
 
   return (
-    <button
-      onClick={onClick}
-      className={className}
-      disabled={disabled}
-    >
+    <button {...props} className={className}>
       {title}
     </button>
   )
 }
+
 export default Button

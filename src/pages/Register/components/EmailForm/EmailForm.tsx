@@ -15,7 +15,7 @@ function EmailForm() {
       <hr />
       <Button
         title="Suivant"
-        style="monochrome"
+        theme="monochrome"
         disabled={false}
         onClick={() => console.log("button click")}
       />
