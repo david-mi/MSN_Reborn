@@ -1,27 +1,35 @@
 import { EmailValidation } from "./EmailValidation";
+let emailValidation: EmailValidation
 
-describe("EmailValidation.validate", () => {
+beforeEach(() => {
+  emailValidation = new EmailValidation()
+})
+
+describe("emailValidation.validate", () => {
   it("Should return true for a valid email", () => {
     const email = "test@example.com";
-    const emailValidationResult = EmailValidation.validate(email);
+    const emailValidationResult = emailValidation.validateFromInput(email);
     const expectedValidationResult = true
 
     expect(emailValidationResult).toBe(expectedValidationResult);
   });
 
-  it("Should returns EmailValidation.errorsMessage.required for an required string", () => {
+  it("Should returns emailValidation.errorsMessages.REQUIRED error for an empty string", () => {
     const email = "";
-    const emailValidationResult = EmailValidation.validate(email);
-    const expectedValidationResult = EmailValidation.errorsMessage.required
+    const emailValidationResult = emailValidation.validateFromInput(email);
+    const expectedValidationResult = emailValidation.errorsMessages.REQUIRED
 
     expect(emailValidationResult).toEqual(expectedValidationResult);
   });
 
-  it("Should returns EmailValidation.errorsMessage.invalid for an invalid email", () => {
+  it("Should returns emailValidation.errorsMessages.INVALID for an invalid email", () => {
     const email = "invalid-email";
-    const emailValidationResult = EmailValidation.validate(email);
-    const expectedValidationResult = EmailValidation.errorsMessage.invalid
+    const emailValidationResult = emailValidation.validateFromInput(email);
+    const expectedValidationResult = emailValidation.errorsMessages.INVALID
 
     expect(emailValidationResult).toEqual(expectedValidationResult);
   });
 });
+
+
+
