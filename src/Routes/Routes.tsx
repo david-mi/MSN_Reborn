@@ -1,5 +1,5 @@
 import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import Register from "../pages/Register/Register";
+import Register from "../Pages/Register/Register";
 
 const browserRouter = createBrowserRouter(
   createRoutesFromElements(

@@ -1,6 +1,6 @@
-import ModaleLayout from "../../components/ModaleLayout/ModaleLayout"
+import ModaleLayout from "@/Components/ModaleLayout/ModaleLayout"
 import styles from "./register.module.css"
-import EmailForm from "./components/EmailForm/EmailForm"
+import EmailForm from "./Components/EmailForm/EmailForm"
 
 function Register() {
   return (

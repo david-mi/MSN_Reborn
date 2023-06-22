@@ -1,7 +1,7 @@
-import FormLayout from "../../../../components/FormLayout/FormLayout"
-import Button from "../../../../components/Button/Button"
+import FormLayout from "@/Components/FormLayout/FormLayout"
+import Button from "@/Components/Button/Button"
 import { useForm } from "react-hook-form"
-import { EmailValidation } from "../../../../Services/Validation"
+import { EmailValidation } from "@/Services/Validation"
 
 interface EmailFormInput {
   email: string
