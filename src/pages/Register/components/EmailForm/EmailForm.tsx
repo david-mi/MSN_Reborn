@@ -1,23 +1,29 @@
 import FormLayout from "../../../../components/FormLayout/FormLayout"
 import Button from "../../../../components/Button/Button"
+import { useForm } from "react-hook-form"
+import { EmailValidation } from "../../../../Services/Validation"
+
+interface EmailFormInput {
+  email: string
+}
 
 function EmailForm() {
-  function handleSumbit(event: React.FormEvent) {
-    event.preventDefault()
-    console.log(event)
+  const { register, handleSubmit, formState: { errors } } = useForm<EmailFormInput>()
+
+  function onSubmit(data: EmailFormInput) {
+    console.log(data)
   }
 
   return (
-    <FormLayout onSubmit={handleSumbit}>
+    <FormLayout onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="email">Adresse de messagerie :</label>
-      <input type="email" name="email" id="email" />
-      <small>Une erreur est survenue</small>
+      <input {...register("email", { validate: EmailValidation.validate })} />
+      <small>{errors.email?.message}</small>
       <hr />
       <Button
         title="Suivant"
         theme="monochrome"
         disabled={false}
-        onClick={() => console.log("button click")}
       />
     </FormLayout>
   )
