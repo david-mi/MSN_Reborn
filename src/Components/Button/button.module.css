@@ -45,3 +45,9 @@
       #c8e8f0 0 50%,
       #c0e0f0 50% 100%)
 }
+
+.button:disabled {
+  pointer-events: none;
+  color: #C1C1C1;
+  background: #F0F0F0;
+}
