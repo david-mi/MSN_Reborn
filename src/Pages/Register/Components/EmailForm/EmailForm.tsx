@@ -2,28 +2,50 @@ import FormLayout from "@/Components/FormLayout/FormLayout"
 import Button from "@/Components/Button/Button"
 import { useForm } from "react-hook-form"
 import { EmailValidation } from "@/Services/Validation"
+const emailValidation = new EmailValidation()
 
 interface EmailFormInput {
   email: string
 }
 
 function EmailForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<EmailFormInput>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError
+  } = useForm<EmailFormInput>()
 
-  function onSubmit(data: EmailFormInput) {
-    console.log(data)
+  const hasEmailValidationErrors = errors.email !== undefined
+
+  async function onSubmit({ email }: EmailFormInput) {
+    try {
+      await emailValidation.checkAvailabilityFromDatabase(email)
+    }
+    catch (error) {
+      setError("email", {
+        message: (error as Error)?.message ?? "Une erreur est survenue"
+      })
+    }
+  }
+
+  function handleEmailValidation(email: string) {
+    return (
+      emailValidation.validateFromInput(email) ||
+      emailValidation.validateFromUnavailableList(email)
+    )
   }
 
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="email">Adresse de messagerie :</label>
-      <input {...register("email", { validate: EmailValidation.validate })} />
+      <input {...register("email", { validate: handleEmailValidation })} />
       <small>{errors.email?.message}</small>
       <hr />
       <Button
         title="Suivant"
         theme="monochrome"
-        disabled={false}
+        disabled={hasEmailValidationErrors}
       />
     </FormLayout>
   )
