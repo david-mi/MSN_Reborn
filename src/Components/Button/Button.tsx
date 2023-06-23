@@ -9,11 +9,7 @@ const Button = ({ title, theme, ...props }: Props) => {
   const className = `${styles.button} ${styles[theme]}`
 
   return (
-    <button
-      {...props}
-      className={className}
-      data-testid="button-rect"
-    >
+    <button {...props} className={className}>
       {title}
     </button>
   )

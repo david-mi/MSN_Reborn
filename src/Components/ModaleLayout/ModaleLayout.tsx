@@ -1,7 +1,7 @@
 import styles from "./modaleLayout.module.css"
 import msnLogo from "/msn-logo.png"
 
-interface Props {
+export interface Props {
   title: string
   children: JSX.Element | JSX.Element[]
 }

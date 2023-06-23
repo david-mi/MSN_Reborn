@@ -1,6 +1,6 @@
 import styles from "./formLayout.module.css"
 
-interface Props {
+export interface Props {
   children: JSX.Element | JSX.Element[]
   onSubmit: (event: React.FormEvent) => void
 }

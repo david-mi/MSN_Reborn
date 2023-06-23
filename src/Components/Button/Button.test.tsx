@@ -17,19 +17,21 @@ describe("Button", () => {
     expect(buttonElement).toHaveClass(styles.button, styles.gradient);
   });
 
-  it("should pass down other props to the underlying button component", () => {
+  it("should apply every passed props attributes", () => {
     const onClickMock = vi.fn();
-    const { getByTestId } = render(
+    const { container } = render(
       <Button
         title="Test"
         theme="monochrome"
+        data-button="button"
         onClick={onClickMock}
       />
     );
 
-    const button = getByTestId("button-rect")
+    const button = container.firstChild!
 
     fireEvent.click(button)
     expect(onClickMock).toBeCalled()
+    expect(button).toHaveAttribute("data-button", "button")
   });
 });

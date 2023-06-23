@@ -6,7 +6,7 @@ beforeEach(() => {
 })
 
 describe("emailValidation.validate", () => {
-  it("Should return true for a valid email", () => {
+  it("should return true for a valid email", () => {
     const email = "test@example.com";
     const emailValidationResult = emailValidation.validateFromInput(email);
     const expectedValidationResult = true
@@ -14,7 +14,7 @@ describe("emailValidation.validate", () => {
     expect(emailValidationResult).toBe(expectedValidationResult);
   });
 
-  it("Should returns emailValidation.errorsMessages.REQUIRED error for an empty string", () => {
+  it("should returns the correct error for an empty string", () => {
     const email = "";
     const emailValidationResult = emailValidation.validateFromInput(email);
     const expectedValidationResult = emailValidation.errorsMessages.REQUIRED
@@ -22,7 +22,7 @@ describe("emailValidation.validate", () => {
     expect(emailValidationResult).toEqual(expectedValidationResult);
   });
 
-  it("Should returns emailValidation.errorsMessages.INVALID for an invalid email", () => {
+  it("should returns the correct error for an invalid email", () => {
     const email = "invalid-email";
     const emailValidationResult = emailValidation.validateFromInput(email);
     const expectedValidationResult = emailValidation.errorsMessages.INVALID
