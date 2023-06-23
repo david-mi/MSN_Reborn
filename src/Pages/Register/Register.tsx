@@ -1,12 +1,13 @@
 import { useState } from "react"
 import ModaleLayout from "@/Components/ModaleLayout/ModaleLayout"
 import styles from "./register.module.css"
-import { EmailForm } from "./Components"
+import { EmailForm, ProfileForm } from "./Components"
 import type { RegistrationStep, RegistrationData } from "./types"
 import { RegisterContext } from "./Context"
 
 const registerForms = {
   EMAIL: <EmailForm />,
+  PROFILE: <ProfileForm />
 }
 
 function Register() {
