@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app"
-import { getAuth } from "firebase/auth"
+import { initializeApp, } from "firebase/app"
+import { getAuth, connectAuthEmulator } from "firebase/auth"
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,4 +15,8 @@ const fireBaseApp = initializeApp(firebaseConfig);
 
 export const firebase = {
   auth: getAuth(fireBaseApp)
+}
+
+if (import.meta.env.MODE === "development") {
+  connectAuthEmulator(firebase.auth, "http://127.0.0.1:9099")
 }
