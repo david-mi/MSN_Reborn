@@ -6,7 +6,7 @@ export interface Props {
   children: JSX.Element | JSX.Element[]
 }
 
-const ModaleLayout = ({ title, children }: Props) => {
+function ModaleLayout({ title, children }: Props) {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>

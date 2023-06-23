@@ -5,7 +5,7 @@ export interface Props {
   onSubmit: (event: React.FormEvent) => void
 }
 
-const FormLayout = ({ children, onSubmit }: Props) => {
+function FormLayout({ children, onSubmit }: Props) {
   return (
     <form onSubmit={onSubmit} className={styles.form}>
       {children}

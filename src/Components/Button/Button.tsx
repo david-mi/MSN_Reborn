@@ -5,7 +5,7 @@ type Props = React.ComponentProps<"button"> & {
   theme: "monochrome" | "gradient"
 }
 
-const Button = ({ title, theme, ...props }: Props) => {
+function Button({ title, theme, ...props }: Props) {
   const className = `${styles.button} ${styles[theme]}`
 
   return (
