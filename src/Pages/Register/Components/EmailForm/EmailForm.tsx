@@ -1,7 +1,10 @@
+import { useContext } from "react"
 import FormLayout from "@/Components/FormLayout/FormLayout"
 import Button from "@/Components/Button/Button"
 import { useForm } from "react-hook-form"
 import { EmailValidation } from "@/Services/Validation"
+import { RegisterContext } from "../../Context"
+
 const emailValidation = new EmailValidation()
 
 interface EmailFormInput {
@@ -15,12 +18,20 @@ function EmailForm() {
     formState: { errors },
     setError
   } = useForm<EmailFormInput>()
+  const { setRegistrationStep, setRegistrationData } = useContext(RegisterContext)
 
   const hasEmailValidationErrors = errors.email !== undefined
 
   async function onSubmit({ email }: EmailFormInput) {
     try {
       await emailValidation.checkAvailabilityFromDatabase(email)
+      setRegistrationData((registrationData) => {
+        return {
+          ...registrationData,
+          email
+        }
+      })
+      setRegistrationStep("PROFILE")
     }
     catch (error) {
       setError("email", {
