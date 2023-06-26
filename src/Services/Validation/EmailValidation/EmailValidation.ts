@@ -10,13 +10,17 @@ export class EmailValidation {
     UNAVAILABLE: "Cet email est déjà utilisé"
   }
 
-  public validateFromInput = (email: string) => {
+  public validateFromInput = (email: string): true | string => {
     if (email === "") {
       return this.errorsMessages.REQUIRED
     } else {
       return this.regex.test(email) || this.errorsMessages.INVALID
     }
   }
+
+  /**
+   * Check if an email slot is available from database or throws an error
+   */
 
   public async checkAvailabilityFromDatabase(email: string) {
     const retrievedSignInMethodsForEmail = await fetchSignInMethodsForEmail(firebase.auth, email)
@@ -26,6 +30,11 @@ export class EmailValidation {
       throw new Error(this.errorsMessages.UNAVAILABLE)
     }
   }
+
+  /**
+   * Check if an email as been added to unavailableEmails list.
+   * Helps to avoid unnecessary api calls
+   */
 
   public validateFromUnavailableList(email: string) {
     return this.unavailableEmails.has(email) && this.errorsMessages.UNAVAILABLE
