@@ -40,17 +40,10 @@ function EmailForm() {
     }
   }
 
-  function handleEmailValidation(email: string) {
-    return (
-      emailValidation.validateFromInput(email) ||
-      emailValidation.validateFromUnavailableList(email)
-    )
-  }
-
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="email">Adresse de messagerie :</label>
-      <input {...register("email", { validate: handleEmailValidation })} />
+      <input {...register("email", { validate: emailValidation.validateFromInputAndUnavailableList })} />
       <small>{errors.email?.message}</small>
       <hr />
       <Button

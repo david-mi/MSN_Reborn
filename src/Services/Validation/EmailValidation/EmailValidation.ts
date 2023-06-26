@@ -1,34 +1,27 @@
 import { fetchSignInMethodsForEmail } from "firebase/auth"
 import { firebase } from "@/firebase/config"
 
+const errorsMessages = {
+  REQUIRED: "Champ requis",
+  INVALID: "Saisir un email valide",
+  UNAVAILABLE: "Cet email est déjà utilisé"
+} as const
+
+type EmailValidationErrorMessage = typeof errorsMessages[keyof typeof errorsMessages]
+
 export class EmailValidation {
   private regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-  private unavailableEmails = new Set<string>()
-  public errorsMessages = {
-    REQUIRED: "Champ requis",
-    INVALID: "Saisir un email valide",
-    UNAVAILABLE: "Cet email est déjà utilisé"
-  }
+  public unavailableEmails = new Set<string>()
+  public errorsMessages = errorsMessages
 
-  public validateFromInput = (email: string): true | string => {
+  public validateFromInput(email: string): true | EmailValidationErrorMessage {
     if (email === "") {
       return this.errorsMessages.REQUIRED
-    } else {
-      return this.regex.test(email) || this.errorsMessages.INVALID
+    } else if (this.regex.test(email) === false) {
+      return this.errorsMessages.INVALID
     }
-  }
 
-  /**
-   * Check if an email slot is available from database or throws an error
-   */
-
-  public async checkAvailabilityFromDatabase(email: string) {
-    const retrievedSignInMethodsForEmail = await fetchSignInMethodsForEmail(firebase.auth, email)
-
-    if (retrievedSignInMethodsForEmail.length > 0) {
-      this.unavailableEmails.add(email)
-      throw new Error(this.errorsMessages.UNAVAILABLE)
-    }
+    return true
   }
 
   /**
@@ -36,7 +29,37 @@ export class EmailValidation {
    * Helps to avoid unnecessary api calls
    */
 
-  public validateFromUnavailableList(email: string) {
-    return this.unavailableEmails.has(email) && this.errorsMessages.UNAVAILABLE
+  public validateFromUnavailableList(email: string): true | EmailValidationErrorMessage {
+    if (this.unavailableEmails.has(email)) {
+      return this.errorsMessages.UNAVAILABLE
+    }
+
+    return true
+  }
+
+  validateFromInputAndUnavailableList = (email: string) => {
+    let validationResult = this.validateFromInput(email)
+
+    if (typeof validationResult !== "string") {
+      validationResult = this.validateFromUnavailableList(email)
+    }
+
+    return validationResult
+  }
+
+  /**
+   * Check if an email slot is available from database or throws an error
+   * - When an email is unavailable, add it to unavailableEmails list
+   */
+
+  public async checkAvailabilityFromDatabase(email: string): Promise<true> {
+    const retrievedSignInMethodsForEmail = await fetchSignInMethodsForEmail(firebase.auth, email)
+
+    if (retrievedSignInMethodsForEmail.length > 0) {
+      this.unavailableEmails.add(email)
+      throw new Error(this.errorsMessages.UNAVAILABLE)
+    }
+
+    return true
   }
 }
