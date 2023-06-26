@@ -4,18 +4,18 @@ import { EmailForm, ProfileForm } from "./Components"
 import { RegisterContext } from "./Context"
 import styles from "./register.module.css"
 
-const registerForms = {
-  EMAIL: <EmailForm />,
-  PROFILE: <ProfileForm />
-}
-
 function Register() {
   const { registrationstep } = useContext(RegisterContext)
+
+  const registerComponents = {
+    EMAIL: <EmailForm />,
+    PROFILE: <ProfileForm />
+  }
 
   return (
     <div className={styles.register}>
       <ModaleLayout title="Inscription - Email">
-        {registerForms[registrationstep]}
+        {registerComponents[registrationstep]}
       </ModaleLayout>
     </div>
   )
