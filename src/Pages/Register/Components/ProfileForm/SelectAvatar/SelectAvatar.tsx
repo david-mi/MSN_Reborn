@@ -1,15 +1,16 @@
 
-import { useState, ChangeEvent } from "react"
+import { useState, Dispatch, SetStateAction, MouseEvent } from "react"
 import { defaultPictures } from "./defaultPictures"
 import Avatar from "@/Components/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
 import ImageLoadWrapper from "@/Components/ImageLoadWrapper/ImageLoadWrapper"
 
 interface Props {
+  setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>
   children: JSX.Element[]
 }
 
-function SelectAvatar({ children }: Props) {
+function SelectAvatar({ setSelectedAvatar, children }: Props) {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([defaultPictures[0]])
 
   function loadNextPicture() {
@@ -22,6 +23,15 @@ function SelectAvatar({ children }: Props) {
         nextPictureToLoad
       ]
     })
+  }
+
+  function handleDefaultPictureClick({ currentTarget }: MouseEvent) {
+    const imageElement = currentTarget.children[0]
+    // appeler le service pour convertir l'image en Blob
+    // l'ajouter dans le state ensuite
+    // pas besoin de contrôles car l'image respecte les conditions imposées
+    console.log(imageElement)
+    setSelectedAvatar(null)
   }
 
   return (
@@ -37,7 +47,7 @@ function SelectAvatar({ children }: Props) {
               wrapperTagName="button"
               wrapperProps={{
                 type: "button",
-                onClick: (e) => console.log("click"),
+                onClick: handleDefaultPictureClick,
                 className: styles.defaultPictureButton
               }}
             />

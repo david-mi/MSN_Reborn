@@ -1,10 +1,11 @@
-import { ChangeEvent } from "react"
+import { useState, ChangeEvent } from "react"
 import FormLayout from "@/Components/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Button/Button"
 import styles from "./profileForm.module.css"
 
 function ProfileForm() {
+  const [selectedAvatar, setSelectedAvatar] = useState<File | Blob | null>(null)
 
   function handleSubmit() {
 
@@ -12,14 +13,21 @@ function ProfileForm() {
 
   function handleAddFile({ target }: ChangeEvent<HTMLInputElement>) {
     const selectedFile = (target.files as FileList)[0]
-    console.log(selectedFile)
+    setSelectedAvatar(selectedFile)
+    console.log(selectedFile, selectedAvatar)
   }
 
   return (
     <FormLayout onSubmit={handleSubmit}>
-      <SelectAvatar>
-        <label htmlFor="avatar-add" className={styles.addFile}>+</label>
-        <input type="file" id="avatar-add" onChange={handleAddFile} />
+      <SelectAvatar setSelectedAvatar={setSelectedAvatar}>
+        <label htmlFor="avatar-add" className={styles.addFileLabel}>
+        </label>
+        <input
+          type="file"
+          className={styles.addFileInput}
+          id="avatar-add"
+          onChange={handleAddFile}
+        />
       </SelectAvatar>
       <label htmlFor="email">Pseudo :</label>
       <input type="text" />
