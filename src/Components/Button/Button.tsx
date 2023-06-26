@@ -4,7 +4,7 @@ import styles from "./button.module.css"
 type Props = React.ComponentProps<"button"> & {
   title: string
   theme: "monochrome" | "gradient"
-  wait: boolean
+  wait?: boolean
 }
 
 function Button({ title, theme, wait, ...props }: Props) {
