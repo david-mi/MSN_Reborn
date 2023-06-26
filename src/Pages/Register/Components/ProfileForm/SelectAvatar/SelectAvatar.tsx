@@ -1,11 +1,15 @@
 
-import { useState } from "react"
+import { useState, ChangeEvent } from "react"
 import { defaultPictures } from "./defaultPictures"
 import Avatar from "@/Components/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
 import ImageLoadWrapper from "@/Components/ImageLoadWrapper/ImageLoadWrapper"
 
-function SelectAvatar() {
+interface Props {
+  children: JSX.Element[]
+}
+
+function SelectAvatar({ children }: Props) {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([defaultPictures[0]])
 
   function loadNextPicture() {
@@ -39,7 +43,7 @@ function SelectAvatar() {
             />
           )
         })}
-        <button className={styles.add}>+</button>
+        {children}
       </div>
     </div>
   )
