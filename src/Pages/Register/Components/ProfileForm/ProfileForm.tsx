@@ -3,6 +3,7 @@ import FormLayout from "@/Components/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Button/Button"
 import styles from "./profileForm.module.css"
+import AddImageIcon from "@/Components/Icons/AddImageIcon/AddImageIcon"
 
 function ProfileForm() {
   const [selectedAvatar, setSelectedAvatar] = useState<File | Blob | null>(null)
@@ -21,6 +22,7 @@ function ProfileForm() {
     <FormLayout onSubmit={handleSubmit}>
       <SelectAvatar setSelectedAvatar={setSelectedAvatar}>
         <label htmlFor="avatar-add" className={styles.addFileLabel}>
+          <AddImageIcon />
         </label>
         <input
           type="file"
