@@ -1,17 +1,26 @@
-.addAvatar {
+.avatar {
+  margin-inline: auto;
+  margin-bottom: var(--gap);
+}
+
+.avatars {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
   gap: 5px;
   justify-content: space-around;
 }
 
-.addAvatar button {
-  border: none;
+.avatars button {
+  border: solid 2px transparent;
   width: 40px;
   height: 40px;
 }
 
-.addAvatar img {
+.avatars button:hover {
+  border-color: #55759C;
+}
+
+.avatars img {
   width: 100%;
   height: 100%;
   object-fit: cover;

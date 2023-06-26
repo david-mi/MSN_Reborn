@@ -1,6 +1,5 @@
 import FormLayout from "@/Components/FormLayout/FormLayout"
-import Avatar from "@/Components/Avatar/Avatar"
-import AddAvatar from "./AddAvatar/AddAvatar"
+import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Button/Button"
 
 function ProfileForm() {
@@ -11,8 +10,7 @@ function ProfileForm() {
 
   return (
     <FormLayout onSubmit={handleSubmit}>
-      <Avatar size="medium" />
-      <AddAvatar />
+      <SelectAvatar />
       <label htmlFor="email">Pseudo :</label>
       <input type="text" />
       <small></small>
