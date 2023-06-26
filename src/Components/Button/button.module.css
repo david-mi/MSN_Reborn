@@ -5,6 +5,7 @@
   color: #001563;
   border: solid 1px #C8C8C8;
   padding-inline: 15px;
+  min-width: 80px;
 }
 
 .button:is(:before, :after) {
@@ -50,4 +51,8 @@
   pointer-events: none;
   color: #C1C1C1;
   background: #F0F0F0;
+}
+
+.button:disabled .wait {
+  color: rgb(105, 105, 105);
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import FormLayout from "@/Components/FormLayout/FormLayout"
 import Button from "@/Components/Button/Button"
 import { useForm } from "react-hook-form"
@@ -19,10 +19,13 @@ function EmailForm() {
     setError
   } = useForm<EmailFormInput>()
   const { setRegistrationStep, setRegistrationData } = useContext(RegisterContext)
+  const [isWaitingSubmit, setIsWaitingSubmit] = useState(false)
 
   const hasEmailValidationErrors = errors.email !== undefined
 
   async function onSubmit({ email }: EmailFormInput) {
+    setIsWaitingSubmit(true)
+
     try {
       await emailValidation.checkAvailabilityFromDatabase(email)
       setRegistrationData((registrationData) => {
@@ -38,6 +41,9 @@ function EmailForm() {
         message: (error as Error)?.message ?? "Une erreur est survenue"
       })
     }
+    finally {
+      setIsWaitingSubmit(false)
+    }
   }
 
   return (
@@ -49,7 +55,8 @@ function EmailForm() {
       <Button
         title="Suivant"
         theme="monochrome"
-        disabled={hasEmailValidationErrors}
+        wait={isWaitingSubmit}
+        disabled={hasEmailValidationErrors || isWaitingSubmit}
       />
     </FormLayout>
   )
