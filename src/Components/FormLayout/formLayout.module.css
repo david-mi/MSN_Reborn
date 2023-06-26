@@ -3,9 +3,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  --gap: 20px;
+  --gap: 30px;
   gap: var(--gap);
   padding-top: clamp(1rem, 0.5vw, 1.5rem);
+  margin-top: var(--gap);
   padding-inline: var(--padding-inline-form);
   background-color: white;
   justify-content: center;
@@ -34,7 +35,7 @@
 
 .form small {
   color: red;
-  margin-top: -15px;
+  margin-top: calc(var(--gap) * -1);
   font-style: italic;
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
   min-height: 20px;
