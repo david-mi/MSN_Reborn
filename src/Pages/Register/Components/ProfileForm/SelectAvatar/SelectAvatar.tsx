@@ -1,21 +1,45 @@
 
+import { useState } from "react"
 import { defaultPictures } from "./defaultPictures"
 import Avatar from "@/Components/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
+import ImageLoadWrapper from "@/Components/ImageLoadWrapper/ImageLoadWrapper"
 
 function SelectAvatar() {
+  const [picturesComponents, setPicturesComponent] = useState<string[]>([defaultPictures[0]])
+
+  function loadNextPicture() {
+    const nextPictureToLoad = defaultPictures[picturesComponents.length]
+    if (!nextPictureToLoad) return
+
+    setPicturesComponent(picturesComponents => {
+      return [
+        ...picturesComponents,
+        nextPictureToLoad
+      ]
+    })
+  }
+
   return (
     <div className={styles.selectAvatar}>
       <Avatar size="medium" className={styles.avatar} />
       <div className={styles.avatars}>
-        {defaultPictures.map((picture, index) => {
+        {picturesComponents.map((picture, index) => {
           return (
-            <button key={index}>
-              <img src={picture} alt="Avatar par défaut à choisir" />
-            </button>
+            <ImageLoadWrapper
+              key={index}
+              src={picture}
+              onLoad={loadNextPicture}
+              wrapperTagName="button"
+              wrapperProps={{
+                type: "button",
+                onClick: (e) => console.log("click"),
+                className: styles.defaultPictureButton
+              }}
+            />
           )
         })}
-        <button>+</button>
+        <button className={styles.add}>+</button>
       </div>
     </div>
   )
