@@ -1,9 +1,9 @@
 import { useContext, useState } from "react"
-import FormLayout from "@/Components/FormLayout/FormLayout"
-import Button from "@/Components/Button/Button"
+import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
+import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
 import { EmailValidation } from "@/Services/Validation"
-import { RegisterContext } from "../../Context"
+import { RegisterContext } from "@/Pages/Register/Context"
 
 const emailValidation = new EmailValidation()
 

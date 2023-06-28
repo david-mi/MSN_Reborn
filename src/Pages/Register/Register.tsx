@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import ModaleLayout from "@/Components/ModaleLayout/ModaleLayout"
-import { EmailForm, ProfileForm } from "./Components"
+import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout"
+import { EmailForm, ProfileForm } from "@/Components/Register"
 import { RegisterContext } from "./Context"
 import styles from "./register.module.css"
 

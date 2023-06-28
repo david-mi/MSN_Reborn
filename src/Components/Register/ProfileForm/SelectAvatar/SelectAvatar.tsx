@@ -1,9 +1,9 @@
 
 import { useState, Dispatch, SetStateAction, MouseEvent } from "react"
 import { defaultPictures } from "./defaultPictures"
-import Avatar from "@/Components/Avatar/Avatar"
+import Avatar from "@/Components/Shared/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
-import ImageLoadWrapper from "@/Components/ImageLoadWrapper/ImageLoadWrapper"
+import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper"
 
 interface Props {
   setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>

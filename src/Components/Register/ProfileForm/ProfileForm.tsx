@@ -1,9 +1,9 @@
 import { useState, ChangeEvent } from "react"
-import FormLayout from "@/Components/FormLayout/FormLayout"
+import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
-import Button from "@/Components/Button/Button"
+import Button from "@/Components/Shared/Button/Button"
 import styles from "./profileForm.module.css"
-import AddImageIcon from "@/Components/Icons/AddImageIcon/AddImageIcon"
+import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon"
 
 function ProfileForm() {
   const [selectedAvatar, setSelectedAvatar] = useState<File | Blob | null>(null)
