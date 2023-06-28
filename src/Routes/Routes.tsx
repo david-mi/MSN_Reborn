@@ -1,13 +1,15 @@
-import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import RegisterProvider from "@/Pages/Register/Context";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import Register from "@/Pages/Register/Register";
 
-const browserRouter = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/register" element={<RegisterProvider />} />
-      <Route path="*" element={<Navigate to="/register" />} />
-    </>
-  )
-)
+const browserRouter = createBrowserRouter([
+  {
+    path: "/register",
+    element: <Register />
+  },
+  {
+    path: "*",
+    element: <Navigate to="/register" />
+  }
+])
 
 export default browserRouter

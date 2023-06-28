@@ -1,13 +1,13 @@
-import { useContext, useState } from "react"
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { registerEmailMiddleware } from "@/redux/slices/register/register"
 import { EmailValidation } from "@/utils/Validation"
-import { RegisterContext } from "@/Pages/Register/Context"
 
-const emailValidation = new EmailValidation()
+export const emailValidation = new EmailValidation()
 
-interface EmailFormInput {
+interface EmailFormFields {
   email: string
 }
 
@@ -17,32 +17,16 @@ function EmailForm() {
     handleSubmit,
     formState: { errors },
     setError
-  } = useForm<EmailFormInput>()
-  const { setRegistrationStep, setRegistrationData } = useContext(RegisterContext)
-  const [isWaitingSubmit, setIsWaitingSubmit] = useState(false)
+  } = useForm<EmailFormFields>()
+  const dispatch = useAppDispatch()
+  const { submitStatus } = useAppSelector(state => state.register)
+  const shouldPreventSumbit = errors.email !== undefined || submitStatus === "PENDING"
 
-  const hasEmailValidationErrors = errors.email !== undefined
-
-  async function onSubmit({ email }: EmailFormInput) {
-    setIsWaitingSubmit(true)
-
+  async function onSubmit({ email }: EmailFormFields) {
     try {
-      await emailValidation.checkAvailabilityFromDatabase(email)
-      setRegistrationData((registrationData) => {
-        return {
-          ...registrationData,
-          email
-        }
-      })
-      setRegistrationStep("PROFILE")
-    }
-    catch (error) {
-      setError("email", {
-        message: (error as Error)?.message ?? "Une erreur est survenue"
-      })
-    }
-    finally {
-      setIsWaitingSubmit(false)
+      await dispatch(registerEmailMiddleware({ email, emailValidation })).unwrap()
+    } catch (error) {
+      setError("email", { message: error as string })
     }
   }
 
@@ -55,8 +39,8 @@ function EmailForm() {
       <Button
         title="Suivant"
         theme="monochrome"
-        wait={isWaitingSubmit}
-        disabled={hasEmailValidationErrors || isWaitingSubmit}
+        wait={submitStatus === "PENDING"}
+        disabled={shouldPreventSumbit}
       />
     </FormLayout>
   )

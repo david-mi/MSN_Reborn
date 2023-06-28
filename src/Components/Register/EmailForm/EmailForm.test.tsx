@@ -1,7 +1,8 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import EmailForm from "./EmailForm";
 import { EmailValidation } from "@/utils/Validation";
-
+import { Provider } from "react-redux"
+import store from "@/redux/store";
 let emailValidation: EmailValidation
 
 beforeEach(() => {
@@ -9,7 +10,11 @@ beforeEach(() => {
 })
 
 it("should display the correct error for an empty string", async () => {
-  const { getByText } = render(<EmailForm />);
+  const { getByText } = render(
+    <Provider store={store}>
+      <EmailForm />
+    </Provider>
+  );
   const submitButton = getByText("Suivant");
   fireEvent.click(submitButton)
 
@@ -21,7 +26,11 @@ it("should display the correct error for an empty string", async () => {
 });
 
 it("should display the correct error for an invalid email", async () => {
-  const { getByText, getByRole } = render(<EmailForm />);
+  const { getByText, getByRole } = render(
+    <Provider store={store}>
+      <EmailForm />
+    </Provider>
+  );
   const inputElement = getByRole("textbox")
   fireEvent.change(inputElement, {
     target: {

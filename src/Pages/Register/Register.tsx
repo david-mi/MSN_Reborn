@@ -1,21 +1,23 @@
-import { useContext } from "react"
+import { useAppSelector } from "@/redux/hooks"
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout"
 import { EmailForm, ProfileForm } from "@/Components/Register"
-import { RegisterContext } from "./Context"
 import styles from "./register.module.css"
 
 function Register() {
-  const { registrationstep } = useContext(RegisterContext)
+  const registrationStep = useAppSelector(({ register }) => register.step)
 
   const registerComponents = {
     EMAIL: <EmailForm />,
-    PROFILE: <ProfileForm />
+    PROFILE: <ProfileForm />,
+    PASSWORD: <p>PASSWORD</p>,
+    SEND_CONFIRMATION_EMAIL: <p>SEND_CONFIRMATION_EMAIL</p>,
+    VERIFIED: <p>VERIFIED</p>
   }
 
   return (
     <div className={styles.register}>
       <ModaleLayout title="Inscription - Email">
-        {registerComponents[registrationstep]}
+        {registerComponents[registrationStep]}
       </ModaleLayout>
     </div>
   )
