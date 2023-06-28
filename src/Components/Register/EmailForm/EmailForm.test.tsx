@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import EmailForm from "./EmailForm";
-import { EmailValidation } from "@/Services/Validation";
+import { EmailValidation } from "@/utils/Validation";
 
 let emailValidation: EmailValidation
 
