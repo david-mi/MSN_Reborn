@@ -1,5 +1,5 @@
 import { useState, SyntheticEvent, createElement, ComponentProps } from "react";
-import Loader from "./Loader/Loader";
+import Loader from "../Loader/Loader";
 import styles from "./imageLoadWrapper.module.css";
 
 type Props<T extends keyof JSX.IntrinsicElements> = {

@@ -29,14 +29,12 @@
   display: none;
 }
 
-
-
 .avatar {
   margin-inline: auto;
   margin-bottom: var(--gap);
 }
 
-.avatars {
+.defaultAvatars {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
   gap: 5px;
@@ -53,4 +51,10 @@
 
 .defaultPictureButton:hover {
   border-color: #55759C;
+}
+
+.selectAvatar .loader {
+  width: 85px;
+  height: 85px;
+  align-self: center;
 }

@@ -6,6 +6,7 @@ import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrap
 import { defaultAvatarsMiddleware } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon"
+import Loader from "@/Components/Shared/Loader/Loader"
 
 interface Props {
   setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>
@@ -60,23 +61,28 @@ function SelectAvatar({ setSelectedAvatar, handleAddFile }: Props) {
           onChange={handleAddFile}
         />
       </label>
-      <div className={styles.avatars}>
-        {picturesComponents.map((picture, index) => {
-          return (
-            <ImageLoadWrapper
-              key={index}
-              src={picture}
-              onLoad={loadNextPicture}
-              wrapperTagName="button"
-              wrapperProps={{
-                type: "button",
-                onClick: handleDefaultPictureClick,
-                className: styles.defaultPictureButton
-              }}
-            />
-          )
-        })}
-      </div>
+      {getDefaultAvatarsStatus !== "IDLE"
+        ? <Loader className={styles.loader} />
+        : (
+          <div className={styles.defaultAvatars}>
+            {picturesComponents.map((picture, index) => {
+              return (
+                <ImageLoadWrapper
+                  key={index}
+                  src={picture}
+                  onLoad={loadNextPicture}
+                  wrapperTagName="button"
+                  wrapperProps={{
+                    type: "button",
+                    onClick: handleDefaultPictureClick,
+                    className: styles.defaultPictureButton
+                  }}
+                />
+              )
+            })}
+          </div>
+        )
+      }
     </div >
   )
 }
