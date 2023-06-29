@@ -11,4 +11,8 @@ export interface InitialState {
   }
   step: RegistrationStep,
   submitStatus: ValidationStatus
+  profile: {
+    defaultAvatars: string[]
+    getDefaultAvatarsStatus: ValidationStatus
+  }
 }

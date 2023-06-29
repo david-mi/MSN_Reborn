@@ -1,9 +1,10 @@
 
-import { useState, Dispatch, SetStateAction, MouseEvent } from "react"
-import { defaultPictures } from "./defaultPictures"
+import { useState, Dispatch, SetStateAction, MouseEvent, useEffect } from "react"
 import Avatar from "@/Components/Shared/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper"
+import { defaultAvatarsMiddleware } from "@/redux/slices/register/register"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 
 interface Props {
   setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>
@@ -11,10 +12,12 @@ interface Props {
 }
 
 function SelectAvatar({ setSelectedAvatar, children }: Props) {
-  const [picturesComponents, setPicturesComponent] = useState<string[]>([defaultPictures[0]])
+  const [picturesComponents, setPicturesComponent] = useState<string[]>([])
+  const dispatch = useAppDispatch()
+  const { defaultAvatars, getDefaultAvatarsStatus } = useAppSelector(state => state.register.profile)
 
   function loadNextPicture() {
-    const nextPictureToLoad = defaultPictures[picturesComponents.length]
+    const nextPictureToLoad = defaultAvatars[picturesComponents.length]
     if (!nextPictureToLoad) return
 
     setPicturesComponent(picturesComponents => {
@@ -24,6 +27,16 @@ function SelectAvatar({ setSelectedAvatar, children }: Props) {
       ]
     })
   }
+
+  useEffect(() => {
+    dispatch(defaultAvatarsMiddleware())
+  }, [])
+
+  useEffect(() => {
+    if (getDefaultAvatarsStatus === "IDLE") {
+      setPicturesComponent([defaultAvatars[0]])
+    }
+  }, [getDefaultAvatarsStatus])
 
   function handleDefaultPictureClick({ currentTarget }: MouseEvent) {
     const imageElement = currentTarget.children[0]
