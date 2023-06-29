@@ -7,12 +7,13 @@ export interface InitialState {
     email: string
     password: string
     nickname: string
-    avatar: string
+    avatarUrl: string
   }
   step: RegistrationStep,
   submitStatus: ValidationStatus
   profile: {
     defaultAvatars: string[]
     getDefaultAvatarsStatus: ValidationStatus
+    convertAvatarToBase64Status: ValidationStatus
   }
 }

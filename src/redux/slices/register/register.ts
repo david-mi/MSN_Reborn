@@ -9,20 +9,25 @@ const initialState: InitialState = {
     email: "",
     password: "",
     nickname: "",
-    avatar: ""
+    avatarUrl: ""
   },
   step: "EMAIL",
   submitStatus: "IDLE",
   profile: {
     defaultAvatars: [],
-    getDefaultAvatarsStatus: "PENDING"
+    getDefaultAvatarsStatus: "PENDING",
+    convertAvatarToBase64Status: "IDLE"
   }
 }
 
 export const registerSlice = createSlice({
   name: "register",
   initialState,
-  reducers: {},
+  reducers: {
+    setAvatarUrl(state, { payload }: PayloadAction<string>) {
+      state.user.avatarUrl = payload
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(registerEmailMiddleware.pending, (state) => {
       state.submitStatus = "PENDING"
@@ -44,6 +49,16 @@ export const registerSlice = createSlice({
     builder.addCase(defaultAvatarsMiddleware.fulfilled, (state, { payload }: PayloadAction<string[]>) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
+    })
+    builder.addCase(setBase64Avatar.pending, (state) => {
+      state.profile.convertAvatarToBase64Status = "PENDING"
+    })
+    builder.addCase(setBase64Avatar.rejected, (state) => {
+      state.profile.convertAvatarToBase64Status = "REJECTED"
+    })
+    builder.addCase(setBase64Avatar.fulfilled, (state, { payload }: PayloadAction<string>) => {
+      state.user.avatarUrl = payload
+      state.profile.convertAvatarToBase64Status = "IDLE"
     })
   }
 })
@@ -79,5 +94,21 @@ export const defaultAvatarsMiddleware = createAsyncThunk(
     }
   })
 
+export const setBase64Avatar = createAsyncThunk(
+  "register/profile/avatars/base64",
+  async (imageFile: File, { rejectWithValue }) => {
+    try {
+      return await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(imageFile);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+      });
+    } catch (error) {
+      const errorMessage = (error as Error)?.message ?? "Une erreur est survenue"
+      return rejectWithValue(errorMessage)
+    }
+  })
 
+export const { setAvatarUrl } = registerSlice.actions
 export const registerReducer = registerSlice.reducer

@@ -7,12 +7,12 @@ interface Props {
   src?: string
 }
 
-function Avatar({ size, className, src = avatarPlaceholder }: Props) {
+function Avatar({ size, className, src }: Props) {
   const classNames = `${styles.avatar} ${styles[size]} ${className ? className : ""}`
 
   return (
     <div className={classNames}>
-      <img src={src} alt="Avatar de l'utilisateur" />
+      <img src={src || avatarPlaceholder} alt="Avatar de l'utilisateur" />
     </div>
   )
 }

@@ -1,20 +1,26 @@
-import { MouseEvent } from "react";
 import Loader from "@/Components/Shared/Loader/Loader";
 import styles from "./defaultAvatars.module.css";
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { setAvatarUrl } from "@/redux/slices/register/register";
 
 interface Props {
   picturesComponents: string[]
   loadNextPicture: () => void
-  handleDefaultPictureClick: (event: MouseEvent<HTMLButtonElement>) => void
 }
 
-function DefaultAvatars({ picturesComponents, loadNextPicture, handleDefaultPictureClick }: Props) {
+function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
   const getDefaultAvatarsStatus = useAppSelector(({ register }) => register.profile.getDefaultAvatarsStatus)
+  const dispatch = useAppDispatch()
 
   if (getDefaultAvatarsStatus !== "IDLE") {
     return <Loader className={styles.loader} />
+  }
+
+  function handleClick(imageUrl: string) {
+    return function () {
+      dispatch(setAvatarUrl(imageUrl))
+    }
   }
 
   return (
@@ -28,7 +34,7 @@ function DefaultAvatars({ picturesComponents, loadNextPicture, handleDefaultPict
             wrapperTagName="button"
             wrapperProps={{
               type: "button",
-              onClick: handleDefaultPictureClick,
+              onClick: handleClick(picture),
               className: styles.defaultPictureButton
             }}
           />
