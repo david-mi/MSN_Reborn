@@ -1,17 +1,18 @@
 
-import { useState, Dispatch, SetStateAction, MouseEvent, useEffect } from "react"
+import { useState, Dispatch, SetStateAction, MouseEvent, useEffect, ChangeEvent } from "react"
 import Avatar from "@/Components/Shared/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper"
 import { defaultAvatarsMiddleware } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon"
 
 interface Props {
   setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>
-  children: JSX.Element[]
+  handleAddFile: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-function SelectAvatar({ setSelectedAvatar, children }: Props) {
+function SelectAvatar({ setSelectedAvatar, handleAddFile }: Props) {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([])
   const dispatch = useAppDispatch()
   const { defaultAvatars, getDefaultAvatarsStatus } = useAppSelector(state => state.register.profile)
@@ -33,7 +34,7 @@ function SelectAvatar({ setSelectedAvatar, children }: Props) {
   }, [])
 
   useEffect(() => {
-    if (getDefaultAvatarsStatus === "IDLE") {
+    if (getDefaultAvatarsStatus === "IDLE" && picturesComponents.length === 0) {
       setPicturesComponent([defaultAvatars[0]])
     }
   }, [getDefaultAvatarsStatus])
@@ -49,7 +50,18 @@ function SelectAvatar({ setSelectedAvatar, children }: Props) {
 
   return (
     <div className={styles.selectAvatar}>
-      <Avatar size="medium" className={styles.avatar} />
+      <label htmlFor="avatar-add" className={styles.previewLabel}>
+        <Avatar size="medium" className={styles.avatar} />
+        <div className={styles.previewAdd}>
+          <AddImageIcon />
+        </div>
+        <input
+          type="file"
+          className={styles.addFileInput}
+          id="avatar-add"
+          onChange={handleAddFile}
+        />
+      </label>
       <div className={styles.avatars}>
         {picturesComponents.map((picture, index) => {
           return (
@@ -66,9 +78,8 @@ function SelectAvatar({ setSelectedAvatar, children }: Props) {
             />
           )
         })}
-        {children}
       </div>
-    </div>
+    </div >
   )
 }
 
