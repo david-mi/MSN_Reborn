@@ -1,12 +1,10 @@
 
 import { useState, Dispatch, SetStateAction, MouseEvent, useEffect, ChangeEvent } from "react"
-import Avatar from "@/Components/Shared/Avatar/Avatar"
 import styles from "./selectAvatar.module.css"
-import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper"
-import { defaultAvatarsMiddleware } from "@/redux/slices/register/register"
+import { defaultAvatarsMiddleware, setAvatarUrl } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
-import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon"
-import Loader from "@/Components/Shared/Loader/Loader"
+import DefaultAvatars from "./DefaultAvatars/DefaultAvatars"
+import AddOrPreview from "./AddOrPreview/AddOrPreview"
 
 interface Props {
   setSelectedAvatar: Dispatch<SetStateAction<File | Blob | null>>
@@ -51,38 +49,12 @@ function SelectAvatar({ setSelectedAvatar, handleAddFile }: Props) {
 
   return (
     <div className={styles.selectAvatar}>
-      <label htmlFor="avatar-add" className={styles.previewLabel}>
-        <Avatar size="medium" className={styles.avatar} />
-        <AddImageIcon />
-        <input
-          type="file"
-          className={styles.addFileInput}
-          id="avatar-add"
-          onChange={handleAddFile}
-        />
-      </label>
-      {getDefaultAvatarsStatus !== "IDLE"
-        ? <Loader className={styles.loader} />
-        : (
-          <div className={styles.defaultAvatars}>
-            {picturesComponents.map((picture, index) => {
-              return (
-                <ImageLoadWrapper
-                  key={index}
-                  src={picture}
-                  onLoad={loadNextPicture}
-                  wrapperTagName="button"
-                  wrapperProps={{
-                    type: "button",
-                    onClick: handleDefaultPictureClick,
-                    className: styles.defaultPictureButton
-                  }}
-                />
-              )
-            })}
-          </div>
-        )
-      }
+      <AddOrPreview handleAddFile={handleAddFile} />
+      <DefaultAvatars
+        picturesComponents={picturesComponents}
+        handleDefaultPictureClick={handleDefaultPictureClick}
+        loadNextPicture={loadNextPicture}
+      />
     </div >
   )
 }

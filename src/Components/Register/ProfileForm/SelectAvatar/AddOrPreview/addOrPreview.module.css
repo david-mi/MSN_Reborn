@@ -1,0 +1,30 @@
+.previewLabel {
+  position: relative;
+  align-self: center;
+  margin-bottom: 0 !important;
+  cursor: pointer;
+}
+
+.previewLabel img {
+  transition: 150ms linear;
+}
+
+.previewLabel:hover img {
+  filter: blur(1px) grayscale(0.5);
+}
+
+.previewLabel:hover > div:nth-child(2) {
+  transform: scale(1.05);
+  background: linear-gradient(180deg,
+      #c8e8f0 0 50%,
+      #c0e0f0 50% 100%)
+}
+
+.addFileInput {
+  display: none;
+}
+
+.avatar {
+  margin-inline: auto;
+  margin-bottom: var(--gap);
+}

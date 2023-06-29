@@ -1,0 +1,24 @@
+.defaultAvatars {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 5px;
+  justify-content: space-around;
+  min-height: 85px;
+}
+
+.defaultPictureButton {
+  background-color: transparent;
+  border: solid 2px transparent;
+  width: 40px;
+  height: 40px;
+}
+
+.defaultPictureButton:hover {
+  border-color: #55759C;
+}
+
+.loader {
+  width: 85px;
+  height: 85px;
+  align-self: center;
+}
