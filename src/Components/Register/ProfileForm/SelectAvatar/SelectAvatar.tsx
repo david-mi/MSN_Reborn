@@ -52,9 +52,7 @@ function SelectAvatar({ setSelectedAvatar, handleAddFile }: Props) {
     <div className={styles.selectAvatar}>
       <label htmlFor="avatar-add" className={styles.previewLabel}>
         <Avatar size="medium" className={styles.avatar} />
-        <div className={styles.previewAdd}>
-          <AddImageIcon />
-        </div>
+        <AddImageIcon />
         <input
           type="file"
           className={styles.addFileInput}
