@@ -5,11 +5,14 @@ import { setDefaultAvatars } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import DefaultAvatars from "./DefaultAvatars/DefaultAvatars"
 import AddOrPreview from "./AddOrPreview/AddOrPreview"
+import { useFormContext } from "react-hook-form"
+import type { ProfileFormFields } from "../ProfileForm"
 
 function SelectAvatar() {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([])
   const dispatch = useAppDispatch()
   const { defaultAvatars, getDefaultAvatarsStatus } = useAppSelector(state => state.register.profile)
+  const { formState: { errors } } = useFormContext<ProfileFormFields>()
 
   function loadNextPicture() {
     const nextPictureToLoad = defaultAvatars[picturesComponents.length]
@@ -36,13 +39,16 @@ function SelectAvatar() {
   }, [getDefaultAvatarsStatus])
 
   return (
-    <div className={styles.selectAvatar}>
-      <AddOrPreview />
-      <DefaultAvatars
-        picturesComponents={picturesComponents}
-        loadNextPicture={loadNextPicture}
-      />
-    </div >
+    <>
+      <div className={styles.selectAvatar}>
+        <AddOrPreview />
+        <DefaultAvatars
+          picturesComponents={picturesComponents}
+          loadNextPicture={loadNextPicture}
+        />
+      </div >
+      <small>{errors.avatarSrc?.message}</small>
+    </>
   )
 }
 

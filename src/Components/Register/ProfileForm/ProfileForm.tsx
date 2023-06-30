@@ -1,26 +1,46 @@
+import { FormProvider, useForm } from "react-hook-form"
+import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation"
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"
 
-function ProfileForm() {
+const profileValidation = new ProfileValidation()
 
-  function handleSubmit() {
-    // à faire
+export interface ProfileFormFields {
+  username: string
+  avatarSrc: string
+}
+
+function ProfileForm() {
+  const useFormRef = useForm<ProfileFormFields>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useFormRef
+
+
+  const shouldPreventSumbit = false
+
+  function onSubmit({ username, avatarSrc }: ProfileFormFields) {
+    console.log({ username, avatarSrc })
   }
 
   return (
-    <FormLayout onSubmit={handleSubmit}>
-      <SelectAvatar />
-      <label htmlFor="username">Pseudo :</label>
-      <input type="text" />
-      <small></small>
-      <hr />
-      <Button
-        title="Suivant"
-        theme="monochrome"
-        disabled={false}
-      />
-    </FormLayout>
+    <FormProvider {...useFormRef} >
+      <FormLayout onSubmit={handleSubmit(onSubmit)}>
+        <SelectAvatar />
+        <label htmlFor="username">Pseudo :</label>
+        <input type="text" {...register("username", { validate: profileValidation.validateUsername })} />
+        <small>{errors.username?.message}</small>
+        <hr />
+        <Button
+          title="Suivant"
+          theme="monochrome"
+          disabled={false}
+        />
+      </FormLayout>
+    </FormProvider>
   )
 }
 

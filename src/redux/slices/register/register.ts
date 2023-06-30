@@ -26,6 +26,9 @@ export const registerSlice = createSlice({
   reducers: {
     setavatarSrc(state, { payload }: PayloadAction<string>) {
       state.user.avatarSrc = payload
+    },
+    resetAvatarSrc(state) {
+      state.user.avatarSrc = initialState.user.avatarSrc
     }
   },
   extraReducers: (builder) => {
@@ -111,5 +114,5 @@ export const setBase64Avatar = createAsyncThunk(
     }
   })
 
-export const { setavatarSrc } = registerSlice.actions
+export const { setavatarSrc, resetAvatarSrc } = registerSlice.actions
 export const registerReducer = registerSlice.reducer
