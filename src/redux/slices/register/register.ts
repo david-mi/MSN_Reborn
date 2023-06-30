@@ -15,7 +15,7 @@ const initialState: InitialState = {
   submitStatus: "IDLE",
   profile: {
     defaultAvatars: [],
-    getDefaultAvatarsStatus: "PENDING",
+    getDefaultAvatarsStatus: "IDLE",
     convertAvatarToBase64Status: "IDLE"
   }
 }
@@ -39,14 +39,15 @@ export const registerSlice = createSlice({
       state.submitStatus = "IDLE"
       state.user.email = payload
       state.step = "PROFILE"
-    })
-    builder.addCase(defaultAvatarsMiddleware.pending, (state) => {
       state.profile.getDefaultAvatarsStatus = "PENDING"
     })
-    builder.addCase(defaultAvatarsMiddleware.rejected, (state) => {
+    builder.addCase(setDefaultAvatars.pending, (state) => {
+      state.profile.getDefaultAvatarsStatus = "PENDING"
+    })
+    builder.addCase(setDefaultAvatars.rejected, (state) => {
       state.profile.getDefaultAvatarsStatus = "REJECTED"
     })
-    builder.addCase(defaultAvatarsMiddleware.fulfilled, (state, { payload }: PayloadAction<string[]>) => {
+    builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }: PayloadAction<string[]>) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
     })
@@ -80,7 +81,7 @@ export const registerEmailMiddleware = createAsyncThunk(
     }
   })
 
-export const defaultAvatarsMiddleware = createAsyncThunk(
+export const setDefaultAvatars = createAsyncThunk(
   "register/profile/avatars",
   async (_, { rejectWithValue }) => {
     try {
