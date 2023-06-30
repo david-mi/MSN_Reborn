@@ -20,7 +20,9 @@ function EmailForm() {
   } = useForm<EmailFormFields>()
   const dispatch = useAppDispatch()
   const { submitStatus } = useAppSelector(state => state.register)
-  const shouldPreventSumbit = errors.email !== undefined || submitStatus === "PENDING"
+
+  const hasErrors = Object.keys(errors).length > 0
+  const preventFormSubmit = hasErrors || submitStatus === "PENDING"
 
   async function onSubmit({ email }: EmailFormFields) {
     try {
@@ -40,7 +42,7 @@ function EmailForm() {
         title="Suivant"
         theme="monochrome"
         wait={submitStatus === "PENDING"}
-        disabled={shouldPreventSumbit}
+        disabled={preventFormSubmit}
       />
     </FormLayout>
   )

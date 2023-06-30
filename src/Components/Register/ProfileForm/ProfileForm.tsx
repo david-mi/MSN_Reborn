@@ -3,6 +3,7 @@ import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileV
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"
+import { useAppSelector } from "@/redux/hooks"
 
 const profileValidation = new ProfileValidation()
 
@@ -16,14 +17,16 @@ function ProfileForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useFormRef
 
-
-  const shouldPreventSumbit = false
+  const hasErrors = Object.keys(errors).length > 0
+  const preventFormSubmit = hasErrors
 
   function onSubmit({ username, avatarSrc }: ProfileFormFields) {
     console.log({ username, avatarSrc })
+    // mettre pseudo dans le store
+    // changer de modale
   }
 
   return (
@@ -37,7 +40,7 @@ function ProfileForm() {
         <Button
           title="Suivant"
           theme="monochrome"
-          disabled={false}
+          disabled={preventFormSubmit}
         />
       </FormLayout>
     </FormProvider>
