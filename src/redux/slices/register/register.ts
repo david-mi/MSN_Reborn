@@ -2,7 +2,7 @@ import type { InitialState } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { EmailValidation } from "@/utils/Validation"
-import { StorageService } from "@/Services/Storage";
+import { StorageService } from "@/Services/Storage/Storage";
 
 const initialState: InitialState = {
   user: {
