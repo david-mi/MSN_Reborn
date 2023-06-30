@@ -30,7 +30,7 @@ export class ProfileValidation {
     return true
   }
 
-  public validateUsername(username: string): true | UsernameError {
+  public validateUsername = (username: string): true | UsernameError => {
     if (this.checkUserNameLengthValidity(username) === false) {
       return this.errorsMessages.username.OUTSIDE_SIZE_RANGE
     }
