@@ -2,6 +2,6 @@ export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD" | "SEND_CONFIRMA
 export type RegistrationData = {
   email: string,
   password: string,
-  nickname: string,
+  username: string,
   avatar: string
 }

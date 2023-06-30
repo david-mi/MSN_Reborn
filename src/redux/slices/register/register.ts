@@ -8,8 +8,8 @@ const initialState: InitialState = {
   user: {
     email: "",
     password: "",
-    nickname: "",
-    avatarUrl: ""
+    username: "",
+    avatarSrc: ""
   },
   step: "EMAIL",
   submitStatus: "IDLE",
@@ -24,8 +24,8 @@ export const registerSlice = createSlice({
   name: "register",
   initialState,
   reducers: {
-    setAvatarUrl(state, { payload }: PayloadAction<string>) {
-      state.user.avatarUrl = payload
+    setavatarSrc(state, { payload }: PayloadAction<string>) {
+      state.user.avatarSrc = payload
     }
   },
   extraReducers: (builder) => {
@@ -58,7 +58,7 @@ export const registerSlice = createSlice({
       state.profile.convertAvatarToBase64Status = "REJECTED"
     })
     builder.addCase(setBase64Avatar.fulfilled, (state, { payload }: PayloadAction<string>) => {
-      state.user.avatarUrl = payload
+      state.user.avatarSrc = payload
       state.profile.convertAvatarToBase64Status = "IDLE"
     })
   }
@@ -111,5 +111,5 @@ export const setBase64Avatar = createAsyncThunk(
     }
   })
 
-export const { setAvatarUrl } = registerSlice.actions
+export const { setavatarSrc } = registerSlice.actions
 export const registerReducer = registerSlice.reducer

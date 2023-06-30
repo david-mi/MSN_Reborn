@@ -11,7 +11,7 @@ function ProfileForm() {
   return (
     <FormLayout onSubmit={handleSubmit}>
       <SelectAvatar />
-      <label htmlFor="email">Pseudo :</label>
+      <label htmlFor="username">Pseudo :</label>
       <input type="text" />
       <small></small>
       <hr />

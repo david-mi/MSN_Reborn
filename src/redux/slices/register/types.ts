@@ -6,8 +6,8 @@ export interface InitialState {
   user: {
     email: string
     password: string
-    nickname: string
-    avatarUrl: string
+    username: string
+    avatarSrc: string
   }
   step: RegistrationStep,
   submitStatus: ValidationStatus

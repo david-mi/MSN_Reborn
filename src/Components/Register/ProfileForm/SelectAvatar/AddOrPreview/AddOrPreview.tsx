@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { setBase64Avatar } from "@/redux/slices/register/register";
 
 function AddOrPreview() {
-  const avatarUrl = useAppSelector(({ register }) => register.user.avatarUrl)
+  const avatarSrc = useAppSelector(({ register }) => register.user.avatarSrc)
   const dispatch = useAppDispatch()
 
   function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
@@ -18,7 +18,7 @@ function AddOrPreview() {
   return (
     <label htmlFor="avatar-add" className={styles.previewLabel}>
       <Avatar
-        src={avatarUrl}
+        src={avatarSrc}
         size="medium"
         className={styles.avatar}
       />

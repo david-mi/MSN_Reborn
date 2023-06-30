@@ -2,7 +2,7 @@ import Loader from "@/Components/Shared/Loader/Loader";
 import styles from "./defaultAvatars.module.css";
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { setAvatarUrl } from "@/redux/slices/register/register";
+import { setavatarSrc } from "@/redux/slices/register/register";
 
 interface Props {
   picturesComponents: string[]
@@ -19,7 +19,7 @@ function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
 
   function handleClick(imageUrl: string) {
     return function () {
-      dispatch(setAvatarUrl(imageUrl))
+      dispatch(setavatarSrc(imageUrl))
     }
   }
 
