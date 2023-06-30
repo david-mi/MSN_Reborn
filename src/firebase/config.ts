@@ -19,7 +19,7 @@ export const firebase = {
   storage: getStorage(fireBaseApp)
 }
 
-if (import.meta.env.MODE === "development") {
+if (import.meta.env.MODE === "development" || process.env.NODE_ENV === "test") {
   connectAuthEmulator(firebase.auth, "http://127.0.0.1:9099")
   connectStorageEmulator(firebase.storage, "127.0.0.1", 9199)
 }
