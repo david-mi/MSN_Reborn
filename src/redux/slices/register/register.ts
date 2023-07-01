@@ -1,9 +1,9 @@
 import type { InitialState } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createAsyncThunk } from "@reduxjs/toolkit"
 import { EmailValidation } from "@/utils/Validation"
 import { StorageService } from "@/Services/Storage/Storage";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
+import { createAppAsyncThunk } from "@/redux/types";
 
 const initialState: InitialState = {
   user: {
@@ -40,7 +40,7 @@ export const registerSlice = createSlice({
     builder.addCase(registerEmailMiddleware.rejected, (state) => {
       state.submitStatus = "REJECTED"
     })
-    builder.addCase(registerEmailMiddleware.fulfilled, (state, { payload }: PayloadAction<string>) => {
+    builder.addCase(registerEmailMiddleware.fulfilled, (state, { payload }) => {
       state.submitStatus = "IDLE"
       state.user.email = payload
       state.step = "PROFILE"
@@ -49,10 +49,10 @@ export const registerSlice = createSlice({
     builder.addCase(setDefaultAvatars.pending, (state) => {
       state.profile.getDefaultAvatarsStatus = "PENDING"
     })
-    builder.addCase(setDefaultAvatars.rejected, (state) => {
+    builder.addCase(setDefaultAvatars.rejected, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "REJECTED"
     })
-    builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }: PayloadAction<string[]>) => {
+    builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
     })
@@ -64,7 +64,7 @@ interface RegisterEmailMiddlewarePayload {
   emailValidation: EmailValidation
 }
 
-export const registerEmailMiddleware = createAsyncThunk(
+export const registerEmailMiddleware = createAppAsyncThunk(
   "register/email",
   async ({ email, emailValidation }: RegisterEmailMiddlewarePayload, { rejectWithValue }) => {
     try {
@@ -76,7 +76,7 @@ export const registerEmailMiddleware = createAsyncThunk(
     }
   })
 
-export const setDefaultAvatars = createAsyncThunk(
+export const setDefaultAvatars = createAppAsyncThunk(
   "register/profile/avatars",
   async (_, { rejectWithValue }) => {
     try {
