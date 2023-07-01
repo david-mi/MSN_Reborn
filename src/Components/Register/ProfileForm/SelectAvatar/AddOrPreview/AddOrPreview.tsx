@@ -35,6 +35,7 @@ function AddOrPreview() {
       />
       <AddImageIcon />
       <input
+        data-testid="register-profile-avatar-input"
         type="file"
         className={styles.addFileInput}
         id="avatar-add"

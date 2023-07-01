@@ -34,6 +34,7 @@ function ProfileForm() {
         <input
           id="username"
           type="text"
+          data-testid="register-profile-username-input"
           {...register("username", { validate: profileValidation.validateUsername })}
         />
         <small>{errors.username?.message}</small>
@@ -41,6 +42,7 @@ function ProfileForm() {
         <Button
           title="Suivant"
           theme="monochrome"
+          data-testid="register-profile-submit-button"
           disabled={preventFormSubmit}
         />
       </FormLayout>
