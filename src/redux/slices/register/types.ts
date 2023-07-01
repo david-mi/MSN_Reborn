@@ -14,5 +14,6 @@ export interface InitialState {
   profile: {
     defaultAvatars: string[]
     getDefaultAvatarsStatus: ValidationStatus
+    getDefaultAvatarsError: null | string
   }
 }

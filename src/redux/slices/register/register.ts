@@ -16,7 +16,8 @@ const initialState: InitialState = {
   submitStatus: "IDLE",
   profile: {
     defaultAvatars: [],
-    getDefaultAvatarsStatus: "IDLE"
+    getDefaultAvatarsStatus: "IDLE",
+    getDefaultAvatarsError: null
   }
 }
 
@@ -48,9 +49,11 @@ export const registerSlice = createSlice({
     })
     builder.addCase(setDefaultAvatars.pending, (state) => {
       state.profile.getDefaultAvatarsStatus = "PENDING"
+      state.profile.getDefaultAvatarsError = null
     })
     builder.addCase(setDefaultAvatars.rejected, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "REJECTED"
+      state.profile.getDefaultAvatarsError = payload as string
     })
     builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
