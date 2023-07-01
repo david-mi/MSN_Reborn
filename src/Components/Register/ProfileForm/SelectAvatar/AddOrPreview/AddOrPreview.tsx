@@ -2,29 +2,27 @@ import { ChangeEvent } from "react"
 import Avatar from "@/Components/Shared/Avatar/Avatar";
 import styles from "./addOrPreview.module.css";
 import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { setBase64Avatar, resetAvatarSrc } from "@/redux/slices/register/register";
 import { useFormContext } from "react-hook-form";
 import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
 import type { ProfileFormFields } from "../../ProfileForm";
+import { convertFileToBase64 } from "@/utils/convertFileToBase64";
 
 const profileValidation = new ProfileValidation()
 
 function AddOrPreview() {
-  const avatarSrc = useAppSelector(({ register }) => register.user.avatarSrc)
-  const dispatch = useAppDispatch()
-  const { register, setError, clearErrors } = useFormContext<ProfileFormFields>()
+  const { setError, setValue, watch, clearErrors } = useFormContext<ProfileFormFields>()
+  const avatarSrc = watch("avatarSrc")
 
-  function handleFileValidate({ target }: ChangeEvent<HTMLInputElement>) {
+  async function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
     const addedFile = (target.files as FileList)[0]
     const avatarValidation = profileValidation.validateAvatar(addedFile)
 
     if (typeof avatarValidation === "string") {
       setError("avatarSrc", { message: avatarValidation })
-      dispatch(resetAvatarSrc())
     } else {
+      const base64Avatar = await convertFileToBase64(addedFile)
       clearErrors("avatarSrc")
-      dispatch(setBase64Avatar(addedFile))
+      setValue("avatarSrc", base64Avatar)
     }
   }
 
@@ -40,7 +38,7 @@ function AddOrPreview() {
         type="file"
         className={styles.addFileInput}
         id="avatar-add"
-        {...register("avatarSrc", { onChange: handleFileValidate })}
+        onChange={handleChange}
       />
     </label>
   );

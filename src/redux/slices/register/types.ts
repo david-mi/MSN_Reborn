@@ -14,6 +14,5 @@ export interface InitialState {
   profile: {
     defaultAvatars: string[]
     getDefaultAvatarsStatus: ValidationStatus
-    convertAvatarToBase64Status: ValidationStatus
   }
 }

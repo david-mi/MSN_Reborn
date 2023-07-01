@@ -3,7 +3,6 @@ import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileV
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"
-import { useAppSelector } from "@/redux/hooks"
 
 const profileValidation = new ProfileValidation()
 
@@ -14,11 +13,7 @@ export interface ProfileFormFields {
 
 function ProfileForm() {
   const useFormRef = useForm<ProfileFormFields>()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useFormRef
+  const { register, handleSubmit, formState: { errors } } = useFormRef
 
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors
@@ -28,6 +23,10 @@ function ProfileForm() {
     // mettre pseudo dans le store
     // changer de modale
   }
+
+  useEffect(() => {
+    register("avatarSrc", { required: profileValidation.errorsMessages.avatar.REQUIRED })
+  }, [register])
 
   return (
     <FormProvider {...useFormRef} >

@@ -1,8 +1,7 @@
 import Loader from "@/Components/Shared/Loader/Loader";
 import styles from "./defaultAvatars.module.css";
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { setavatarSrc } from "@/redux/slices/register/register";
+import { useAppSelector } from "@/redux/hooks";
 import { useFormContext } from "react-hook-form";
 import type { ProfileFormFields } from "../../ProfileForm";
 
@@ -13,8 +12,7 @@ interface Props {
 
 function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
   const getDefaultAvatarsStatus = useAppSelector(({ register }) => register.profile.getDefaultAvatarsStatus)
-  const dispatch = useAppDispatch()
-  const { clearErrors } = useFormContext<ProfileFormFields>()
+  const { setValue, clearErrors } = useFormContext<ProfileFormFields>()
 
   if (getDefaultAvatarsStatus !== "IDLE") {
     return <Loader className={styles.loader} />
@@ -23,7 +21,7 @@ function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
   function handleClick(imageUrl: string) {
     return function () {
       clearErrors("avatarSrc")
-      dispatch(setavatarSrc(imageUrl))
+      setValue("avatarSrc", imageUrl)
     }
   }
 

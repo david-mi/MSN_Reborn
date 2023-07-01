@@ -15,8 +15,7 @@ const initialState: InitialState = {
   submitStatus: "IDLE",
   profile: {
     defaultAvatars: [],
-    getDefaultAvatarsStatus: "IDLE",
-    convertAvatarToBase64Status: "IDLE"
+    getDefaultAvatarsStatus: "IDLE"
   }
 }
 
@@ -26,9 +25,6 @@ export const registerSlice = createSlice({
   reducers: {
     setavatarSrc(state, { payload }: PayloadAction<string>) {
       state.user.avatarSrc = payload
-    },
-    resetAvatarSrc(state) {
-      state.user.avatarSrc = initialState.user.avatarSrc
     }
   },
   extraReducers: (builder) => {
@@ -53,16 +49,6 @@ export const registerSlice = createSlice({
     builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }: PayloadAction<string[]>) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
-    })
-    builder.addCase(setBase64Avatar.pending, (state) => {
-      state.profile.convertAvatarToBase64Status = "PENDING"
-    })
-    builder.addCase(setBase64Avatar.rejected, (state) => {
-      state.profile.convertAvatarToBase64Status = "REJECTED"
-    })
-    builder.addCase(setBase64Avatar.fulfilled, (state, { payload }: PayloadAction<string>) => {
-      state.user.avatarSrc = payload
-      state.profile.convertAvatarToBase64Status = "IDLE"
     })
   }
 })
@@ -98,21 +84,5 @@ export const setDefaultAvatars = createAsyncThunk(
     }
   })
 
-export const setBase64Avatar = createAsyncThunk(
-  "register/profile/avatars/base64",
-  async (imageFile: File, { rejectWithValue }) => {
-    try {
-      return await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(imageFile);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-      });
-    } catch (error) {
-      const errorMessage = (error as Error)?.message ?? "Une erreur est survenue"
-      return rejectWithValue(errorMessage)
-    }
-  })
-
-export const { setavatarSrc, resetAvatarSrc } = registerSlice.actions
+export const { setavatarSrc } = registerSlice.actions
 export const registerReducer = registerSlice.reducer
