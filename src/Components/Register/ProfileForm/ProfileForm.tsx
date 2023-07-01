@@ -31,7 +31,11 @@ function ProfileForm() {
       <FormLayout onSubmit={handleSubmit(onSubmit)}>
         <SelectAvatar />
         <label htmlFor="username">Pseudo :</label>
-        <input type="text" {...register("username", { validate: profileValidation.validateUsername })} />
+        <input
+          id="username"
+          type="text"
+          {...register("username", { validate: profileValidation.validateUsername })}
+        />
         <small>{errors.username?.message}</small>
         <hr />
         <Button

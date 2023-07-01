@@ -32,7 +32,10 @@ function EmailForm() {
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="email">Adresse de messagerie :</label>
-      <input {...register("email", { validate: emailValidation.validateFromInputAndUnavailableList })} />
+      <input
+        id="email"
+        {...register("email", { validate: emailValidation.validateFromInputAndUnavailableList })}
+      />
       <small>{errors.email?.message}</small>
       <hr />
       <Button
