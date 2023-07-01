@@ -3,23 +3,23 @@ import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileV
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"
+import { completeProfileStep } from "@/redux/slices/register/register"
+import { useAppDispatch } from "@/redux/hooks"
 import { ProfileFormFields } from "./types"
+import { useEffect } from "react"
 
 const profileValidation = new ProfileValidation()
-
-export interface ProfileFormFields {
-  username: string
-  avatarSrc: string
-}
 
 function ProfileForm() {
   const useFormRef = useForm<ProfileFormFields>()
   const { register, handleSubmit, formState: { errors } } = useFormRef
+  const dispatch = useAppDispatch()
 
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors
 
   function onSubmit(formEntries: ProfileFormFields) {
+    dispatch(completeProfileStep(formEntries))
   }
 
   useEffect(() => {
