@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import DefaultAvatars from "./DefaultAvatars/DefaultAvatars"
 import AddOrPreview from "./AddOrPreview/AddOrPreview"
 import { useFormContext } from "react-hook-form"
-import type { ProfileFormFields } from "../ProfileForm"
+import type { ProfileFormFields } from "../types"
 
 function SelectAvatar() {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([])

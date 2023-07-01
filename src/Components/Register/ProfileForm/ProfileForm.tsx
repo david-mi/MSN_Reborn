@@ -3,6 +3,7 @@ import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileV
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"
+import { ProfileFormFields } from "./types"
 
 const profileValidation = new ProfileValidation()
 
@@ -18,10 +19,7 @@ function ProfileForm() {
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors
 
-  function onSubmit({ username, avatarSrc }: ProfileFormFields) {
-    console.log({ username, avatarSrc })
-    // mettre pseudo dans le store
-    // changer de modale
+  function onSubmit(formEntries: ProfileFormFields) {
   }
 
   useEffect(() => {

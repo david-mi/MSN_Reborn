@@ -3,7 +3,7 @@ import styles from "./defaultAvatars.module.css";
 import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper";
 import { useAppSelector } from "@/redux/hooks";
 import { useFormContext } from "react-hook-form";
-import type { ProfileFormFields } from "../../ProfileForm";
+import type { ProfileFormFields } from "../../types";
 
 interface Props {
   picturesComponents: string[]

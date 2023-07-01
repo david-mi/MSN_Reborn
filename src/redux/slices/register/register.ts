@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { EmailValidation } from "@/utils/Validation"
 import { StorageService } from "@/Services/Storage/Storage";
+import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 
 const initialState: InitialState = {
   user: {

@@ -4,12 +4,9 @@ import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { registerEmailMiddleware } from "@/redux/slices/register/register"
 import { EmailValidation } from "@/utils/Validation"
+import type { EmailFormFields } from "./types"
 
 export const emailValidation = new EmailValidation()
-
-interface EmailFormFields {
-  email: string
-}
 
 function EmailForm() {
   const {
