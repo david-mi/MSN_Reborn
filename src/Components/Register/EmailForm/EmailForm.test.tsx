@@ -1,8 +1,8 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 import EmailForm from "./EmailForm";
 import { EmailValidation } from "@/utils/Validation";
-import { Provider } from "react-redux"
-import store from "@/redux/store";
+import { renderWithProviders, expectNeverOccurs } from "@/tests/utils";
+
 let emailValidation: EmailValidation
 
 beforeEach(() => {
@@ -10,12 +10,14 @@ beforeEach(() => {
 })
 
 it("should display the correct error for an empty string", async () => {
-  const { getByText } = render(
-    <Provider store={store}>
-      <EmailForm />
-    </Provider>
-  );
+  const { getByText, getByTestId } = renderWithProviders(<EmailForm />)
   const submitButton = getByText("Suivant");
+  const emailInput = getByTestId("register-email-input")
+  fireEvent.change(emailInput, {
+    target: {
+      value: ""
+    }
+  })
   fireEvent.click(submitButton)
 
   await waitFor(() => {
@@ -26,18 +28,14 @@ it("should display the correct error for an empty string", async () => {
 });
 
 it("should display the correct error for an invalid email", async () => {
-  const { getByText, getByRole } = render(
-    <Provider store={store}>
-      <EmailForm />
-    </Provider>
-  );
-  const inputElement = getByRole("textbox")
-  fireEvent.change(inputElement, {
+  const { getByText, getByTestId } = renderWithProviders(<EmailForm />)
+  const emailInput = getByTestId("register-email-input")
+  fireEvent.change(emailInput, {
     target: {
       value: "not an email"
     }
   })
-  const submitButton = getByText("Suivant");
+  const submitButton = getByTestId("register-email-submit-button");
   fireEvent.click(submitButton)
 
   await waitFor(() => {
@@ -45,4 +43,24 @@ it("should display the correct error for an invalid email", async () => {
     expect(errorElement).toBeInTheDocument();
     expect(submitButton).toBeDisabled()
   });
+
+});
+
+it("should submit the form with a valid email and without displaying any errors", async () => {
+  const { getByTestId } = renderWithProviders(<EmailForm />)
+  const emailInput = getByTestId("register-email-input")
+  fireEvent.change(emailInput, {
+    target: {
+      value: "validEmail@gmail.com"
+    }
+  })
+  const submitButton = getByTestId("register-email-submit-button");
+
+  expect(submitButton).not.toBeDisabled()
+  fireEvent.click(submitButton)
+
+  expectNeverOccurs(() => {
+    const errorElement = getByTestId("register-email-error")
+    expect(errorElement).toHaveTextContent(/.+/)
+  })
 });

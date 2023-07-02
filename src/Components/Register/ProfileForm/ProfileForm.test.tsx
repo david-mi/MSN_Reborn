@@ -1,11 +1,15 @@
-import { fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, waitFor, } from "@testing-library/react";
 import ProfileForm from "./ProfileForm";
 import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
-import { renderWithProviders } from "@/tests/utils";
+import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
+import { vi, SpyInstance } from "vitest"
+import * as util from "@/utils/convertFileToBase64"
+
 
 let profileValidation: ProfileValidation;
 let preloadedStateAfterEmailStep: RootState
+let convertFileToBase64Spy: SpyInstance<[file: File], Promise<string>>
 
 beforeEach(() => {
   preloadedStateAfterEmailStep = {
@@ -26,6 +30,9 @@ beforeEach(() => {
     }
   }
   profileValidation = new ProfileValidation();
+  convertFileToBase64Spy = vi
+    .spyOn(util, "convertFileToBase64")
+    .mockResolvedValue("base64str")
 });
 
 it("should display the correct error for an invalid avatar", async () => {
@@ -36,6 +43,11 @@ it("should display the correct error for an invalid avatar", async () => {
       files: [new File([], "avatar.txt", { type: "text/plain" })],
     },
   });
+
+  expectNeverOccurs(() => {
+    expect(util.convertFileToBase64).toBeCalled()
+  })
+
   const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement
   fireEvent.click(submitButton);
 
@@ -54,6 +66,7 @@ it("should display the correct error for an invalid username", async () => {
       value: "a",
     },
   });
+
   const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement
   fireEvent.click(submitButton);
 
@@ -75,6 +88,10 @@ it("should display the correct error for a valid avatar but invalid username", a
       files: [new File([], "avatar.jpg", { type: "image/jpeg" })],
     },
   });
+
+  await waitFor(() => {
+    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
+  })
 
   fireEvent.change(usernameInput, {
     target: {
@@ -103,6 +120,10 @@ it("should display the correct error for a valid username but invalid avatar", a
     },
   });
 
+  expectNeverOccurs(() => {
+    expect(util.convertFileToBase64).toBeCalled()
+  })
+
   fireEvent.change(usernameInput, {
     target: {
       value: "validUsername",
@@ -118,8 +139,39 @@ it("should display the correct error for a valid username but invalid avatar", a
   });
 });
 
+it("should display the correct error for a valid avatar but invalid username", async () => {
+  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep });
+  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
+  const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
+  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement;
+
+  fireEvent.change(avatarInput, {
+    target: {
+      files: [new File([""], "fakefile.png", { type: "image/png" })],
+    },
+  });
+
+  await waitFor(() => {
+    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
+  })
+
+  fireEvent.change(usernameInput, {
+    target: {
+      value: "d",
+    },
+  });
+
+  fireEvent.click(submitButton);
+
+  await waitFor(() => {
+    const errorElement = getByText(profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+    expect(errorElement).toBeInTheDocument();
+    expect(submitButton).toBeDisabled();
+  });
+});
+
 it("should submit the form with valid inputs", async () => {
-  const { getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep })
+  const { getByTestId, store } = renderWithProviders(<ProfileForm data-testid="register-profile-form" />, { preloadedState: preloadedStateAfterEmailStep })
 
   const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
   const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
@@ -127,9 +179,15 @@ it("should submit the form with valid inputs", async () => {
 
   fireEvent.change(avatarInput, {
     target: {
-      files: [new File([], "avatar.jpg", { type: "image/jpeg" })],
+      files: [new File([""], "fakefile.png", { type: "image/png" })],
     },
   });
+
+  /* wait for async function in onChange file event to resolve, otherwise
+  the submit event will be called before and userAvatar will be missing and test will fail */
+  await waitFor(() => {
+    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
+  })
 
   fireEvent.change(usernameInput, {
     target: {
@@ -138,5 +196,10 @@ it("should submit the form with valid inputs", async () => {
   });
 
   expect(submitButton).not.toBeDisabled()
-  fireEvent.click(submitButton);
+  fireEvent.click(submitButton)
+
+  await waitFor(() => {
+    const storeState = store.getState()
+    expect(storeState.register.step).toEqual("PASSWORD")
+  })
 });
