@@ -10,7 +10,9 @@ import { useEffect } from "react"
 
 const profileValidation = new ProfileValidation()
 
-function ProfileForm() {
+type Props = React.ComponentProps<"form">
+
+function ProfileForm(props: Props) {
   const useFormRef = useForm<ProfileFormFields>()
   const { register, handleSubmit, formState: { errors } } = useFormRef
   const dispatch = useAppDispatch()
@@ -28,7 +30,7 @@ function ProfileForm() {
 
   return (
     <FormProvider {...useFormRef} >
-      <FormLayout onSubmit={handleSubmit(onSubmit)}>
+      <FormLayout onSubmit={handleSubmit(onSubmit)} {...props}>
         <SelectAvatar />
         <label htmlFor="username">Pseudo :</label>
         <input
@@ -37,7 +39,7 @@ function ProfileForm() {
           data-testid="register-profile-username-input"
           {...register("username", { validate: profileValidation.validateUsername })}
         />
-        <small>{errors.username?.message}</small>
+        <small data-testid="register-profile-username-error">{errors.username?.message}</small>
         <hr />
         <Button
           title="Suivant"

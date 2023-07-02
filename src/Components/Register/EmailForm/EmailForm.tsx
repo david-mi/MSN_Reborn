@@ -34,14 +34,16 @@ function EmailForm() {
       <label htmlFor="email">Adresse de messagerie :</label>
       <input
         id="email"
+        data-testid="register-email-input"
         {...register("email", { validate: emailValidation.validateFromInputAndUnavailableList })}
       />
-      <small>{errors.email?.message}</small>
+      <small data-testid="register-email-error">{errors.email?.message}</small>
       <hr />
       <Button
         title="Suivant"
         theme="monochrome"
         wait={submitStatus === "PENDING"}
+        data-testid="register-email-submit-button"
         disabled={preventFormSubmit}
       />
     </FormLayout>

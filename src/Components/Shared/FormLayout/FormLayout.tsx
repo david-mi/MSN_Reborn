@@ -1,13 +1,13 @@
 import styles from "./formLayout.module.css"
 
-export interface Props {
-  children: JSX.Element | JSX.Element[]
-  onSubmit: (event: React.FormEvent) => void
-}
+export type Props = React.ComponentProps<"form">
 
-function FormLayout({ children, onSubmit }: Props) {
+function FormLayout(props: Props) {
+  const { className, children } = props
+  const classNames = `${styles.form} ${className ? className : ""}`
+
   return (
-    <form onSubmit={onSubmit} className={styles.form}>
+    <form className={classNames} {...props}>
       {children}
     </form>
   )

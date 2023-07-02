@@ -8,7 +8,7 @@ function Register() {
 
   const registerComponents = {
     EMAIL: <EmailForm />,
-    PROFILE: <ProfileForm />,
+    PROFILE: <ProfileForm data-testid="register-profile-form" />,
     PASSWORD: <p>PASSWORD</p>,
     SEND_CONFIRMATION_EMAIL: <p>SEND_CONFIRMATION_EMAIL</p>,
     VERIFIED: <p>VERIFIED</p>
