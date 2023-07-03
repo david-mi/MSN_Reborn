@@ -3,6 +3,9 @@ import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import type { PasswordFormFields } from "./types"
+import { PasswordValidation } from "@/utils/Validation/PasswordValidation/PasswordValidation"
+
+const passwordValidation = new PasswordValidation()
 
 function PasswordForm() {
   const {
@@ -27,15 +30,19 @@ function PasswordForm() {
         id="password"
         type="password"
         data-testid="register-password-input"
-        {...register("password", { validate: () => true })}
+        {...register("password", {
+          validate: (value) => passwordValidation.validate({ inputName: "password", value: value })
+        })}
       />
       <small data-testid="register-password-error">{errors.password?.message}</small>
-      <label htmlFor="password-confirm">Confirmation mot de passe :</label>
+      <label htmlFor="password-confirm">Confirmer mot de passe :</label>
       <input
         id="password-confirm"
         type="password"
         data-testid="register-password-confirm-input"
-        {...register("passwordConfirm", { validate: () => true })}
+        {...register("passwordConfirm", {
+          validate: (value) => passwordValidation.validate({ inputName: "passwordConfirm", value: value })
+        })}
       />
       <small data-testid="register-password-confirm-error">{errors.passwordConfirm?.message}</small>
       <hr />
