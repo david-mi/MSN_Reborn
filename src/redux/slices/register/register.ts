@@ -1,11 +1,11 @@
-import type { InitialState } from "./types";
+import type { ProfileState } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EmailValidation } from "@/utils/Validation"
 import { StorageService } from "@/Services/Storage/Storage";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 
-const initialState: InitialState = {
+const initialProfileState: ProfileState = {
   user: {
     email: "",
     password: "",
@@ -23,7 +23,7 @@ const initialState: InitialState = {
 
 export const registerSlice = createSlice({
   name: "register",
-  initialState,
+  initialState: initialProfileState,
   reducers: {
     setavatarSrc(state, { payload }: PayloadAction<string>) {
       state.user.avatarSrc = payload

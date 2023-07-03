@@ -2,7 +2,7 @@
 
 export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD" | "SEND_CONFIRMATION_EMAIL" | "VERIFIED"
 export type ValidationStatus = "IDLE" | "PENDING" | "REJECTED"
-export interface InitialState {
+export interface ProfileState {
   user: {
     email: string
     password: string

@@ -8,7 +8,7 @@ import {
   CombinedState
 } from "@reduxjs/toolkit";
 import { RootState, AppDispatch } from "@/redux/store";
-import { InitialState } from "./slices/register/types";
+import { ProfileState } from "./slices/register/types";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 
 export type AppThunk<ReturnType = void> = ThunkAction<
@@ -31,7 +31,7 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
 }>()
 
 export type Store = ToolkitStore<EmptyObject & {
-  register: InitialState;
+  register: ProfileState;
 }, AnyAction, [ThunkMiddleware<CombinedState<{
-  register: InitialState;
+  register: ProfileState;
 }>, AnyAction>]>
