@@ -8,17 +8,18 @@
   min-width: 80px;
 }
 
-.button:is(:before, :after) {
+.button::before,
+.button::after {
   position: absolute;
   content: "";
 }
 
-.button:before {
+.button:not(:disabled):before {
   inset: 0;
   border: solid 1px white;
 }
 
-.button:after {
+.button:not(:disabled):after {
   height: 2px;
   inset: auto 1px 1px;
   border-top: solid 1px #C0C8D0;
