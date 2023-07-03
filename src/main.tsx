@@ -6,23 +6,10 @@ import "./styles/index.css"
 import { Provider } from "react-redux"
 import store from "./redux/store.ts"
 
-const rootElement = document.getElementById("root") as HTMLElement
-ReactDOM.createRoot(rootElement).render(ReactRootToogleStrictMode(true))
-
-function RootWithProvider() {
-  return (
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
     <Provider store={store}>
       <RouterProvider router={browserRouter} />
     </Provider>
-  )
-}
-
-function ReactRootToogleStrictMode(enableStrictMode: boolean) {
-  return enableStrictMode
-    ? (
-      <React.StrictMode>
-        <RootWithProvider />
-      </React.StrictMode>
-    )
-    : <RootWithProvider />
-}
+  </React.StrictMode>,
+)
