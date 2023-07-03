@@ -1,202 +1,188 @@
-import { fireEvent, waitFor, } from "@testing-library/react";
+import { fireEvent, waitFor, getByTestId, getByText } from "@testing-library/react";
 import ProfileForm from "./ProfileForm";
 import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
 import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
+import type { Store } from "@/redux/types";
 
-let profileValidation: ProfileValidation;
-let preloadedStateAfterEmailStep: RootState
-const base64ImageMock = "base64"
+const { body } = document
 
-beforeEach(() => {
-  preloadedStateAfterEmailStep = {
-    register: {
-      user: {
-        email: 'test@gmail.com',
-        password: '',
-        username: '',
-        avatarSrc: ''
-      },
-      step: 'PROFILE',
-      submitStatus: 'IDLE',
-      profile: {
-        defaultAvatars: [],
-        getDefaultAvatarsStatus: 'PENDING',
-        getDefaultAvatarsError: null
+describe("ProfileForm", () => {
+  let profileValidation: ProfileValidation;
+  let preloadedStateAfterEmailStep: RootState
+  const base64Str = "base64"
+  let avatarElement: HTMLImageElement
+  let avatarInput: HTMLInputElement
+  let usernameInput: HTMLInputElement
+  let submitButton: HTMLButtonElement
+  let store: Store
+
+  beforeEach(() => {
+    preloadedStateAfterEmailStep = {
+      register: {
+        user: {
+          email: "user-register-mock@gmail.com",
+          password: "",
+          username: "",
+          avatarSrc: ""
+        },
+        step: "PROFILE",
+        submitStatus: "IDLE",
+        profile: {
+          defaultAvatars: [],
+          getDefaultAvatarsStatus: "PENDING",
+          getDefaultAvatarsError: null
+        }
       }
-    }
-  }
-  profileValidation = new ProfileValidation();
-});
+    };
 
-it("should display the correct error for an invalid avatar", async () => {
-  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep })
-  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
-  fireEvent.change(avatarInput, {
-    target: {
-      files: [new File([], "avatar.txt", { type: "text/plain" })],
-    },
+    ({ store } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep }))
+    submitButton = getByTestId(body, "register-profile-submit-button") as HTMLButtonElement
+    avatarElement = getByTestId(body, "avatar-img") as HTMLImageElement
+    usernameInput = getByTestId(body, "register-profile-username-input") as HTMLInputElement
+    avatarInput = getByTestId(body, "register-profile-avatar-input") as HTMLInputElement;
+    submitButton = getByTestId(body, "register-profile-submit-button") as HTMLButtonElement
+    profileValidation = new ProfileValidation();
   });
 
-  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
-  expectNeverOccurs(() => {
-    expect(avatarElement.src).toContain(base64ImageMock)
-  }, { timeout: 300 })
+  it("should display the correct error for an invalid avatar", async () => {
+    fireEvent.change(avatarInput, {
+      target: {
+        files: [new File([], "avatar.txt", { type: "text/plain" })],
+      },
+    });
 
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement
-  fireEvent.click(submitButton);
+    expectNeverOccurs(() => {
+      expect(avatarElement.src).toContain(base64Str)
+    }, { timeout: 100 })
 
-  await waitFor(() => {
-    const errorElement = getByText(profileValidation.errorsMessages.avatar.WRONG_FORMAT);
-    expect(errorElement).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-  });
-});
+    fireEvent.click(submitButton);
 
-it("should display the correct error for an invalid username", async () => {
-  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep })
-  const userNameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
-  fireEvent.change(userNameInput, {
-    target: {
-      value: "a",
-    },
+    /** Submit is asynchronous with react-hook-form, so we have to wait */
+    await waitFor(() => {
+      const errorElement = getByText(body, profileValidation.errorsMessages.avatar.WRONG_FORMAT);
+      expect(errorElement).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement
-  fireEvent.click(submitButton);
+  it("should display the correct error for an invalid username", async () => {
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "a",
+      },
+    });
 
-  await waitFor(() => {
-    const errorElement = getByText(profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
-    expect(errorElement).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-  });
-});
+    fireEvent.click(submitButton);
 
-it("should display the correct error for a valid avatar but invalid username", async () => {
-  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep });
-  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
-  const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement;
-
-  fireEvent.change(avatarInput, {
-    target: {
-      files: [new File([], "avatar.jpg", { type: "image/jpeg" })],
-    },
+    await waitFor(() => {
+      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      expect(errorElement).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
-  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
-  await waitFor(() => {
-    expect(avatarElement.src).toContain(base64ImageMock)
-  }, { timeout: 300 })
+  it("should display the correct error for a valid avatar but invalid username", async () => {
+    fireEvent.change(avatarInput, {
+      target: {
+        files: [new File([], "avatar.jpg", { type: "image/jpeg" })],
+      },
+    });
 
-  fireEvent.change(usernameInput, {
-    target: {
-      value: "a",
-    },
+    await waitFor(() => {
+      expect(avatarElement.src).toContain(base64Str)
+    }, { timeout: 100 })
+
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "a",
+      },
+    });
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      expect(errorElement).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
-  fireEvent.click(submitButton);
+  it("should display the correct error for a valid username but invalid avatar", async () => {
+    fireEvent.change(avatarInput, {
+      target: {
+        files: [new File([], "avatar.txt", { type: "text/plain" })],
+      },
+    });
 
-  await waitFor(() => {
-    const errorElement = getByText(profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
-    expect(errorElement).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-  });
-});
+    expectNeverOccurs(() => {
+      expect(avatarElement.src).toContain(base64Str)
+    }, { timeout: 100 })
 
-it("should display the correct error for a valid username but invalid avatar", async () => {
-  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep });
-  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
-  const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement;
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "validUsername",
+      },
+    });
 
-  fireEvent.change(avatarInput, {
-    target: {
-      files: [new File([], "avatar.txt", { type: "text/plain" })],
-    },
-  });
+    fireEvent.click(submitButton);
 
-  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
-  expectNeverOccurs(() => {
-    expect(avatarElement.src).toContain(base64ImageMock)
-  }, { timeout: 300 })
-
-  fireEvent.change(usernameInput, {
-    target: {
-      value: "validUsername",
-    },
+    await waitFor(() => {
+      const errorElement = getByText(body, profileValidation.errorsMessages.avatar.WRONG_FORMAT);
+      expect(errorElement).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
-  fireEvent.click(submitButton);
+  it("should display the correct error for a valid avatar but invalid username", async () => {
+    fireEvent.change(avatarInput, {
+      target: {
+        files: [new File([""], "fakefile.png", { type: "image/png" })],
+      },
+    });
 
-  await waitFor(() => {
-    const errorElement = getByText(profileValidation.errorsMessages.avatar.WRONG_FORMAT);
-    expect(errorElement).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-  });
-});
+    await waitFor(() => {
+      expect(avatarElement.src).toContain(base64Str)
+    }, { timeout: 100 })
 
-it("should display the correct error for a valid avatar but invalid username", async () => {
-  const { getByText, getByTestId } = renderWithProviders(<ProfileForm />, { preloadedState: preloadedStateAfterEmailStep });
-  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
-  const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement;
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "d",
+      },
+    });
 
-  fireEvent.change(avatarInput, {
-    target: {
-      files: [new File([""], "fakefile.png", { type: "image/png" })],
-    },
-  });
+    fireEvent.click(submitButton);
 
-  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
-  await waitFor(() => {
-    expect(avatarElement.src).toContain(base64ImageMock)
-  }, { timeout: 300 })
-
-  fireEvent.change(usernameInput, {
-    target: {
-      value: "d",
-    },
+    await waitFor(() => {
+      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      expect(errorElement).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
   });
 
-  fireEvent.click(submitButton);
+  it("should submit the form with valid inputs", async () => {
+    fireEvent.change(avatarInput, {
+      target: {
+        files: [new File([""], "fakefile.png", { type: "image/png" })],
+      },
+    });
 
-  await waitFor(() => {
-    const errorElement = getByText(profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
-    expect(errorElement).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
+    await waitFor(() => {
+      expect(avatarElement.src).toContain(base64Str)
+    }, { timeout: 100 })
+
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "validUsername",
+      },
+    });
+
+    expect(submitButton).not.toBeDisabled()
+    fireEvent.click(submitButton)
+
+    await waitFor(() => {
+      const storeState = store.getState()
+      expect(storeState.register.step).toEqual("PASSWORD")
+    })
   });
-});
-
-it("should submit the form with valid inputs", async () => {
-  const { getByTestId, store } = renderWithProviders(<ProfileForm data-testid="register-profile-form" />, { preloadedState: preloadedStateAfterEmailStep })
-
-  const avatarInput = getByTestId("register-profile-avatar-input") as HTMLInputElement;
-  const usernameInput = getByTestId("register-profile-username-input") as HTMLInputElement;
-  const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement;
-
-  fireEvent.change(avatarInput, {
-    target: {
-      files: [new File([""], "fakefile.png", { type: "image/png" })],
-    },
-  });
-
-  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
-  await waitFor(() => {
-    expect(avatarElement.src).toContain(base64ImageMock)
-  }, { timeout: 300 })
-
-  fireEvent.change(usernameInput, {
-    target: {
-      value: "validUsername",
-    },
-  });
-
-  expect(submitButton).not.toBeDisabled()
-  fireEvent.click(submitButton)
-
-  await waitFor(() => {
-    const storeState = store.getState()
-    expect(storeState.register.step).toEqual("PASSWORD")
-  })
-});
+})
