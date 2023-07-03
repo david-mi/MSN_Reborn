@@ -42,6 +42,12 @@
   min-height: var(--error-min-height)
 }
 
+.form small:last-of-type {
+  margin-top: 5px;
+  margin-bottom: calc(var(--gap) * -1);
+  text-align: center;
+}
+
 .form hr {
   margin-top: auto;
   background-color: var(--separators-clr);
@@ -51,8 +57,9 @@
   margin-inline: calc(var(--padding-inline-form) * -1);
 }
 
-.form > button:last-child {
+.form > button:last-of-type {
   align-self: flex-end;
   margin-block: 10px;
   width: auto;
+  margin-bottom: var(--error-min-height);
 }

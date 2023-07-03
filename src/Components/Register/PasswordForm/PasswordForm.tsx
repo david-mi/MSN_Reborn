@@ -15,7 +15,7 @@ function PasswordForm() {
     formState: { errors }
   } = useForm<PasswordFormFields>()
   const dispatch = useAppDispatch()
-  const { submitStatus } = useAppSelector(state => state.register)
+  const { submitStatus, submitError } = useAppSelector(state => state.register)
 
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors || submitStatus === "PENDING"
@@ -48,6 +48,7 @@ function PasswordForm() {
       />
       <small data-testid="register-password-confirm-error">{errors.passwordConfirm?.message}</small>
       <hr />
+      <small data-testid="register-password-submit-error">{submitError}</small>
       <Button
         title="Suivant"
         theme="monochrome"

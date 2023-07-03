@@ -11,6 +11,7 @@ export interface ProfileState {
   }
   step: RegistrationStep,
   submitStatus: ValidationStatus
+  submitError: null | string
   profile: {
     defaultAvatars: string[]
     getDefaultAvatarsStatus: ValidationStatus

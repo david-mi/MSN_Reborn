@@ -106,7 +106,7 @@ export const registerEmailMiddleware = createAppAsyncThunk(
   })
 
 export const setDefaultAvatars = createAppAsyncThunk(
-  "register/profile/avatars",
+  "register/getDefaultAvatars",
   async (_, { rejectWithValue }) => {
     try {
       const storageService = new StorageService()
@@ -120,7 +120,7 @@ export const setDefaultAvatars = createAppAsyncThunk(
   })
 
 export const createUser = createAppAsyncThunk(
-  "register",
+  "register/createUser",
   async (_, { getState, dispatch }) => {
     const { email, password } = getState().register.user
     await createUserWithEmailAndPassword(firebase.auth, email, password)
@@ -129,7 +129,7 @@ export const createUser = createAppAsyncThunk(
   })
 
 export const updateUserProfile = createAppAsyncThunk(
-  "register",
+  "profile/update",
   async (_, { getState }) => {
     const { avatarSrc, username } = getState().register.user
     const currentUser = firebase.auth.currentUser
@@ -145,12 +145,14 @@ export const updateUserProfile = createAppAsyncThunk(
   })
 
 export const sendVerificationEmail = createAppAsyncThunk(
-  "register/sendConfirmation",
+  "register/sendConfirmationEmail",
   async () => {
     const currentUser = firebase.auth.currentUser
+
     if (!currentUser) {
       throw new Error("You must be authenticated")
     }
+
     return sendEmailVerification(currentUser)
   })
 
