@@ -12,7 +12,11 @@ function Avatar({ size, className, src }: Props) {
 
   return (
     <div className={classNames}>
-      <img src={src || avatarPlaceholder} alt="Avatar de l'utilisateur" />
+      <img
+        src={src || avatarPlaceholder}
+        data-testid="avatar-img"
+        alt="Avatar de l'utilisateur"
+      />
     </div>
   )
 }

@@ -3,13 +3,10 @@ import ProfileForm from "./ProfileForm";
 import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
 import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
-import { vi, SpyInstance } from "vitest"
-import * as util from "@/utils/convertFileToBase64"
-
 
 let profileValidation: ProfileValidation;
 let preloadedStateAfterEmailStep: RootState
-let convertFileToBase64Spy: SpyInstance<[file: File], Promise<string>>
+const base64ImageMock = "base64"
 
 beforeEach(() => {
   preloadedStateAfterEmailStep = {
@@ -30,9 +27,6 @@ beforeEach(() => {
     }
   }
   profileValidation = new ProfileValidation();
-  convertFileToBase64Spy = vi
-    .spyOn(util, "convertFileToBase64")
-    .mockResolvedValue("base64str")
 });
 
 it("should display the correct error for an invalid avatar", async () => {
@@ -44,9 +38,10 @@ it("should display the correct error for an invalid avatar", async () => {
     },
   });
 
+  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
   expectNeverOccurs(() => {
-    expect(util.convertFileToBase64).toBeCalled()
-  })
+    expect(avatarElement.src).toContain(base64ImageMock)
+  }, { timeout: 300 })
 
   const submitButton = getByTestId("register-profile-submit-button") as HTMLButtonElement
   fireEvent.click(submitButton);
@@ -89,9 +84,10 @@ it("should display the correct error for a valid avatar but invalid username", a
     },
   });
 
+  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
   await waitFor(() => {
-    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
-  })
+    expect(avatarElement.src).toContain(base64ImageMock)
+  }, { timeout: 300 })
 
   fireEvent.change(usernameInput, {
     target: {
@@ -120,9 +116,10 @@ it("should display the correct error for a valid username but invalid avatar", a
     },
   });
 
+  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
   expectNeverOccurs(() => {
-    expect(util.convertFileToBase64).toBeCalled()
-  })
+    expect(avatarElement.src).toContain(base64ImageMock)
+  }, { timeout: 300 })
 
   fireEvent.change(usernameInput, {
     target: {
@@ -151,9 +148,10 @@ it("should display the correct error for a valid avatar but invalid username", a
     },
   });
 
+  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
   await waitFor(() => {
-    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
-  })
+    expect(avatarElement.src).toContain(base64ImageMock)
+  }, { timeout: 300 })
 
   fireEvent.change(usernameInput, {
     target: {
@@ -183,11 +181,10 @@ it("should submit the form with valid inputs", async () => {
     },
   });
 
-  /* wait for async function in onChange file event to resolve, otherwise
-  the submit event will be called before and userAvatar will be missing and test will fail */
+  const avatarElement = getByTestId("avatar-img") as HTMLImageElement
   await waitFor(() => {
-    expect(convertFileToBase64Spy).toHaveBeenCalledTimes(1)
-  })
+    expect(avatarElement.src).toContain(base64ImageMock)
+  }, { timeout: 300 })
 
   fireEvent.change(usernameInput, {
     target: {
