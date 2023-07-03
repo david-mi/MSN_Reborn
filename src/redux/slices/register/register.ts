@@ -4,6 +4,8 @@ import { EmailValidation } from "@/utils/Validation"
 import { StorageService } from "@/Services/Storage/Storage";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
+import { firebase } from "@/firebase/config";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth"
 
 const initialProfileState: ProfileState = {
   user: {
@@ -14,6 +16,7 @@ const initialProfileState: ProfileState = {
   },
   step: "EMAIL",
   submitStatus: "IDLE",
+  submitError: null,
   profile: {
     defaultAvatars: [],
     getDefaultAvatarsStatus: "IDLE",
@@ -25,13 +28,13 @@ export const registerSlice = createSlice({
   name: "register",
   initialState: initialProfileState,
   reducers: {
-    setavatarSrc(state, { payload }: PayloadAction<string>) {
-      state.user.avatarSrc = payload
-    },
     completeProfileStep(state, { payload }: PayloadAction<ProfileFormFields>) {
       state.user.avatarSrc = payload.avatarSrc
       state.user.username = payload.username
       state.step = "PASSWORD"
+    },
+    setPassword(state, { payload }: PayloadAction<string>) {
+      state.user.password = payload
     }
   },
   extraReducers: (builder) => {
@@ -58,6 +61,29 @@ export const registerSlice = createSlice({
     builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
+    })
+    builder.addCase(sendVerificationEmail.pending, (state) => {
+      state.submitStatus = "PENDING"
+      state.submitError = null
+    })
+    builder.addCase(sendVerificationEmail.rejected, (state, { error }) => {
+      state.submitStatus = "REJECTED"
+      state.submitError = error.message || "L'envoi du mail de confirmation à échoué"
+    })
+    builder.addCase(sendVerificationEmail.fulfilled, (state) => {
+      state.submitStatus = "IDLE"
+    })
+    builder.addCase(createUser.pending, (state) => {
+      state.submitStatus = "PENDING"
+      state.submitError = null
+    })
+    builder.addCase(createUser.rejected, (state, { error }) => {
+      state.submitStatus = "REJECTED"
+      state.submitError = error.message || "une erreur est survenue lors de l'inscription"
+    })
+    builder.addCase(createUser.fulfilled, (state) => {
+      state.submitStatus = "IDLE"
+      state.step = "SEND_CONFIRMATION_EMAIL"
     })
   }
 })
@@ -93,5 +119,40 @@ export const setDefaultAvatars = createAppAsyncThunk(
     }
   })
 
-export const { setavatarSrc, completeProfileStep } = registerSlice.actions
+export const createUser = createAppAsyncThunk(
+  "register",
+  async (_, { getState, dispatch }) => {
+    const { email, password } = getState().register.user
+    await createUserWithEmailAndPassword(firebase.auth, email, password)
+    await dispatch(updateUserProfile()).unwrap()
+    await dispatch(sendVerificationEmail()).unwrap()
+  })
+
+export const updateUserProfile = createAppAsyncThunk(
+  "register",
+  async (_, { getState }) => {
+    const { avatarSrc, username } = getState().register.user
+    const currentUser = firebase.auth.currentUser
+
+    if (!currentUser) {
+      throw new Error("You must be authenticated")
+    }
+
+    return updateProfile(currentUser, {
+      photoURL: avatarSrc,
+      displayName: username
+    })
+  })
+
+export const sendVerificationEmail = createAppAsyncThunk(
+  "register/sendConfirmation",
+  async () => {
+    const currentUser = firebase.auth.currentUser
+    if (!currentUser) {
+      throw new Error("You must be authenticated")
+    }
+    return sendEmailVerification(currentUser)
+  })
+
+export const { completeProfileStep, setPassword } = registerSlice.actions
 export const registerReducer = registerSlice.reducer

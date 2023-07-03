@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import type { PasswordFormFields } from "./types"
 import { PasswordValidation } from "@/utils/Validation/PasswordValidation/PasswordValidation"
+import { createUser, setPassword, } from "@/redux/slices/register/register"
 
 const passwordValidation = new PasswordValidation()
 
@@ -19,8 +20,9 @@ function PasswordForm() {
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors || submitStatus === "PENDING"
 
-  async function onSubmit({ password, passwordConfirm }: PasswordFormFields) {
-    console.log(password, passwordConfirm)
+  async function onSubmit({ password }: PasswordFormFields) {
+    dispatch(setPassword(password))
+    dispatch(createUser())
   }
 
   return (
