@@ -2,8 +2,7 @@ import styles from "./formLayout.module.css"
 
 export type Props = React.ComponentProps<"form">
 
-function FormLayout(props: Props) {
-  const { className, children } = props
+function FormLayout({ className, children, ...props }: Props) {
   const classNames = `${styles.form} ${className ? className : ""}`
 
   return (
