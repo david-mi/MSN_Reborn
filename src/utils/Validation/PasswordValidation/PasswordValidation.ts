@@ -2,7 +2,7 @@ import type { PasswordFormFields } from "@/Components/Register/PasswordForm/type
 
 const errorsMessages = {
   REQUIRED: "Champ requis",
-  INVALID: "Le mot de passe doit contenir au moins 8 caractères dont au minimum une minuscule, une majuscule, un chiffre et un caractère spécial",
+  INVALID: "Minimum 8 caractères dont au moins une minuscule, une majuscule, un chiffre et un caractère spécial",
   DIFFERENT: "Les mots de passes doivent être identiques"
 } as const
 
