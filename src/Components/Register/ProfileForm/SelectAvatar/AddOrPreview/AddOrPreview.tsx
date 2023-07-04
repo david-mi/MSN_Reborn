@@ -3,7 +3,7 @@ import Avatar from "@/Components/Shared/Avatar/Avatar";
 import styles from "./addOrPreview.module.css";
 import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon";
 import { useFormContext } from "react-hook-form";
-import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
+import { ProfileValidation } from "@/utils/Validation/";
 import type { ProfileFormFields } from "../../types";
 import { convertFileToBase64 } from "@/utils/convertFileToBase64";
 

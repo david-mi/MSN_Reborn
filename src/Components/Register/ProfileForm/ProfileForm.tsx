@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from "react-hook-form"
-import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation"
+import { ProfileValidation } from "@/utils/Validation/"
 import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
 import Button from "@/Components/Shared/Button/Button"

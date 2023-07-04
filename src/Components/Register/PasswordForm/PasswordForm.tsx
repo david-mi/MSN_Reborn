@@ -3,7 +3,7 @@ import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import type { PasswordFormFields } from "./types"
-import { PasswordValidation } from "@/utils/Validation/PasswordValidation/PasswordValidation"
+import { PasswordValidation } from "@/utils/Validation"
 import { createUser, setPassword, } from "@/redux/slices/register/register"
 
 const passwordValidation = new PasswordValidation()

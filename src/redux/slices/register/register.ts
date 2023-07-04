@@ -1,12 +1,11 @@
 import type { ProfileState } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EmailValidation } from "@/utils/Validation"
-import { StorageService } from "@/Services/Storage/Storage";
+import { StorageService } from "@/Services";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { firebase } from "@/firebase/config";
-import { AuthService } from "@/Services/Auth/Auth";
-import { UserService } from "@/Services/User/User";
+import { AuthService, UserService } from "@/Services";
 
 const initialProfileState: ProfileState = {
   user: {

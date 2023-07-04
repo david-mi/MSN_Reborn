@@ -1,6 +1,6 @@
 import { fireEvent, waitFor, getByTestId, getByText } from "@testing-library/react";
 import ProfileForm from "./ProfileForm";
-import { ProfileValidation } from "@/utils/Validation/ProfileValidation/ProfileValidation";
+import { ProfileValidation } from "@/utils/Validation";
 import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
 import type { Store } from "@/redux/types";
@@ -28,6 +28,7 @@ describe("ProfileForm", () => {
         },
         step: "PROFILE",
         submitStatus: "IDLE",
+        submitError: null,
         profile: {
           defaultAvatars: [],
           getDefaultAvatarsStatus: "PENDING",
