@@ -24,7 +24,7 @@ const initialProfileState: ProfileState = {
   }
 }
 
-export const registerSlice = createSlice({
+const registerSlice = createSlice({
   name: "register",
   initialState: initialProfileState,
   reducers: {

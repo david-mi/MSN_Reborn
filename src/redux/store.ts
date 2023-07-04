@@ -1,9 +1,9 @@
 import { configureStore, PreloadedState, combineReducers } from "@reduxjs/toolkit";
-import { registerSlice } from "./slices/register/register";
+import { registerReducer } from "./slices/register/register";
 import { userReducer } from "./slices/user/user";
 
 const rootReducer = combineReducers({
-  register: registerSlice.reducer,
+  register: registerReducer,
   user: userReducer
 })
 
