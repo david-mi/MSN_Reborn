@@ -1,13 +1,24 @@
+
 import styles from "./loader.module.css";
 interface Props {
   className?: string
+  size?: string
 }
 
-function Loader({ className }: Props) {
+function Loader({ className, size }: Props) {
   const classNames = `${styles.loader} ${className ? className : ""}`
 
+  let style: React.HTMLAttributes<HTMLSpanElement>["style"]
+
+  if (size) {
+    style = {
+      width: size ?? "80%",
+      height: size ?? "80%"
+    }
+  }
+
   return (
-    <span className={classNames}></span>
+    <span className={classNames} style={style}></span>
   );
 }
 

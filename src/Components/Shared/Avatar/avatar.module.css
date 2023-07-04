@@ -1,3 +1,10 @@
+.wrapper {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+}
+
 .avatar {
   border: solid 1px #D8D9D9;
   padding: 2px;

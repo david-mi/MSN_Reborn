@@ -37,13 +37,15 @@ function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
         return (
           <ImageLoadWrapper
             key={index}
-            src={picture}
-            onLoad={loadNextPicture}
             wrapperTagName="button"
             wrapperProps={{
               type: "button",
               onClick: handleClick(picture),
               className: styles.defaultPictureButton
+            }}
+            imageProps={{
+              src: picture,
+              onLoad: loadNextPicture
             }}
           />
         )

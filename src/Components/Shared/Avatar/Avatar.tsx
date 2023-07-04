@@ -1,5 +1,7 @@
 import styles from "./avatar.module.css"
 import avatarPlaceholder from "./avatar-placeholder.jpg"
+import ImageLoadWrapper from "../ImageLoadWrapper/ImageLoadWrapper"
+import type { ComponentProps } from "react"
 
 interface Props {
   size: "medium" | "small"
@@ -12,10 +14,14 @@ function Avatar({ size, className, src }: Props) {
 
   return (
     <div className={classNames}>
-      <img
-        src={src || avatarPlaceholder}
-        data-testid="avatar-img"
-        alt="Avatar de l'utilisateur"
+      <ImageLoadWrapper
+        loaderOptions={{ size: "50%" }}
+        wrapperProps={{ className: styles.wrapper }}
+        imageProps={{
+          src: src || avatarPlaceholder,
+          ["data-testid" as keyof ComponentProps<"img">]: "avatar-img",
+          alt: "Avatar de l'utilisateur"
+        }}
       />
     </div>
   )
