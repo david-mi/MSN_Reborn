@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/redux/hooks"
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout"
-import { EmailForm, ProfileForm, PasswordForm } from "@/Components/Register"
+import { EmailForm, ProfileForm, PasswordForm, EmailVerification } from "@/Components/Register"
 import styles from "./register.module.css"
 
 function Register() {
@@ -20,8 +20,8 @@ function Register() {
       title: "Inscription - Mot de passe"
     },
     SEND_CONFIRMATION_EMAIL: {
-      component: <p>SEND_CONFIRMATION_EMAIL</p>,
-      title: "Envoi de l'email de confirmation"
+      component: <EmailVerification />,
+      title: "Inscription - Vérification de l'email"
     },
     VERIFIED: {
       component: <p>VERIFIED</p>,
