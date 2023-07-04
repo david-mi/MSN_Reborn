@@ -5,7 +5,8 @@ import { StorageService } from "@/Services/Storage/Storage";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { firebase } from "@/firebase/config";
-import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth"
+import { AuthService } from "@/Services/Auth/Auth";
+import { UserService } from "@/Services/User/User";
 
 const initialProfileState: ProfileState = {
   user: {
@@ -121,40 +122,18 @@ export const setDefaultAvatars = createAppAsyncThunk(
 
 export const createUser = createAppAsyncThunk(
   "register/createUser",
-  async (_, { getState, dispatch }) => {
-    const { email, password } = getState().register.user
-    await createUserWithEmailAndPassword(firebase.auth, email, password)
-    await dispatch(updateUserProfile()).unwrap()
-    await dispatch(sendVerificationEmail()).unwrap()
-  })
-
-export const updateUserProfile = createAppAsyncThunk(
-  "profile/update",
   async (_, { getState }) => {
-    const { avatarSrc, username } = getState().register.user
-    const currentUser = firebase.auth.currentUser
+    const { email, password, avatarSrc, username } = getState().register.user
 
-    if (!currentUser) {
-      throw new Error("You must be authenticated")
-    }
-
-    return updateProfile(currentUser, {
-      photoURL: avatarSrc,
-      displayName: username
-    })
+    await AuthService.createUser(email, password)
+    await UserService.updateProfile(firebase.auth.currentUser!, avatarSrc, username)
+    await AuthService.sendVerificationEmail(firebase.auth.currentUser!)
   })
 
 export const sendVerificationEmail = createAppAsyncThunk(
   "register/sendConfirmationEmail",
-  async () => {
-    const currentUser = firebase.auth.currentUser
-
-    if (!currentUser) {
-      throw new Error("You must be authenticated")
-    }
-
-    return sendEmailVerification(currentUser)
-  })
+  () => AuthService.sendVerificationEmail(firebase.auth.currentUser!)
+)
 
 export const { completeProfileStep, setPassword } = registerSlice.actions
 export const registerReducer = registerSlice.reducer
