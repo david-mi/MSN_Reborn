@@ -1,0 +1,22 @@
+.infos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.infos div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 110px;
+}
+
+.infos h2 {
+  font-size: clamp(0.7rem, 0.9rem - 0.1vw, 0.8rem);
+}
+
+.infos p {
+  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 1rem);
+}

@@ -2,6 +2,9 @@ import styles from "./emailVerification.module.css";
 import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
+import { useEffect } from "react";
+import Loader from "@/Components/Shared/Loader/Loader";
+import Infos from "./Infos/Infos";
 
 function EmailVerification() {
   const dispatch = useAppDispatch()
@@ -11,17 +14,16 @@ function EmailVerification() {
     dispatch(sendVerificationEmail())
   }
 
+  useEffect(() => {
+    dispatch(sendVerificationEmail())
+  }, [])
+
   return (
     <div className={styles.emailVerification}>
-      <div>
-        <h2>Un email de vérification vous a été envoyé</h2>
-        <small>pensez à vérifier vos spams</small>
-      </div>
-      <hr />
-      <div>
-        <h2>Email non reçu ?</h2>
-        <p>Cliquez sur le bouton ci-dessous pour le renvoyer</p>
-      </div>
+      {submitStatus === "PENDING"
+        ? <Loader className={styles.loader} />
+        : <Infos />
+      }
       <hr />
       <small data-testid="register-verification-submit-error">{submitError}</small>
       <Button
