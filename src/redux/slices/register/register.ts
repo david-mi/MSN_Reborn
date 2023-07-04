@@ -121,12 +121,17 @@ export const setDefaultAvatars = createAppAsyncThunk(
 
 export const createUser = createAppAsyncThunk(
   "register/createUser",
-  async (_, { getState }) => {
+  async (_, { getState, rejectWithValue }) => {
     const { email, password, avatarSrc, username } = getState().register.user
 
-    await AuthService.createUser(email, password)
-    await UserService.updateProfile(firebase.auth.currentUser!, avatarSrc, username)
-    await AuthService.sendVerificationEmail(firebase.auth.currentUser!)
+    const { user: createdUser } = await AuthService.createUser(email, password)
+
+    try {
+      UserService.updateProfile(createdUser, avatarSrc, username)
+    } catch (err) {
+      await UserService.deleteAccount(createdUser)
+      return rejectWithValue("Echec de la création du compte")
+    }
   })
 
 export const sendVerificationEmail = createAppAsyncThunk(

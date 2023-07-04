@@ -7,4 +7,8 @@ export class UserService {
       displayName: username ?? user.displayName
     })
   }
+
+  static deleteAccount(user: User) {
+    return user.delete()
+  }
 }
