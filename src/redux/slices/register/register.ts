@@ -1,11 +1,11 @@
 import type { ProfileState } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EmailValidation } from "@/utils/Validation"
-import { StorageService } from "@/Services";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { firebase } from "@/firebase/config";
-import { AuthService, UserService } from "@/Services";
+import { AuthService, UserService, StorageService } from "@/Services";
+import { FirebaseError } from "firebase/app";
 
 const initialProfileState: ProfileState = {
   user: {
@@ -77,9 +77,9 @@ const registerSlice = createSlice({
       state.submitStatus = "PENDING"
       state.submitError = null
     })
-    builder.addCase(createUser.rejected, (state, { error }) => {
+    builder.addCase(createUser.rejected, (state, { payload }) => {
       state.submitStatus = "REJECTED"
-      state.submitError = error.message || "une erreur est survenue lors de l'inscription"
+      state.submitError = payload || "Une erreur est survenue"
     })
     builder.addCase(createUser.fulfilled, (state) => {
       state.submitStatus = "IDLE"
@@ -122,15 +122,14 @@ export const setDefaultAvatars = createAppAsyncThunk(
 export const createUser = createAppAsyncThunk(
   "register/createUser",
   async (_, { getState, rejectWithValue }) => {
-    const { email, password, avatarSrc, username } = getState().register.user
-
+    const { email, password, ...profileData } = getState().register.user
     const { user: createdUser } = await AuthService.createUser(email, password)
 
     try {
-      UserService.updateProfile(createdUser, avatarSrc, username)
-    } catch (err) {
+      await UserService.setProfile(createdUser, profileData)
+    } catch (error) {
       await UserService.deleteAccount(createdUser)
-      return rejectWithValue("Echec de la création du compte")
+      return rejectWithValue((error as FirebaseError).message)
     }
   })
 

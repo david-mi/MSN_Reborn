@@ -19,6 +19,9 @@ describe("ProfileForm", () => {
 
   beforeEach(() => {
     preloadedStateAfterEmailStep = {
+      user: {
+        authenticated: "DISCONNECTED"
+      },
       register: {
         user: {
           email: "user-register-mock@gmail.com",

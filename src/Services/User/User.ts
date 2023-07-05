@@ -1,11 +1,17 @@
-import { User, updateProfile } from "firebase/auth";
+import { User } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"
+import { firebase } from "@/firebase/config";
+
+interface UserProfile {
+  avatarSrc: string
+  username: string
+}
 
 export class UserService {
-  static updateProfile(user: User, avatarSrc?: string, username?: string) {
-    return updateProfile(user, {
-      photoURL: avatarSrc ?? user.photoURL,
-      displayName: username ?? user.displayName
-    })
+  static setProfile(user: User, profileData: UserProfile) {
+    const profilesRef = doc(firebase.firestore, "users", user.uid)
+
+    return setDoc(profilesRef, profileData)
   }
 
   static deleteAccount(user: User) {
