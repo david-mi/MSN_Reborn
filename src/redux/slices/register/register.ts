@@ -75,7 +75,7 @@ const registerSlice = createSlice({
     })
     builder.addCase(createUser.fulfilled, (state) => {
       state.submitStatus = "IDLE"
-      state.step = "SEND_CONFIRMATION_EMAIL"
+      state.step = "SEND_VERIFICATION_EMAIL"
     })
     builder.addCase(sendVerificationEmail.pending, (state) => {
       state.submitStatus = "PENDING"

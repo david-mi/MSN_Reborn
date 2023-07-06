@@ -1,6 +1,6 @@
 
 
-export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD" | "SEND_CONFIRMATION_EMAIL" | "VERIFIED"
+export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD" | "SEND_VERIFICATION_EMAIL"
 export type ValidationStatus = "IDLE" | "PENDING" | "REJECTED"
 export interface ProfileState {
   user: {

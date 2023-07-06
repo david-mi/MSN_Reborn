@@ -3,6 +3,7 @@ import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "./Instructions/Instructions";
 import { UserService } from "@/Services";
@@ -12,6 +13,7 @@ function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
   const verifyTimeout = useRef<NodeJS.Timer>()
+  const navigate = useNavigate()
 
   function handleClick() {
     dispatch(sendVerificationEmail())
@@ -23,7 +25,7 @@ function SendEmailVerification() {
       const isUserVerified = UserService.checkIfVerified()
 
       if (isUserVerified) {
-        dispatch(setStep("VERIFIED"))
+        navigate("/")
       } else {
         handleSendVerificationEmail()
       }
