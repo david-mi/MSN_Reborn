@@ -1,5 +1,5 @@
 import { firebase } from "@/firebase/config";
-import { sendEmailVerification, User, createUserWithEmailAndPassword } from "firebase/auth";
+import { sendEmailVerification, User, createUserWithEmailAndPassword, applyActionCode, reload } from "firebase/auth";
 
 export class AuthService {
   public static createUser(email: string, password: string) {
@@ -7,8 +7,20 @@ export class AuthService {
   }
 
   public static async sendVerificationEmail(user: User) {
-    await sendEmailVerification(user)
+    const currentUser = firebase.auth.currentUser!
 
-    return "Verification email has been sent"
+    if (currentUser.emailVerified === true) {
+      throw new Error("Ce compte est déjà vérifié")
+    }
+
+    return sendEmailVerification(user)
+  }
+
+  public static async verifyEmail(oobCode: string | null) {
+    if (oobCode === null) {
+      throw new Error("oobCode is missing")
+    }
+
+    return applyActionCode(firebase.auth, oobCode)
   }
 }
