@@ -1,19 +1,22 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Register from "@/Pages/Register/Register";
 import App from "@/App";
-import EmailVerify from "@/Pages/AccountVerify/AccountVerify";
+import { Register, AccountVerify, Home } from "@/Pages"
 
 const browserRouter = createBrowserRouter([
   {
     element: <App />,
     children: [
       {
+        path: "/",
+        element: <Home />
+      },
+      {
         path: "/register",
         element: <Register />,
       },
       {
         path: "/verify-account",
-        element: <EmailVerify />,
+        element: <AccountVerify />,
       },
       {
         path: "*",
