@@ -1,0 +1,24 @@
+.accountVerified {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: clamp(0.8rem, 1.1rem - 0.1vw, 1.1rem);
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.accountVerified a,
+.timer {
+  font-weight: bold;
+}
+
+.redirect {
+  text-align: center;
+  font-size: clamp(0.9rem, 1rem - 0.2vw, 0.9rem);
+}
