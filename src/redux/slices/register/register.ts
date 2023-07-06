@@ -1,4 +1,4 @@
-import type { ProfileState } from "./types";
+import type { ProfileState, RegistrationStep } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EmailValidation } from "@/utils/Validation"
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
@@ -35,6 +35,9 @@ const registerSlice = createSlice({
     },
     setPassword(state, { payload }: PayloadAction<string>) {
       state.user.password = payload
+    },
+    setStep(state, { payload }: PayloadAction<RegistrationStep>) {
+      state.step = payload
     }
   },
   extraReducers: (builder) => {
@@ -62,17 +65,6 @@ const registerSlice = createSlice({
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
     })
-    builder.addCase(sendVerificationEmail.pending, (state) => {
-      state.submitStatus = "PENDING"
-      state.submitError = null
-    })
-    builder.addCase(sendVerificationEmail.rejected, (state, { error }) => {
-      state.submitStatus = "REJECTED"
-      state.submitError = error.message || "L'envoi du mail de confirmation à échoué"
-    })
-    builder.addCase(sendVerificationEmail.fulfilled, (state) => {
-      state.submitStatus = "IDLE"
-    })
     builder.addCase(createUser.pending, (state) => {
       state.submitStatus = "PENDING"
       state.submitError = null
@@ -84,6 +76,17 @@ const registerSlice = createSlice({
     builder.addCase(createUser.fulfilled, (state) => {
       state.submitStatus = "IDLE"
       state.step = "SEND_CONFIRMATION_EMAIL"
+    })
+    builder.addCase(sendVerificationEmail.pending, (state) => {
+      state.submitStatus = "PENDING"
+      state.submitError = null
+    })
+    builder.addCase(sendVerificationEmail.rejected, (state, { error }) => {
+      state.submitStatus = "REJECTED"
+      state.submitError = error.message || "L'envoi du mail de confirmation à échoué"
+    })
+    builder.addCase(sendVerificationEmail.fulfilled, (state) => {
+      state.submitStatus = "IDLE"
     })
   }
 })
@@ -138,5 +141,7 @@ export const sendVerificationEmail = createAppAsyncThunk(
   () => AuthService.sendVerificationEmail(firebase.auth.currentUser!)
 )
 
-export const { completeProfileStep, setPassword } = registerSlice.actions
+
+
+export const { completeProfileStep, setPassword, setStep } = registerSlice.actions
 export const registerReducer = registerSlice.reducer
