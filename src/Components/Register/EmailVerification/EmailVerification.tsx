@@ -20,7 +20,7 @@ function EmailVerification() {
   async function handleSendVerificationEmail() {
     verifyTimeout.current = setTimeout(async () => {
       clearTimeout(verifyTimeout.current)
-      const isUserVerified = await UserService.checkIfVerified()
+      const isUserVerified = UserService.checkIfVerified()
 
       if (isUserVerified) {
         dispatch(setStep("VERIFIED"))
@@ -31,12 +31,8 @@ function EmailVerification() {
   }
 
   useEffect(() => {
-    (async function () {
-      await dispatch(sendVerificationEmail())
-      handleSendVerificationEmail()
-    })()
-
-    handleSendVerificationEmail()
+    dispatch(sendVerificationEmail())
+      .then(handleSendVerificationEmail)
   }, [])
 
   return (
