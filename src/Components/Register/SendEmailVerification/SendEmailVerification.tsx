@@ -1,14 +1,14 @@
-import styles from "./emailVerification.module.css";
+import styles from "./sendEmailVerification.module.css";
 import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
 import { useEffect, useRef } from "react";
 import Loader from "@/Components/Shared/Loader/Loader";
-import Infos from "./Infos/Infos";
+import Instructions from "./Instructions/Instructions";
 import { UserService } from "@/Services";
 import { setStep } from "@/redux/slices/register/register";
 
-function EmailVerification() {
+function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
   const verifyTimeout = useRef<NodeJS.Timer>()
@@ -36,10 +36,10 @@ function EmailVerification() {
   }, [])
 
   return (
-    <div className={styles.emailVerification}>
+    <div className={styles.sendEmailVerification}>
       {submitStatus === "PENDING"
         ? <Loader className={styles.loader} />
-        : <Infos />
+        : <Instructions />
       }
       <hr />
       <small data-testid="register-verification-submit-error">{submitError}</small>
@@ -55,4 +55,4 @@ function EmailVerification() {
   );
 }
 
-export default EmailVerification;
+export default SendEmailVerification;

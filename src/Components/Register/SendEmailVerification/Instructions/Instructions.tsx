@@ -1,8 +1,8 @@
-import styles from "./infos.module.css";
+import styles from "./instructions.module.css";
 
-function Infos() {
+function Instructions() {
   return (
-    <div className={styles.infos}>
+    <div className={styles.instructions}>
       <div>
         <h2>Un email de vérification vous a été envoyé</h2>
         <small>pensez à vérifier vos spams</small>
@@ -16,4 +16,4 @@ function Infos() {
   );
 }
 
-export default Infos;
+export default Instructions;

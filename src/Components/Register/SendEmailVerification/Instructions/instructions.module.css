@@ -1,10 +1,10 @@
-.infos {
+.instructions {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.infos div {
+.instructions div {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -13,10 +13,10 @@
   min-height: 110px;
 }
 
-.infos h2 {
+.instructions h2 {
   font-size: clamp(0.7rem, 0.9rem - 0.1vw, 0.8rem);
 }
 
-.infos p {
+.instructions p {
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 1rem);
 }

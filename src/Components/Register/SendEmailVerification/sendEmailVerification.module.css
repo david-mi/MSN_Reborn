@@ -4,19 +4,19 @@
   margin: auto;
 }
 
-.emailVerification {
+.sendEmailVerification {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 300px;
 }
 
-.emailVerification small {
+.sendEmailVerification small {
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
   font-style: italic;
 }
 
-.emailVerification > small:last-of-type {
+.sendEmailVerification > small:last-of-type {
   color: red;
   margin-top: calc(var(--gap) * -1);
   font-style: italic;
@@ -24,13 +24,13 @@
   min-height: 15px;
 }
 
-.emailVerification button {
+.sendEmailVerification button {
   align-self: center;
   margin-block: 10px;
   width: auto;
 }
 
-.emailVerification hr {
+.sendEmailVerification hr {
   margin-top: auto;
   background-color: var(--separators-clr);
   height: 1px;
