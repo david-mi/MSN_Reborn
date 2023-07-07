@@ -7,34 +7,31 @@ import { useNavigate } from "react-router-dom";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "./Instructions/Instructions";
 import { UserService } from "@/Services";
-import { setStep } from "@/redux/slices/register/register";
 
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
-  const verifyTimeout = useRef<NodeJS.Timer>()
+  const verifyInterval = useRef<NodeJS.Timer>()
   const navigate = useNavigate()
 
   function handleClick() {
     dispatch(sendVerificationEmail())
   }
 
-  async function handleSendVerificationEmail() {
-    verifyTimeout.current = setTimeout(async () => {
-      clearTimeout(verifyTimeout.current)
+  function handleVerificationCheck() {
+    verifyInterval.current = setInterval(() => {
       const isUserVerified = UserService.checkIfVerified()
 
       if (isUserVerified) {
+        clearInterval(verifyInterval.current)
         navigate("/")
-      } else {
-        handleSendVerificationEmail()
       }
     }, 2000)
   }
 
   useEffect(() => {
     dispatch(sendVerificationEmail())
-      .then(handleSendVerificationEmail)
+      .then(handleVerificationCheck)
   }, [])
 
   return (
