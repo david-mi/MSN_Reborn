@@ -4,6 +4,8 @@ import { setupStore, AppStore, RootState } from "@/redux/store"
 import type { PreloadedState } from '@reduxjs/toolkit'
 import { RenderOptions, render } from '@testing-library/react'
 import { waitFor, waitForOptions } from "@testing-library/react";
+import { firebase } from "@/firebase/config"
+import { createUserWithEmailAndPassword } from "firebase/auth"
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>
@@ -51,4 +53,17 @@ export async function expectNeverOccurs(callback: () => void, options?: waitForO
   await expect(
     waitFor(callback, options)
   ).rejects.toThrow();
+}
+
+export async function deleteAllUsersFromEmulator() {
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
+  const fetchUrl = `http://127.0.0.1:9099/emulator/v1/projects/${projectId}/accounts`
+
+  await fetch(fetchUrl, { method: "DELETE" })
+}
+
+export async function createUserOnEmulator(email: string) {
+  const password = "myP@ssworD!"
+
+  await createUserWithEmailAndPassword(firebase.auth, email, password)
 }
