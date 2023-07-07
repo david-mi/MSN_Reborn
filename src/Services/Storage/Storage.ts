@@ -1,14 +1,10 @@
 import { firebase } from "@/firebase/config";
-import { ref, listAll, getDownloadURL, StorageReference, uploadBytes } from "firebase/storage"
+import { ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage"
 
 export class StorageService {
   public FOLDERS_PATHS = {
     AVATARS: "/images/avatars/",
     DEFAULT_AVATARS: "/images/avatars/default"
-  }
-
-  public async getFileUrl(fileRef: StorageReference) {
-    return await getDownloadURL(fileRef)
   }
 
   public async getFilesUrl(folderPath: string) {
@@ -20,10 +16,12 @@ export class StorageService {
   }
 
   public async uploadFile(file: File, folderPath: string, userId: string) {
-    const imageRef = ref(firebase.storage, `${folderPath}/${userId}${file.name}`)
+    const fileUrl = `${folderPath}/${userId}/${crypto.randomUUID()}-${file.name}`
+
+    const imageRef = ref(firebase.storage, fileUrl)
     const { ref: uploadedFileRef } = await uploadBytes(imageRef, file)
 
-    return await this.getFileUrl(uploadedFileRef)
+    return await getDownloadURL(uploadedFileRef)
   }
 }
 

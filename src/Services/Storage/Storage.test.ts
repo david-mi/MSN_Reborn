@@ -40,4 +40,23 @@ describe("StorageService", () => {
       });
     })
   })
+
+  describe("uploadFile", () => {
+    afterAll(async () => {
+      const storageFakeFilesFolderRef = ref(firebase.storage, "testing")
+      const fakeFilesFromStorage = await listAll(storageFakeFilesFolderRef)
+      for (const item of fakeFilesFromStorage.items) {
+        await deleteObject(item)
+      }
+    })
+
+    it("should upload file to firebase storage and return url", async () => {
+      const fakeFileToUpload = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f])
+      const fakeUserId = "2432DDDSF"
+
+      await expect(storageService.uploadFile(fakeFileToUpload as any, "testing", fakeUserId))
+        .resolves
+        .toContain(fakeUserId)
+    })
+  })
 })
