@@ -1,14 +1,20 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "@/App";
 import { Register, AccountVerify, Home } from "@/Pages"
+import Private from "./Private";
 
 const browserRouter = createBrowserRouter([
   {
     element: <App />,
     children: [
       {
-        path: "/",
-        element: <Home />
+        element: <Private />,
+        children: [
+          {
+            path: "/",
+            element: <Home />
+          },
+        ]
       },
       {
         path: "/register",
@@ -20,7 +26,7 @@ const browserRouter = createBrowserRouter([
       },
       {
         path: "*",
-        element: <Navigate to="/register" />
+        element: <Navigate to="/" />
       }
     ]
   }
