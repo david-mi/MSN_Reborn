@@ -1,5 +1,5 @@
 import { firebase } from "@/firebase/config";
-import { sendEmailVerification, User, createUserWithEmailAndPassword, applyActionCode, reload } from "firebase/auth";
+import { sendEmailVerification, User, createUserWithEmailAndPassword, applyActionCode } from "firebase/auth";
 
 export class AuthService {
   public static createUser(email: string, password: string) {

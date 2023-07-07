@@ -20,7 +20,7 @@ describe("ProfileForm", () => {
   beforeEach(() => {
     preloadedStateAfterEmailStep = {
       user: {
-        authenticated: "DISCONNECTED"
+        authState: "DISCONNECTED"
       },
       register: {
         user: {

@@ -2,7 +2,7 @@ export type AuthenticationState = "PENDING" | "AUTHENTICATED" | "DISCONNECTED"
 export type ValidationStatus = "IDLE" | "PENDING" | "REJECTED"
 
 export interface UserState {
-  authenticated: AuthenticationState
+  authState: AuthenticationState
   verified: boolean
   accountVerification: {
     status: ValidationStatus,

@@ -4,7 +4,7 @@ import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService } from "@/Services";
 
 const initialUserState: UserState = {
-  authenticated: "DISCONNECTED",
+  authState: "PENDING",
   verified: false,
   accountVerification: {
     status: "PENDING",
@@ -17,7 +17,7 @@ const userSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
-      state.authenticated = payload
+      state.authState = payload
     },
     setVerified(state, { payload }: PayloadAction<boolean>) {
       state.verified = payload

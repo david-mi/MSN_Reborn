@@ -13,7 +13,7 @@ function App() {
     onAuthStateChanged(firebase.auth, (currentUser) => {
       let userAuthenticationState: AuthenticationState
 
-      if (currentUser !== null) {
+      if (currentUser) {
         userAuthenticationState = "AUTHENTICATED"
       } else {
         userAuthenticationState = "DISCONNECTED"
