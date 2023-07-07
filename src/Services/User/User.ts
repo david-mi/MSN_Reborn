@@ -1,8 +1,8 @@
 import { User } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 
-interface UserProfile {
+export interface UserProfile {
   avatarSrc: string
   username: string
 }
@@ -12,6 +12,13 @@ export class UserService {
     const profilesRef = doc(firebase.firestore, "users", user.uid)
 
     return setDoc(profilesRef, profileData)
+  }
+
+  static async getProfile(user: User): Promise<UserProfile> {
+    const userProfileRef = doc(firebase.firestore, "users", user.uid)
+
+    const userProfileDoc = await getDoc(userProfileRef)
+    return userProfileDoc.data() as UserProfile
   }
 
   static deleteAccount(user: User) {
