@@ -67,3 +67,18 @@ export async function createUserOnEmulator(email: string) {
 
   await createUserWithEmailAndPassword(firebase.auth, email, password)
 }
+
+export async function getOobCodeForEmail(email: string) {
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
+  const response = await fetch(`http://127.0.0.1:9099/emulator/v1/projects/${projectId}/oobCodes`)
+  const oobCodeDetails = await response.json()
+
+  const foundOobDetails = oobCodeDetails.oobCodes.find((details: any) => {
+    return (
+      details.email === email &&
+      details.requestType === "VERIFY_EMAIL"
+    )
+  })
+
+  return foundOobDetails.oobCode
+}
