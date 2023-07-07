@@ -18,20 +18,30 @@ function SendEmailVerification() {
     dispatch(sendVerificationEmail())
   }
 
-  function handleVerificationCheck() {
+  function handleAccountVerificationCheck() {
+    if (verifyInterval.current) {
+      clearInterval(verifyInterval.current)
+    }
+
     verifyInterval.current = setInterval(() => {
       const isUserVerified = UserService.checkIfVerified()
 
       if (isUserVerified) {
-        clearInterval(verifyInterval.current)
         navigate("/")
       }
+
     }, 2000)
   }
 
   useEffect(() => {
     dispatch(sendVerificationEmail())
-      .then(handleVerificationCheck)
+      .then(() => {
+        handleAccountVerificationCheck()
+      })
+
+    return () => {
+      clearInterval(verifyInterval.current)
+    }
   }, [])
 
   return (
