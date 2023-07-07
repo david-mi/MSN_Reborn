@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService } from "@/Services";
 
-const initialUserState: UserState = {
+export const initialUserState: UserState = {
   authState: "PENDING",
   verified: false,
   accountVerification: {

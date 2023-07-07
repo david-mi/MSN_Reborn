@@ -4,6 +4,7 @@ import { ProfileValidation } from "@/utils/Validation";
 import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
 import type { Store } from "@/redux/types";
+import { initialUserState } from "@/redux/slices/user/user";
 
 const { body } = document
 
@@ -19,8 +20,9 @@ describe("ProfileForm", () => {
 
   beforeEach(() => {
     preloadedStateAfterEmailStep = {
+
       user: {
-        authState: "DISCONNECTED"
+        ...initialUserState
       },
       register: {
         user: {
