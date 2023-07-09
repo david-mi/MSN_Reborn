@@ -11,36 +11,62 @@ import { UserService } from "@/Services";
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
-  const verifyInterval = useRef<NodeJS.Timer>()
+  const verifyTimeout = useRef<NodeJS.Timer>()
+  const verifyTimeoutTimer = 2000
+  const verifyStopTimeout = useRef<NodeJS.Timer>()
+  const verifyStopTimer = 1000 * 60 * 2
   const navigate = useNavigate()
 
   function handleClick() {
     dispatch(sendVerificationEmail())
   }
 
+  /**
+   * Check after a certain time if the user verified his account
+   * 
+   * - If user account is verified, navigate to home page
+   * - if not, calls the function again
+   */
+
   function handleAccountVerificationCheck() {
-    if (verifyInterval.current) {
-      clearInterval(verifyInterval.current)
+    if (verifyTimeout.current) {
+      clearInterval(verifyTimeout.current)
     }
 
-    verifyInterval.current = setInterval(() => {
-      const isUserVerified = UserService.checkIfVerified()
+    verifyTimeout.current = setTimeout(async () => {
+      const isUserVerified = await UserService.checkIfVerified()
 
       if (isUserVerified) {
         navigate("/")
+      } else {
+        handleAccountVerificationCheck()
       }
+    }, verifyTimeoutTimer)
+  }
 
-    }, 2000)
+  /**
+   * Stop checking if user is verified after a certain delay to avoid
+   * potential infinite api calls
+   */
+
+  function handleAccountVerificationCheckStop() {
+    if (verifyStopTimeout.current) {
+      clearInterval(verifyStopTimeout.current)
+    }
+
+    verifyStopTimeout.current = setTimeout(() => {
+      clearTimeout(verifyTimeout.current)
+    }, verifyStopTimer)
   }
 
   useEffect(() => {
     dispatch(sendVerificationEmail())
-      .then(() => {
-        handleAccountVerificationCheck()
-      })
+      .then(handleAccountVerificationCheck)
+      .then(handleAccountVerificationCheckStop)
 
     return () => {
-      clearInterval(verifyInterval.current)
+      clearTimeout(verifyTimeout.current)
+      clearTimeout(verifyStopTimeout.current)
     }
   }, [])
 

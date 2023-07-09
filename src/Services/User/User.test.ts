@@ -3,7 +3,6 @@ import { AuthService, UserService } from ".."
 import { firebase } from "@/firebase/config"
 import { fetchSignInMethodsForEmail, sendEmailVerification } from "firebase/auth"
 import { setDoc, doc } from "firebase/firestore"
-import { reload } from "firebase/auth"
 import type { UserProfile } from "./User"
 
 describe("UserService", () => {
@@ -71,7 +70,9 @@ describe("UserService", () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
       await createUserOnEmulator(fakeEmail)
 
-      expect(UserService.checkIfVerified()).toBe(false)
+      await expect(UserService.checkIfVerified())
+        .resolves
+        .toBe(false)
     })
 
     it("should return true for a verified user", async () => {
@@ -81,10 +82,9 @@ describe("UserService", () => {
       const oobCode = await getOobCodeForEmail(fakeEmail)
       await AuthService.verifyEmail(oobCode)
 
-      const currentUser = firebase.auth.currentUser!
-      await reload(currentUser)
-
-      expect(UserService.checkIfVerified()).toBe(true)
+      await expect(UserService.checkIfVerified())
+        .resolves
+        .toBe(true)
     })
   })
 

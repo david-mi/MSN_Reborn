@@ -1,5 +1,5 @@
 import { firebase } from "@/firebase/config";
-import { sendEmailVerification, User, createUserWithEmailAndPassword, applyActionCode } from "firebase/auth";
+import { sendEmailVerification, User, createUserWithEmailAndPassword, applyActionCode, reload } from "firebase/auth";
 
 export class AuthService {
   public static createUser(email: string, password: string) {
@@ -8,6 +8,7 @@ export class AuthService {
 
   public static async sendVerificationEmail(user: User) {
     const currentUser = firebase.auth.currentUser!
+    await reload(currentUser)
 
     if (currentUser.emailVerified === true) {
       throw new Error("Ce compte est déjà vérifié")

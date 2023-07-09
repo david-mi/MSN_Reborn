@@ -1,4 +1,4 @@
-import { User } from "firebase/auth";
+import { User, reload } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 
@@ -25,8 +25,9 @@ export class UserService {
     return user.delete()
   }
 
-  static checkIfVerified() {
+  static async checkIfVerified() {
     const currentUser = firebase.auth.currentUser!
+    await reload(currentUser)
 
     return currentUser.emailVerified
   }
