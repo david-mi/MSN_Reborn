@@ -126,12 +126,12 @@ export const createUser = createAppAsyncThunk(
   "register/createUser",
   async (_, { getState, rejectWithValue }) => {
     const { email, password, ...profileData } = getState().register.user
-    const { user: createdUser } = await AuthService.createUser(email, password)
+    await AuthService.createUser(email, password)
 
     try {
-      await UserService.setProfile(createdUser, profileData)
+      await UserService.setProfile(profileData)
     } catch (error) {
-      await UserService.deleteAccount(createdUser)
+      await UserService.deleteAccount()
       return rejectWithValue((error as FirebaseError).message)
     }
   })

@@ -24,7 +24,7 @@ describe("UserService", () => {
 
       await setDoc(userProfileRef, profileInfosToSet)
 
-      expect(UserService.getProfile(currentUser))
+      expect(UserService.getProfile())
         .resolves
         .toEqual(profileInfosToSet)
     })
@@ -34,15 +34,14 @@ describe("UserService", () => {
     it("Should update user profile with given arguments", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
       await createUserOnEmulator(fakeEmail)
-      const currentUser = firebase.auth.currentUser!
 
       const profileInfosToUpdate: UserProfile = {
         avatarSrc: "picture",
         username: "jean"
       }
 
-      await UserService.setProfile(currentUser, profileInfosToUpdate)
-      const updatedProfile = await UserService.getProfile(currentUser)
+      await UserService.setProfile(profileInfosToUpdate)
+      const updatedProfile = await UserService.getProfile()
 
       expect(updatedProfile).toEqual(profileInfosToUpdate)
     })
@@ -53,8 +52,7 @@ describe("UserService", () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
       await createUserOnEmulator(fakeEmail)
 
-      const currentUser = firebase.auth.currentUser!
-      await expect(UserService.deleteAccount(currentUser))
+      await expect(UserService.deleteAccount())
         .resolves
         .not
         .toThrow()

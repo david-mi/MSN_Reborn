@@ -1,4 +1,4 @@
-import { User, reload } from "firebase/auth";
+import { reload } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 
@@ -8,24 +8,28 @@ export interface UserProfile {
 }
 
 export class UserService {
-  static setProfile(user: User, profileData: UserProfile) {
-    const profilesRef = doc(firebase.firestore, "users", user.uid)
+  static setProfile(profileData: UserProfile) {
+    const currentUser = firebase.auth.currentUser!
+    const profilesRef = doc(firebase.firestore, "users", currentUser.uid)
 
     return setDoc(profilesRef, profileData)
   }
 
-  static async getProfile(user: User): Promise<UserProfile> {
-    const userProfileRef = doc(firebase.firestore, "users", user.uid)
+  static async getProfile(): Promise<UserProfile> {
+    const currentUser = firebase.auth.currentUser!
+    const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
 
     const userProfileDoc = await getDoc(userProfileRef)
     return userProfileDoc.data() as UserProfile
   }
 
-  static async deleteAccount(user: User) {
-    const userId = user.uid
+  static async deleteAccount() {
+    const currentUser = firebase.auth.currentUser!
+
+    const userId = currentUser.uid
     const userProfileRef = doc(firebase.firestore, `users/${userId}`)
 
-    await user.delete()
+    await currentUser.delete()
     return deleteDoc(userProfileRef)
   }
 
