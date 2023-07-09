@@ -1,8 +1,8 @@
-import { useState, SyntheticEvent, createElement, ComponentProps } from "react";
+import { useState, SyntheticEvent, ComponentProps } from "react";
 import Loader from "../Loader/Loader";
 import styles from "./imageLoadWrapper.module.css";
 
-type Props<T extends keyof JSX.IntrinsicElements> = {
+export type Props<T extends keyof JSX.IntrinsicElements> = {
   wrapperTagName?: T,
   wrapperProps?: ComponentProps<T>
   imageProps: Partial<ComponentProps<"img">> & {
@@ -17,6 +17,7 @@ function ImageLoadWrapper<T extends keyof JSX.IntrinsicElements>(props: Props<T>
   const { imageProps, wrapperTagName = "div", wrapperProps = {}, loaderOptions } = props
   const [loaded, setLoaded] = useState(false)
   const imageClassNames = `${loaded ? "" : styles.hide} ${imageProps.className ? imageProps.className : ""}`
+  const Wrapper = wrapperTagName as keyof JSX.IntrinsicElements
 
   function handleImageLoad(event: SyntheticEvent<HTMLImageElement>) {
     setLoaded(true)
@@ -26,10 +27,8 @@ function ImageLoadWrapper<T extends keyof JSX.IntrinsicElements>(props: Props<T>
     }
   }
 
-  return createElement(
-    wrapperTagName,
-    { ...wrapperProps },
-    <>
+  return (
+    <Wrapper {...wrapperProps}>
       {!loaded && <Loader size={loaderOptions?.size} />}
       <img
         alt="Avatar par défaut à choisir"
@@ -37,7 +36,7 @@ function ImageLoadWrapper<T extends keyof JSX.IntrinsicElements>(props: Props<T>
         onLoad={handleImageLoad}
         className={imageClassNames}
       />
-    </>
+    </Wrapper >
   )
 }
 
