@@ -22,6 +22,7 @@
   font-style: italic;
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
   min-height: 15px;
+  text-align: center;
 }
 
 .sendEmailVerification button {
