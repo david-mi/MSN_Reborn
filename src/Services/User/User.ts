@@ -8,35 +8,40 @@ export interface UserProfile {
 }
 
 export class UserService {
+
+  static get currentUser() {
+    const currentUser = firebase.auth.currentUser
+    if (currentUser === null) {
+      throw "Utilisateur non connecté !"
+    }
+
+    return currentUser
+  }
+
   static setProfile(profileData: UserProfile) {
-    const currentUser = firebase.auth.currentUser!
-    const profilesRef = doc(firebase.firestore, "users", currentUser.uid)
+    const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     return setDoc(profilesRef, profileData)
   }
 
   static async getProfile(): Promise<UserProfile> {
-    const currentUser = firebase.auth.currentUser!
-    const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
+    const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     const userProfileDoc = await getDoc(userProfileRef)
     return userProfileDoc.data() as UserProfile
   }
 
   static async deleteAccount() {
-    const currentUser = firebase.auth.currentUser!
-
-    const userId = currentUser.uid
+    const userId = this.currentUser.uid
     const userProfileRef = doc(firebase.firestore, `users/${userId}`)
 
-    await currentUser.delete()
+    await this.currentUser.delete()
     return deleteDoc(userProfileRef)
   }
 
   static async checkIfVerified() {
-    const currentUser = firebase.auth.currentUser!
-    await reload(currentUser)
+    await reload(this.currentUser)
 
-    return currentUser.emailVerified
+    return this.currentUser.emailVerified
   }
 }
