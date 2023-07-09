@@ -1,5 +1,5 @@
 import { User, reload } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 
 export interface UserProfile {
@@ -21,8 +21,12 @@ export class UserService {
     return userProfileDoc.data() as UserProfile
   }
 
-  static deleteAccount(user: User) {
-    return user.delete()
+  static async deleteAccount(user: User) {
+    const userId = user.uid
+    const userProfileRef = doc(firebase.firestore, `users/${userId}`)
+
+    await user.delete()
+    return deleteDoc(userProfileRef)
   }
 
   static async checkIfVerified() {
