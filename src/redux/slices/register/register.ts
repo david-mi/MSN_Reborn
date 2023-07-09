@@ -3,7 +3,6 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EmailValidation } from "@/utils/Validation"
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
-import { firebase } from "@/firebase/config";
 import { AuthService, UserService, StorageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 
@@ -138,10 +137,8 @@ export const createUser = createAppAsyncThunk(
 
 export const sendVerificationEmail = createAppAsyncThunk(
   "register/sendConfirmationEmail",
-  () => AuthService.sendVerificationEmail(firebase.auth.currentUser!)
+  () => AuthService.sendVerificationEmail()
 )
-
-
 
 export const { completeProfileStep, setPassword, setStep } = registerSlice.actions
 export const registerReducer = registerSlice.reducer
