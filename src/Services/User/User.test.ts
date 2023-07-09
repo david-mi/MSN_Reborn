@@ -1,4 +1,4 @@
-import { createUserOnEmulator, deleteAllUsersFromEmulator, getOobCodeForEmail } from "@/tests/utils"
+import { createUserOnEmulator, deleteCurrentUserFromEmulator, getOobCodeForEmail } from "@/tests/utils"
 import { AuthService, UserService } from ".."
 import { firebase } from "@/firebase/config"
 import { fetchSignInMethodsForEmail, sendEmailVerification } from "firebase/auth"
@@ -7,7 +7,7 @@ import type { UserProfile } from "./User"
 
 describe("UserService", () => {
   afterEach(async () => {
-    await deleteAllUsersFromEmulator()
+    await deleteCurrentUserFromEmulator()
   })
 
   describe("getProfile", () => {

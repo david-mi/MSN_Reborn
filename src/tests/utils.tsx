@@ -6,6 +6,7 @@ import { RenderOptions, render } from '@testing-library/react'
 import { waitFor, waitForOptions } from "@testing-library/react";
 import { firebase } from "@/firebase/config"
 import { createUserWithEmailAndPassword } from "firebase/auth"
+import { doc, deleteDoc } from "firebase/firestore"
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>
@@ -60,6 +61,18 @@ export async function deleteAllUsersFromEmulator() {
   const fetchUrl = `http://127.0.0.1:9099/emulator/v1/projects/${projectId}/accounts`
 
   await fetch(fetchUrl, { method: "DELETE" })
+}
+
+export async function deleteCurrentUserFromEmulator() {
+  const currentUser = firebase.auth.currentUser
+
+  if (currentUser === null) return
+
+  const userId = currentUser?.uid
+  const userProfileRef = doc(firebase.firestore, `users/${userId}`)
+
+  await currentUser.delete()
+  await deleteDoc(userProfileRef)
 }
 
 export async function createUserOnEmulator(email: string) {
