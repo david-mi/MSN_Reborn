@@ -5,7 +5,7 @@ import { verifyEmail } from "@/redux/slices/user/user";
 import styles from "./accountVerify.module.css";
 import Loader from "@/Components/Shared/Loader/Loader";
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
-import AccountVerified from "@/Components/Shared/AccountVerified/AccountVerified";
+import AccountVerified from "@/Components/AccountVerify/AccountVerified/AccountVerified";
 
 function AccountVerify() {
   const { status, error } = useAppSelector(({ user }) => user.accountVerification)
