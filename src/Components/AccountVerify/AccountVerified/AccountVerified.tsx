@@ -5,16 +5,16 @@ import styles from "./accountVerified.module.css";
 
 function AccountVerified() {
   const [redirectTimer, setRedirectTimer] = useState(5)
-  const intervalRef = useRef<NodeJS.Timer>()
+  const intervalRefId = useRef<NodeJS.Timer>()
   const navigate = useNavigate()
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
+    intervalRefId.current = setInterval(() => {
       setRedirectTimer((timer) => timer - 1)
     }, 1000)
 
     return () => {
-      clearInterval(intervalRef.current)
+      clearInterval(intervalRefId.current)
     }
   }, [])
 
