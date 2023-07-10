@@ -1,7 +1,8 @@
 import { fireEvent, waitFor } from "@testing-library/react";
 import PasswordForm from "./PasswordForm";
 import { PasswordValidation } from "@/utils/Validation";
-import { deleteCurrentUserFromEmulator, renderWithProviders } from "@/tests/utils";
+import { renderWithProviders } from "@/tests/utils";
+import { Emulator } from "@/tests/Emulator";
 import { initialUserState } from "@/redux/slices/user/user";
 import { RootState } from "@/redux/store";
 
@@ -36,7 +37,7 @@ describe("PasswordForm", () => {
   });
 
   afterAll(async () => {
-    await deleteCurrentUserFromEmulator()
+    await Emulator.deleteCurrentUser()
   })
 
   it("should display the correct error for an empty password field", async () => {
