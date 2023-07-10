@@ -68,9 +68,9 @@ const registerSlice = createSlice({
       state.submitStatus = "PENDING"
       state.submitError = null
     })
-    builder.addCase(createUser.rejected, (state, { payload }) => {
+    builder.addCase(createUser.rejected, (state, { payload, error }) => {
       state.submitStatus = "REJECTED"
-      state.submitError = payload || "Une erreur est survenue"
+      state.submitError = payload || (error as FirebaseError)?.message || "Une erreur est survenue"
     })
     builder.addCase(createUser.fulfilled, (state) => {
       state.submitStatus = "IDLE"
