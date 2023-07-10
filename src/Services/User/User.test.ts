@@ -1,7 +1,7 @@
-import { createUserOnEmulator, deleteCurrentUserFromEmulator, getOobCodeForEmail } from "@/tests/utils"
-import { AuthService, UserService } from ".."
+import { createUserOnEmulator, deleteCurrentUserFromEmulator, createAndVerifyUser } from "@/tests/utils"
+import { UserService } from ".."
 import { firebase } from "@/firebase/config"
-import { fetchSignInMethodsForEmail, sendEmailVerification } from "firebase/auth"
+import { fetchSignInMethodsForEmail } from "firebase/auth"
 import { setDoc, doc } from "firebase/firestore"
 import type { UserProfile } from "./User"
 
@@ -75,10 +75,7 @@ describe("UserService", () => {
 
     it("should return true for a verified user", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await createUserOnEmulator(fakeEmail)
-      await sendEmailVerification(firebase.auth.currentUser!)
-      const oobCode = await getOobCodeForEmail(fakeEmail)
-      await AuthService.verifyEmail(oobCode)
+      await createAndVerifyUser(fakeEmail)
 
       await expect(UserService.checkIfVerified())
         .resolves

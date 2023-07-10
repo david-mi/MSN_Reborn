@@ -2,10 +2,9 @@ import React, { PropsWithChildren } from 'react'
 import { Provider } from 'react-redux'
 import { setupStore, AppStore, RootState } from "@/redux/store"
 import type { PreloadedState } from '@reduxjs/toolkit'
-import { RenderOptions, render } from '@testing-library/react'
-import { waitFor, waitForOptions } from "@testing-library/react";
+import { RenderOptions, render, waitFor, waitForOptions } from '@testing-library/react'
 import { firebase } from "@/firebase/config"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, sendEmailVerification, applyActionCode } from "firebase/auth"
 import { doc, deleteDoc } from "firebase/firestore"
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
@@ -94,4 +93,11 @@ export async function getOobCodeForEmail(email: string) {
   })
 
   return foundOobDetails.oobCode
+}
+
+export async function createAndVerifyUser(email: string) {
+  await createUserOnEmulator(email)
+  await sendEmailVerification(firebase.auth.currentUser!)
+  const oobCode = await getOobCodeForEmail(email)
+  await applyActionCode(firebase.auth, oobCode)
 }
