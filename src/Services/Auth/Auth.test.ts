@@ -1,5 +1,5 @@
 import { AuthService } from ".."
-import { Emulator } from "@/tests/Emulator"
+import { AuthEmulator } from "@/tests/Emulator/AuthEmulator"
 import { FirebaseError } from "firebase/app"
 import { reload, sendEmailVerification } from "firebase/auth"
 import { firebase } from "@/firebase/config"
@@ -7,13 +7,13 @@ import { firebase } from "@/firebase/config"
 describe("Auth", () => {
   describe("createUser", () => {
     afterEach(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should reject if email already exists in database", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
       const password = "superPassword!123"
-      await Emulator.createAndVerifyUser(fakeEmail)
+      await AuthEmulator.createAndVerifyUser(fakeEmail)
 
       await expect(AuthService.createUser(fakeEmail, password))
         .rejects
@@ -33,12 +33,12 @@ describe("Auth", () => {
 
   describe("sendVerificationEmail", () => {
     afterEach(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should reject if email is already verified", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createAndVerifyUser(fakeEmail)
+      await AuthEmulator.createAndVerifyUser(fakeEmail)
 
       await expect(AuthService.sendVerificationEmail())
         .rejects
@@ -47,7 +47,7 @@ describe("Auth", () => {
 
     it("Should send an email if user is not verified", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
 
       await expect(AuthService.sendVerificationEmail())
         .resolves
@@ -58,7 +58,7 @@ describe("Auth", () => {
 
   describe("verifyEmail", () => {
     afterAll(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should reject if no oobCode is given", async () => {
@@ -70,10 +70,10 @@ describe("Auth", () => {
 
     it("Should verify an email with a correct oobCode", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
       const currentUser = firebase.auth.currentUser!
       await sendEmailVerification(currentUser)
-      const oobCode = await Emulator.getOobCodeForEmail(fakeEmail)
+      const oobCode = await AuthEmulator.getOobCodeForEmail(fakeEmail)
 
       await expect(AuthService.verifyEmail(oobCode))
         .resolves

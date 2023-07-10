@@ -1,4 +1,4 @@
-import { Emulator } from "@/tests/Emulator"
+import { AuthEmulator } from "@/tests/Emulator/AuthEmulator"
 import { UserService } from ".."
 import { firebase } from "@/firebase/config"
 import { fetchSignInMethodsForEmail } from "firebase/auth"
@@ -8,12 +8,12 @@ import type { UserProfile } from "./User"
 describe("UserService", () => {
   describe("getProfile", () => {
     afterEach(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should retrieve user profileInfos", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
       const currentUser = firebase.auth.currentUser!
 
       const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
@@ -32,12 +32,12 @@ describe("UserService", () => {
 
   describe("setProfile", () => {
     afterEach(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should update user profile with given arguments", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
 
       const profileInfosToUpdate: UserProfile = {
         avatarSrc: "picture",
@@ -54,7 +54,7 @@ describe("UserService", () => {
   describe("deleteAccount", () => {
     it("Should delete user from database", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
 
       await expect(UserService.deleteAccount())
         .resolves
@@ -69,12 +69,12 @@ describe("UserService", () => {
 
   describe("checkIfVerified", async () => {
     afterEach(async () => {
-      await Emulator.deleteCurrentUser()
+      await AuthEmulator.deleteCurrentUser()
     })
 
     it("Should return false for a non verified user", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createUser(fakeEmail)
+      await AuthEmulator.createUser(fakeEmail)
 
       await expect(UserService.checkIfVerified())
         .resolves
@@ -83,7 +83,7 @@ describe("UserService", () => {
 
     it("should return true for a verified user", async () => {
       const fakeEmail = `user-${crypto.randomUUID()}@email.com`
-      await Emulator.createAndVerifyUser(fakeEmail)
+      await AuthEmulator.createAndVerifyUser(fakeEmail)
 
       await expect(UserService.checkIfVerified())
         .resolves

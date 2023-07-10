@@ -1,17 +1,9 @@
+import { Emulator } from "./Emulator";
 import { deleteDoc, doc } from "firebase/firestore"
 import { createUserWithEmailAndPassword, sendEmailVerification, applyActionCode } from "firebase/auth"
 import { firebase } from "@/firebase/config"
 
-export class Emulator {
-  static get currentUser() {
-    const currentUser = firebase.auth.currentUser
-    if (currentUser === null) {
-      throw "Utilisateur non connecté !"
-    }
-
-    return currentUser
-  }
-
+export class AuthEmulator extends Emulator {
   static async deleteAllUsers() {
     const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
     const fetchUrl = `http://127.0.0.1:9099/emulator/v1/projects/${projectId}/accounts`
