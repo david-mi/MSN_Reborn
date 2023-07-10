@@ -11,29 +11,34 @@ import { UserService } from "@/Services";
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
-  const verifyTimeout = useRef<NodeJS.Timer>()
-  const verifyTimeoutTimer = 2000
-  const verifyStopTimeout = useRef<NodeJS.Timer>()
-  const verifyStopTimer = 1000 * 60 * 2
   const navigate = useNavigate()
+  const verifyTimeoutIdRef = useRef<NodeJS.Timer>()
+  const verifyIntervals = 2000
+  const verifyTimeLimit = 1000 * 60 * 2
+  const verifyStartTime = useRef(Date.now())
 
   function handleClick() {
     dispatch(sendVerificationEmail())
   }
 
   /**
-   * Check after a certain time if the user verified his account
+   * Check at regular intervals if user account has been verified
    * 
    * - If user account is verified, navigate to home page
    * - if not, calls the function again
+   * - if isVerifyDurationReached has been reached, stop the function calls
    */
 
   function handleAccountVerificationCheck() {
-    if (verifyTimeout.current) {
-      clearInterval(verifyTimeout.current)
+    const isVerifyTimeLimitReached = Date.now() - verifyStartTime.current > verifyTimeLimit
+
+    if (verifyTimeoutIdRef.current || isVerifyTimeLimitReached) {
+      clearInterval(verifyTimeoutIdRef.current)
+
+      if (isVerifyTimeLimitReached) return
     }
 
-    verifyTimeout.current = setTimeout(async () => {
+    verifyTimeoutIdRef.current = setTimeout(async () => {
       const isUserVerified = await UserService.checkIfVerified()
 
       if (isUserVerified) {
@@ -41,32 +46,15 @@ function SendEmailVerification() {
       } else {
         handleAccountVerificationCheck()
       }
-    }, verifyTimeoutTimer)
-  }
-
-  /**
-   * Stop checking if user is verified after a certain delay to avoid
-   * potential infinite api calls
-   */
-
-  function handleAccountVerificationCheckStop() {
-    if (verifyStopTimeout.current) {
-      clearInterval(verifyStopTimeout.current)
-    }
-
-    verifyStopTimeout.current = setTimeout(() => {
-      clearTimeout(verifyTimeout.current)
-    }, verifyStopTimer)
+    }, verifyIntervals)
   }
 
   useEffect(() => {
     dispatch(sendVerificationEmail())
       .then(handleAccountVerificationCheck)
-      .then(handleAccountVerificationCheckStop)
 
     return () => {
-      clearTimeout(verifyTimeout.current)
-      clearTimeout(verifyStopTimeout.current)
+      clearTimeout(verifyTimeoutIdRef.current)
     }
   }, [])
 
