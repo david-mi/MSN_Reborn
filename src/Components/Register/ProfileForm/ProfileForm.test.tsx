@@ -143,7 +143,7 @@ describe("ProfileForm", () => {
   it("should display the correct error for a valid avatar but invalid username", async () => {
     fireEvent.change(avatarInput, {
       target: {
-        files: [new File([""], "fakefile.png", { type: "image/png" })],
+        files: [new File([""], "file.png", { type: "image/png" })],
       },
     });
 
@@ -169,7 +169,7 @@ describe("ProfileForm", () => {
   it("should submit the form with valid inputs", async () => {
     fireEvent.change(avatarInput, {
       target: {
-        files: [new File([""], "fakefile.png", { type: "image/png" })],
+        files: [new File([""], "file.png", { type: "image/png" })],
       },
     });
 

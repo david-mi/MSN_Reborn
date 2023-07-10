@@ -11,52 +11,52 @@ beforeEach(() => {
 describe("StorageService", () => {
   describe("getFilesUrl", () => {
     beforeAll(async () => {
-      const fakeFilesToUpload = [
+      const filesToUpload = [
         new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]),
         new Uint8Array([0x57, 0x6f, 0x72, 0x6c, 0x64]),
         new Uint8Array([0x48, 0x69, 0x21, 0x21])
       ];
 
-      for (let i = 0; i < fakeFilesToUpload.length; i++) {
-        const mockRef = ref(firebase.storage, `testing/fakefile${i}`)
-        await uploadBytes(mockRef, fakeFilesToUpload[i])
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const mockRef = ref(firebase.storage, `testing/file${i}`)
+        await uploadBytes(mockRef, filesToUpload[i])
       }
     })
 
     afterAll(async () => {
-      const storageFakeFilesFolderRef = ref(firebase.storage, "testing")
-      const fakeFilesFromStorage = await listAll(storageFakeFilesFolderRef)
-      for (const item of fakeFilesFromStorage.items) {
+      const storagefilesFolderRef = ref(firebase.storage, "testing")
+      const filesFromStorage = await listAll(storagefilesFolderRef)
+      for (const item of filesFromStorage.items) {
         await deleteObject(item)
       }
     })
 
     it("should return all files url from the targeted storage folder", async () => {
-      const fakeFilesUrls = await storageService.getFilesUrl("/testing")
+      const filesUrls = await storageService.getFilesUrl("/testing")
 
-      expect(fakeFilesUrls).toHaveLength(3)
-      fakeFilesUrls.forEach((fakeFilesUrl) => {
-        expect(fakeFilesUrls).toContain(fakeFilesUrl);
+      expect(filesUrls).toHaveLength(3)
+      filesUrls.forEach((filesUrl) => {
+        expect(filesUrls).toContain(filesUrl);
       });
     })
   })
 
   describe("uploadFile", () => {
     afterAll(async () => {
-      const storageFakeFilesFolderRef = ref(firebase.storage, "testing")
-      const fakeFilesFromStorage = await listAll(storageFakeFilesFolderRef)
-      for (const item of fakeFilesFromStorage.items) {
+      const storagefilesFolderRef = ref(firebase.storage, "testing")
+      const filesFromStorage = await listAll(storagefilesFolderRef)
+      for (const item of filesFromStorage.items) {
         await deleteObject(item)
       }
     })
 
     it("should upload file to firebase storage and return url", async () => {
-      const fakeFileToUpload = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f])
-      const fakeUserId = "2432DDDSF"
+      const fileToUpload = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f])
+      const userId = "2432DDDSF"
 
-      await expect(storageService.uploadFile(fakeFileToUpload as any, "testing", fakeUserId))
+      await expect(storageService.uploadFile(fileToUpload as any, "testing", userId))
         .resolves
-        .toContain(fakeUserId)
+        .toContain(userId)
     })
   })
 })
