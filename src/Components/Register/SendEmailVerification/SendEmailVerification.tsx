@@ -29,7 +29,7 @@ function SendEmailVerification() {
    * - if isVerifyDurationReached has been reached, stop the function calls
    */
 
-  function handleAccountVerificationCheck() {
+  function redirectIfUserIsVerified() {
     const isVerifyTimeLimitReached = Date.now() - verifyStartTime.current > verifyTimeLimit
 
     if (verifyTimeoutIdRef.current || isVerifyTimeLimitReached) {
@@ -44,14 +44,14 @@ function SendEmailVerification() {
       if (isUserVerified) {
         navigate("/")
       } else {
-        handleAccountVerificationCheck()
+        redirectIfUserIsVerified()
       }
     }, verifyIntervals)
   }
 
   useEffect(() => {
     dispatch(sendVerificationEmail())
-      .then(handleAccountVerificationCheck)
+      .then(redirectIfUserIsVerified)
 
     return () => {
       clearTimeout(verifyTimeoutIdRef.current)
