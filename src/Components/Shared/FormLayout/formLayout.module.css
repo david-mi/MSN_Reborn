@@ -42,7 +42,7 @@
   min-height: var(--error-min-height)
 }
 
-.form small:last-of-type {
+.form small[data-testid*="submit-error"] {
   margin-top: 5px;
   margin-bottom: calc(var(--gap) * -1);
   text-align: center;
