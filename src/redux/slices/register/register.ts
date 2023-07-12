@@ -97,9 +97,9 @@ interface RegisterEmailMiddlewarePayload {
 
 export const registerEmailMiddleware = createAppAsyncThunk(
   "register/email",
-  async ({ email, emailValidation }: RegisterEmailMiddlewarePayload, { rejectWithValue }) => {
+  async ({ email }: RegisterEmailMiddlewarePayload, { rejectWithValue }) => {
     try {
-      await emailValidation.checkAvailabilityFromDatabase(email)
+      await AuthService.checkDatabaseEmailAvailability(email)
       return email
     } catch (error) {
       const errorMessage = (error as Error)?.message ?? "Une erreur est survenue"

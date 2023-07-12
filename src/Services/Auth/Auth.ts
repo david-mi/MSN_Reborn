@@ -1,7 +1,17 @@
 import { firebase } from "@/firebase/config";
-import { sendEmailVerification, createUserWithEmailAndPassword, applyActionCode, reload } from "firebase/auth";
+import {
+  sendEmailVerification,
+  createUserWithEmailAndPassword,
+  applyActionCode,
+  reload,
+  fetchSignInMethodsForEmail
+} from "firebase/auth";
 
 export class AuthService {
+  public static errorsMessages = {
+    EMAIL_UNAVAILABLE: "Cet email est déjà utilisé"
+  }
+
   public static createUser(email: string, password: string) {
     return createUserWithEmailAndPassword(firebase.auth, email, password)
   }
@@ -23,5 +33,20 @@ export class AuthService {
     }
 
     return applyActionCode(firebase.auth, oobCode)
+  }
+
+  /**
+   * Check if an email slot is available from database or throws an error
+   * - When an email is unavailable, add it to unavailableEmails list
+   */
+
+  public static async checkDatabaseEmailAvailability(email: string): Promise<true> {
+    const retrievedSignInMethodsForEmail = await fetchSignInMethodsForEmail(firebase.auth, email)
+
+    if (retrievedSignInMethodsForEmail.length > 0) {
+      throw new Error(this.errorsMessages.EMAIL_UNAVAILABLE)
+    }
+
+    return true
   }
 }

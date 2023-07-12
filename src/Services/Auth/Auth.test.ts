@@ -84,4 +84,24 @@ describe("Auth", () => {
       expect(currentUser.emailVerified).toEqual(true)
     })
   })
+
+  describe("checkDatabaseEmailAvailability", () => {
+    afterAll(async () => {
+      await AuthEmulator.deleteCurrentUser()
+    })
+
+    it("should return true for an available email", async () => {
+      const email = "newuser@test-firebase.com";
+
+      await expect(AuthService.checkDatabaseEmailAvailability(email)).resolves.toBeTruthy()
+    });
+
+    it("should throw an error for a registered email", async () => {
+      const email = "alreadyRegistered@test-firebase.com";
+      const expectedError = AuthService.errorsMessages.EMAIL_UNAVAILABLE
+
+      await AuthEmulator.createUser(email)
+      await expect(AuthService.checkDatabaseEmailAvailability(email)).rejects.toThrowError(expectedError)
+    });
+  });
 })
