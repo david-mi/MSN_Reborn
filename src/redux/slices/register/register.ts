@@ -111,9 +111,8 @@ export const setDefaultAvatars = createAppAsyncThunk(
   "register/getDefaultAvatars",
   async (_, { rejectWithValue }) => {
     try {
-      const storageService = new StorageService()
-      const defaultAvatarsFolderPath = storageService.FOLDERS_PATHS.DEFAULT_AVATARS
-      const defaultAvatarsUrls = await storageService.getFilesUrl(defaultAvatarsFolderPath)
+      const defaultAvatarsFolderPath = StorageService.FOLDERS_PATHS.DEFAULT_AVATARS
+      const defaultAvatarsUrls = await StorageService.getFilesUrl(defaultAvatarsFolderPath)
       return defaultAvatarsUrls
     } catch (error) {
       const errorMessage = (error as Error)?.message ?? "Une erreur est survenue"

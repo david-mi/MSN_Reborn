@@ -2,12 +2,6 @@ import { StorageService } from "./Storage"
 import { firebase } from "@/firebase/config";
 import { ref, uploadBytes, listAll, deleteObject } from "firebase/storage"
 
-let storageService: StorageService
-
-beforeEach(() => {
-  storageService = new StorageService()
-})
-
 describe("StorageService", () => {
   describe("getFilesUrl", () => {
     beforeAll(async () => {
@@ -32,7 +26,7 @@ describe("StorageService", () => {
     })
 
     it("should return all files url from the targeted storage folder", async () => {
-      const filesUrls = await storageService.getFilesUrl("/testing")
+      const filesUrls = await StorageService.getFilesUrl("/testing")
 
       expect(filesUrls).toHaveLength(3)
       filesUrls.forEach((filesUrl) => {
@@ -54,7 +48,7 @@ describe("StorageService", () => {
       const fileToUpload = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f])
       const userId = "2432DDDSF"
 
-      await expect(storageService.uploadFile(fileToUpload as any, "testing", userId))
+      await expect(StorageService.uploadFile(fileToUpload as any, "testing", userId))
         .resolves
         .toContain(userId)
     })
