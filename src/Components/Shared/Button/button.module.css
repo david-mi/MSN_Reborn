@@ -55,5 +55,5 @@
 }
 
 .button:disabled .wait {
-  color: rgb(105, 105, 105);
+  color: #aaaaaa;
 }
