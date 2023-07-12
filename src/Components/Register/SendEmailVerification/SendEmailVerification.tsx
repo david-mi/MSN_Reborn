@@ -2,7 +2,7 @@ import styles from "./sendEmailVerification.module.css";
 import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "./Instructions/Instructions";
@@ -16,9 +16,11 @@ function SendEmailVerification() {
   const verifyIntervals = 2000
   const verifyTimeLimit = 1000 * 60 * 2
   const verifyStartTime = useRef(Date.now())
+  const [toogleVerifyTimer, setToogleVerifyTimer] = useState(false)
 
   function handleClick() {
     dispatch(sendVerificationEmail())
+    setToogleVerifyTimer(prev => !prev)
   }
 
   /**
@@ -67,10 +69,11 @@ function SendEmailVerification() {
       <hr />
       <small data-testid="register-verification-submit-error">{submitError}</small>
       <Button
+        // changing key value with reset will 
+        key={String(toogleVerifyTimer)}
         title="Renvoyer"
         theme="gradient"
-        wait={submitStatus === "PENDING"}
-        disabled={submitStatus === "PENDING"}
+        waitTimer={60}
         data-testid="register-verification-submit-button"
         onClick={handleClick}
       />
