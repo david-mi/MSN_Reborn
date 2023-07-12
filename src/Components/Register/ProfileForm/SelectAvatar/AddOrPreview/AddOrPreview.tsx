@@ -7,15 +7,13 @@ import { ProfileValidation } from "@/utils/Validation/";
 import type { ProfileFormFields } from "../../types";
 import { convertFileToBase64 } from "@/utils/convertFileToBase64";
 
-const profileValidation = new ProfileValidation()
-
 function AddOrPreview() {
   const { setError, setValue, watch, clearErrors } = useFormContext<ProfileFormFields>()
   const avatarSrc = watch("avatarSrc")
 
   async function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
     const addedFile = (target.files as FileList)[0]
-    const avatarValidation = profileValidation.validateAvatar(addedFile)
+    const avatarValidation = ProfileValidation.validateAvatar(addedFile)
 
     if (typeof avatarValidation === "string") {
       setError("avatarSrc", { message: avatarValidation })

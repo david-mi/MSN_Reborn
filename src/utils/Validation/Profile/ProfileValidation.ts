@@ -14,13 +14,13 @@ type AvatarError = typeof errorsMessages.avatar[keyof typeof errorsMessages.avat
 type UsernameError = typeof errorsMessages.username[keyof typeof errorsMessages.username];
 
 export class ProfileValidation {
-  private AVATAR_MAX_SIZE = 200 * 1024
-  private AVATAR_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
-  private USERNAME_MIN_LENGTH = 2
-  private USERNAME_MAX_LENGTH = 40
-  public errorsMessages = errorsMessages
+  private static AVATAR_MAX_SIZE = 200 * 1024
+  private static AVATAR_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
+  private static USERNAME_MIN_LENGTH = 2
+  private static USERNAME_MAX_LENGTH = 40
+  public static errorsMessages = errorsMessages
 
-  public validateAvatar(avatar: File): true | AvatarError {
+  public static validateAvatar(avatar: File): true | AvatarError {
     if (this.checkAvatarFormatValidity(avatar) === false) {
       return this.errorsMessages.avatar.WRONG_FORMAT
     } else if (this.checkAvatarSizeValidity(avatar) === false) {
@@ -30,7 +30,7 @@ export class ProfileValidation {
     return true
   }
 
-  public validateUsername = (username: string): true | UsernameError => {
+  public static validateUsername = (username: string): true | UsernameError => {
     if (this.checkUserNameLengthValidity(username) === false) {
       return this.errorsMessages.username.OUTSIDE_SIZE_RANGE
     }
@@ -38,18 +38,18 @@ export class ProfileValidation {
     return true
   }
 
-  private checkUserNameLengthValidity(username: string): boolean {
+  private static checkUserNameLengthValidity(username: string): boolean {
     return (
       username.length >= this.USERNAME_MIN_LENGTH &&
       username.length <= this.USERNAME_MAX_LENGTH
     )
   }
 
-  private checkAvatarFormatValidity(avatar: File): boolean {
+  private static checkAvatarFormatValidity(avatar: File): boolean {
     return this.AVATAR_MIME_TYPES.includes(avatar.type)
   }
 
-  private checkAvatarSizeValidity(avatar: File): boolean {
+  private static checkAvatarSizeValidity(avatar: File): boolean {
     return avatar.size <= this.AVATAR_MAX_SIZE
   }
 }

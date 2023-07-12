@@ -8,8 +8,6 @@ import { useAppDispatch } from "@/redux/hooks"
 import { ProfileFormFields } from "./types"
 import { useEffect } from "react"
 
-const profileValidation = new ProfileValidation()
-
 type Props = React.ComponentProps<"form">
 
 function ProfileForm(props: Props) {
@@ -25,7 +23,7 @@ function ProfileForm(props: Props) {
   }
 
   useEffect(() => {
-    register("avatarSrc", { required: profileValidation.errorsMessages.avatar.REQUIRED })
+    register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
   }, [register])
 
   return (
@@ -37,7 +35,7 @@ function ProfileForm(props: Props) {
           id="username"
           type="text"
           data-testid="register-profile-username-input"
-          {...register("username", { validate: profileValidation.validateUsername })}
+          {...register("username", { validate: ProfileValidation.validateUsername })}
         />
         <small data-testid="register-profile-username-error">{errors.username?.message}</small>
         <hr />

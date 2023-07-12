@@ -9,7 +9,6 @@ import { initialUserState } from "@/redux/slices/user/user";
 const { body } = document
 
 describe("ProfileForm", () => {
-  let profileValidation: ProfileValidation;
   let preloadedStateAfterEmailStep: RootState
   const base64Str = "base64"
   let avatarElement: HTMLImageElement
@@ -48,7 +47,6 @@ describe("ProfileForm", () => {
     usernameInput = getByTestId(body, "register-profile-username-input") as HTMLInputElement
     avatarInput = getByTestId(body, "register-profile-avatar-input") as HTMLInputElement;
     submitButton = getByTestId(body, "register-profile-submit-button") as HTMLButtonElement
-    profileValidation = new ProfileValidation();
   });
 
   it("should display the correct error for an invalid avatar", async () => {
@@ -66,7 +64,7 @@ describe("ProfileForm", () => {
 
     /** Submit is asynchronous with react-hook-form, so we have to wait */
     await waitFor(() => {
-      const errorElement = getByText(body, profileValidation.errorsMessages.avatar.WRONG_FORMAT);
+      const errorElement = getByText(body, ProfileValidation.errorsMessages.avatar.WRONG_FORMAT);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
@@ -82,7 +80,7 @@ describe("ProfileForm", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      const errorElement = getByText(body, ProfileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
@@ -108,7 +106,7 @@ describe("ProfileForm", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      const errorElement = getByText(body, ProfileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
@@ -134,7 +132,7 @@ describe("ProfileForm", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      const errorElement = getByText(body, profileValidation.errorsMessages.avatar.WRONG_FORMAT);
+      const errorElement = getByText(body, ProfileValidation.errorsMessages.avatar.WRONG_FORMAT);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
@@ -160,7 +158,7 @@ describe("ProfileForm", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      const errorElement = getByText(body, profileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
+      const errorElement = getByText(body, ProfileValidation.errorsMessages.username.OUTSIDE_SIZE_RANGE);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
