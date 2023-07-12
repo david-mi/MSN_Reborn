@@ -8,8 +8,6 @@ import { EmailValidation } from "@/utils/Validation"
 import type { EmailFormFields } from "./types"
 import { AuthService } from "@/Services"
 
-export const emailValidation = new EmailValidation()
-
 function EmailForm() {
   const {
     register,
@@ -26,7 +24,7 @@ function EmailForm() {
 
   async function onSubmit({ email }: EmailFormFields) {
     try {
-      await dispatch(registerEmailMiddleware({ email, emailValidation })).unwrap()
+      await dispatch(registerEmailMiddleware({ email })).unwrap()
     } catch (error) {
       if (error === AuthService.errorsMessages.EMAIL_UNAVAILABLE) {
         unavailableEmailsRef.current.add(email)
@@ -41,7 +39,7 @@ function EmailForm() {
       return AuthService.errorsMessages.EMAIL_UNAVAILABLE
     }
 
-    return emailValidation.validateFromInput(email)
+    return EmailValidation.validateFromInput(email)
   }
 
   return (

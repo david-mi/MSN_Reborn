@@ -1,15 +1,9 @@
 import { fireEvent, waitFor } from "@testing-library/react";
 import EmailForm from "./EmailForm";
-import { EmailValidation } from "@/utils/Validation";
 import { renderWithProviders, expectNeverOccurs } from "@/tests/utils";
+import { EmailValidation } from "@/utils/Validation";
 
 describe("EmailForm", () => {
-  let emailValidation: EmailValidation
-
-  beforeEach(() => {
-    emailValidation = new EmailValidation()
-  })
-
   it("should display the correct error for an empty string", async () => {
     const { getByText, getByTestId } = renderWithProviders(<EmailForm />)
     const submitButton = getByText("Suivant");
@@ -22,7 +16,7 @@ describe("EmailForm", () => {
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      const errorElement = getByText(emailValidation.errorsMessages.REQUIRED);
+      const errorElement = getByText(EmailValidation.errorsMessages.REQUIRED);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled()
     });
@@ -40,7 +34,7 @@ describe("EmailForm", () => {
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      const errorElement = getByText(emailValidation.errorsMessages.INVALID);
+      const errorElement = getByText(EmailValidation.errorsMessages.INVALID);
       expect(errorElement).toBeInTheDocument();
       expect(submitButton).toBeDisabled()
     });

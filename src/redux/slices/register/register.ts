@@ -1,6 +1,5 @@
 import type { ProfileState, RegistrationStep } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { EmailValidation } from "@/utils/Validation"
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService, StorageService } from "@/Services";
@@ -92,7 +91,6 @@ const registerSlice = createSlice({
 
 interface RegisterEmailMiddlewarePayload {
   email: string,
-  emailValidation: EmailValidation
 }
 
 export const registerEmailMiddleware = createAppAsyncThunk(
