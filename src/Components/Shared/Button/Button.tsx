@@ -13,7 +13,7 @@ function Button({ title, theme, wait, waitTimer = 0, ...props }: Props) {
   const [waitTime, setWaitTime] = useState(waitTimer)
   const waitIntervalIdRef = useRef<NodeJS.Timer>()
 
-  const className = `${styles.button} ${styles[theme]}`
+  const className = `${styles.button} ${styles[theme]} ${props.className ? props.className : ""}`
   const disabled = props.disabled || wait || waitTime > 0
 
   useEffect(() => {
