@@ -22,7 +22,7 @@
   font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
 }
 
-.form input {
+.form input:not([type="checkbox"]) {
   border: solid 1px #AAB7C7;
   height: clamp(25px, 35px - 1.5vw, 30px);
   padding-inline: 5px;
