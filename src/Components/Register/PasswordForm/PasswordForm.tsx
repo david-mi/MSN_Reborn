@@ -27,35 +27,40 @@ function PasswordForm() {
 
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="password">Mot de passe :</label>
-      <input
-        id="password"
-        type="password"
-        data-testid="register-password-input"
-        {...register("password", {
-          validate: (value) => passwordValidation.validate({ inputName: "password", value: value })
-        })}
-      />
-      <small data-testid="register-password-error">{errors.password?.message}</small>
-      <label htmlFor="password-confirm">Confirmer mot de passe :</label>
-      <input
-        id="password-confirm"
-        type="password"
-        data-testid="register-password-confirm-input"
-        {...register("passwordConfirm", {
-          validate: (value) => passwordValidation.validate({ inputName: "passwordConfirm", value: value })
-        })}
-      />
-      <small data-testid="register-password-confirm-error">{errors.passwordConfirm?.message}</small>
-      <hr />
-      <small data-testid="register-password-submit-error">{submitError}</small>
-      <Button
-        title="Suivant"
-        theme="monochrome"
-        wait={submitStatus === "PENDING"}
-        data-testid="register-password-submit-button"
-        disabled={preventFormSubmit}
-      />
+      <div>
+        <label htmlFor="password">Mot de passe :</label>
+        <input
+          id="password"
+          type="password"
+          data-testid="register-password-input"
+          {...register("password", {
+            validate: (value) => passwordValidation.validate({ inputName: "password", value: value })
+          })}
+        />
+        <small data-testid="register-password-error">{errors.password?.message}</small>
+      </div>
+      <div>
+        <label htmlFor="password-confirm">Confirmer mot de passe :</label>
+        <input
+          id="password-confirm"
+          type="password"
+          data-testid="register-password-confirm-input"
+          {...register("passwordConfirm", {
+            validate: (value) => passwordValidation.validate({ inputName: "passwordConfirm", value: value })
+          })}
+        />
+        <small data-testid="register-password-confirm-error">{errors.passwordConfirm?.message}</small>
+      </div>
+      <div>
+        <Button
+          title="Suivant"
+          theme="monochrome"
+          wait={submitStatus === "PENDING"}
+          data-testid="register-password-submit-button"
+          disabled={preventFormSubmit}
+        />
+        <small data-testid="register-password-submit-error">{submitError}</small>
+      </div>
     </FormLayout>
   )
 }

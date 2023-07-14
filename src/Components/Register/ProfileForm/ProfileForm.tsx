@@ -30,15 +30,16 @@ function ProfileForm(props: Props) {
     <FormProvider {...useFormRef} >
       <FormLayout onSubmit={handleSubmit(onSubmit)} {...props}>
         <SelectAvatar />
-        <label htmlFor="username">Pseudo :</label>
-        <input
-          id="username"
-          type="text"
-          data-testid="register-profile-username-input"
-          {...register("username", { validate: ProfileValidation.validateUsername })}
-        />
-        <small data-testid="register-profile-username-error">{errors.username?.message}</small>
-        <hr />
+        <div>
+          <label htmlFor="username">Pseudo :</label>
+          <input
+            id="username"
+            type="text"
+            data-testid="register-profile-username-input"
+            {...register("username", { validate: ProfileValidation.validateUsername })}
+          />
+          <small data-testid="register-profile-username-error">{errors.username?.message}</small>
+        </div>
         <Button
           title="Suivant"
           theme="monochrome"

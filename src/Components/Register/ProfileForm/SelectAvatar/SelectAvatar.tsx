@@ -39,16 +39,14 @@ function SelectAvatar() {
   }, [getDefaultAvatarsStatus])
 
   return (
-    <>
-      <div className={styles.selectAvatar}>
-        <AddOrPreview />
-        <DefaultAvatars
-          picturesComponents={picturesComponents}
-          loadNextPicture={loadNextPicture}
-        />
-      </div >
+    <div className={styles.selectAvatar}>
+      <AddOrPreview />
+      <DefaultAvatars
+        picturesComponents={picturesComponents}
+        loadNextPicture={loadNextPicture}
+      />
       <small>{errors.avatarSrc?.message}</small>
-    </>
+    </div >
   )
 }
 

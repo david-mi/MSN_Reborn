@@ -5,22 +5,21 @@
   flex-direction: column;
   --gap: 30px;
   --error-min-height: 20px;
-  gap: var(--gap);
-  padding-top: var(--error-min-height);
-  margin-top: var(--gap);
+  --padding-inline-form: clamp(0.5rem, 15vw - 3vmax, 5rem);
   padding-inline: var(--padding-inline-form);
+  padding-block: var(--gap);
   background-color: white;
+  gap: var(--gap);
   justify-content: center;
   border-bottom: solid 1px var(--separators-clr);
 }
 
-.form label {
-  margin-bottom: calc(var(--gap) * -1);
-  font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+.form > :first-child {
+  margin-top: auto;
 }
 
-.form label:first-child {
-  margin-top: auto;
+.form label {
+  font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
 }
 
 .form input {
@@ -28,6 +27,7 @@
   height: clamp(25px, 35px - 1.5vw, 30px);
   padding-inline: 5px;
   font-size: 0.9rem;
+  width: 100%;
 }
 
 .form input:focus {
@@ -35,31 +35,21 @@
 }
 
 .form small {
+  display: block;
   color: red;
-  margin-top: calc(var(--gap) * -1);
   font-style: italic;
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
   min-height: var(--error-min-height)
 }
 
-.form small[data-testid*="submit-error"] {
-  margin-top: 5px;
-  margin-bottom: calc(var(--gap) * -1);
-  text-align: center;
-}
-
-.form hr {
+.form > button:last-child {
   margin-top: auto;
-  background-color: var(--separators-clr);
-  height: 1px;
-  border: none;
-  margin-bottom: calc(var(--gap) * -1);
-  margin-inline: calc(var(--padding-inline-form) * -1);
+  align-self: flex-end;
+  width: auto;
 }
 
-.form > button:last-of-type {
-  align-self: flex-end;
-  margin-block: 10px;
-  width: auto;
-  margin-bottom: var(--error-min-height);
+.form > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }

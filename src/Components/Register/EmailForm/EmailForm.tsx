@@ -44,14 +44,15 @@ function EmailForm() {
 
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="email">Adresse de messagerie :</label>
-      <input
-        id="email"
-        data-testid="register-email-input"
-        {...register("email", { validate: handleInputValidation })}
-      />
-      <small data-testid="register-email-error">{errors.email?.message}</small>
-      <hr />
+      <div>
+        <label htmlFor="email">Adresse de messagerie :</label>
+        <input
+          id="email"
+          data-testid="register-email-input"
+          {...register("email", { validate: handleInputValidation })}
+        />
+        <small data-testid="register-email-error">{errors.email?.message}</small>
+      </div>
       <Button
         title="Suivant"
         theme="monochrome"
