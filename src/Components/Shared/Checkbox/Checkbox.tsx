@@ -1,16 +1,18 @@
-import { ChangeEvent } from "react"
+import { ChangeEvent, ComponentProps } from "react"
 import styles from "./checkbox.module.css";
 
-interface Props {
-  onChange: (event: ChangeEvent) => void
+type Props = ComponentProps<"input"> & {
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-function Checkbox({ onChange }: Props) {
+function Checkbox(props: Props) {
+  const classNames = `${styles.checkbox} ${props.className ? props.className : ""}`
+
   return (
     <input
-      onChange={onChange}
       type="checkbox"
-      className={styles.checkbox}
+      className={classNames}
+      onChange={props.onChange}
     />
   );
 }

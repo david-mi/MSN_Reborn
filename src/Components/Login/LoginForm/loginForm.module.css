@@ -1,0 +1,13 @@
+.submitContainer {
+  align-items: center !important;
+}
+
+.avatar {
+  margin-inline: auto;
+}
+
+.autoConnect {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
