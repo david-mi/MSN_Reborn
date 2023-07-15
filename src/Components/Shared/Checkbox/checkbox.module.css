@@ -7,8 +7,8 @@
   margin-right: 4px;
   width: 13px;
   height: 13px;
-  width: clamp(13px, 20px - 0.2vw, 20px);
-  height: clamp(13px, 20px - 0.2vw, 20px);
+  width: clamp(13px, 20px - 0.8vw, 20px);
+  height: clamp(13px, 20px - 0.8vw, 20px);
 
 
   &:hover::before {
@@ -19,7 +19,7 @@
   &:checked::after {
     background: url("./checkbox_icon.png") no-repeat;
     background-position: center;
-    background-size: clamp(6px, 15px - 0.2vw, 9px);
+    background-size: clamp(8px, 15px - 1vw, 9px);
   }
 
   &::before,

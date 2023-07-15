@@ -12,7 +12,7 @@ function Checkbox(props: Props) {
     <input
       type="checkbox"
       className={classNames}
-      onChange={props.onChange}
+      {...props}
     />
   );
 }

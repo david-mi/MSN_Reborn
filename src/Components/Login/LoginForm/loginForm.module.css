@@ -6,7 +6,7 @@
   margin-inline: auto;
 }
 
-.autoConnect {
+.rememberAuth {
   display: flex;
   align-items: center;
   gap: 5px;

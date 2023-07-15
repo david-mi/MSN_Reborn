@@ -53,9 +53,9 @@ function LoginForm() {
         />
         <small data-testid="login-password-error">{errors.password?.message}</small>
       </div>
-      <div className={styles.autoConnect}>
-        <Checkbox onChange={setRememberAuth} />
-        <label htmlFor="autoConnect">Connexion Automatique</label>
+      <div className={styles.rememberAuth}>
+        <Checkbox id="rememberAuth" onChange={setRememberAuth} />
+        <label htmlFor="rememberAuth">Connexion Automatique</label>
       </div>
       <div className={styles.submitContainer}>
         <Button
