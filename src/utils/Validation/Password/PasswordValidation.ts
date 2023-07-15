@@ -30,7 +30,7 @@ export class PasswordValidation {
     return this.validatePasswordsComparaison()
   }
 
-  private validatePasswordComplexity(password: string): true | PasswordValidationErrorMessage {
+  public validatePasswordComplexity(password: string): true | PasswordValidationErrorMessage {
     if (password === "") {
       return this.errorsMessages.REQUIRED
     } else if (this.regex.test(password) === false) {
