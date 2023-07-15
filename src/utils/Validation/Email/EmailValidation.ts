@@ -10,7 +10,7 @@ export class EmailValidation {
   public static unavailableEmails = new Set<string>()
   public static errorsMessages = errorsMessages
 
-  public static validateFromInput(email: string): true | EmailValidationErrorMessage {
+  public static validateFromInput = (email: string): true | EmailValidationErrorMessage => {
     if (email === "") {
       return this.errorsMessages.REQUIRED
     } else if (this.regex.test(email) === false) {
