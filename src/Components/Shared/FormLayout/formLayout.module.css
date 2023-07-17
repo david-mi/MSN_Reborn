@@ -23,7 +23,7 @@
 
 .form input:not([type="checkbox"]) {
   border: solid 1px #AAB7C7;
-  height: clamp(25px, 35px - 1.5vw, 30px);
+  height: clamp(30px, 40px - 1vw, 35px);
   padding-inline: 5px;
   font-size: 0.9rem;
   width: 100%;
@@ -38,7 +38,6 @@
   color: red;
   font-style: italic;
   font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
-  min-height: var(--error-min-height)
 }
 
 .form > button:last-child {
