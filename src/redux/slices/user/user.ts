@@ -6,6 +6,7 @@ import { AuthService } from "@/Services";
 export const initialUserState: UserState = {
   authState: "PENDING",
   verified: false,
+  displayedStatus: "offline",
   accountVerification: {
     status: "PENDING",
     error: null

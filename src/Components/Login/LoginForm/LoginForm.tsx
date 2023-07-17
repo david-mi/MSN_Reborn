@@ -7,6 +7,8 @@ import type { LoginFormFields } from "./types";
 import styles from "./loginForm.module.css"
 import { EmailValidation, PasswordValidation } from "@/utils/Validation";
 import { ChangeEvent } from "react";
+import SelectDisplayedStatus from "@/Components/Shared/SelectDisplayedStatus/SelectDisplayedStatus";
+import { DisplayedStatus } from "@/redux/slices/user/types";
 
 const passwordValidation = new PasswordValidation()
 
@@ -19,7 +21,7 @@ function LoginForm() {
   } = useForm<LoginFormFields>({
     defaultValues: {
       "rememberAuth": false,
-      "status": "online"
+      "displayedStatus": "online"
     }
   })
 
@@ -29,6 +31,10 @@ function LoginForm() {
 
   function setRememberAuth({ target }: ChangeEvent<HTMLInputElement>) {
     setValue("rememberAuth", target.checked)
+  }
+
+  function setStatus(displayedStatus: DisplayedStatus) {
+    setValue("displayedStatus", displayedStatus)
   }
 
   return (
@@ -53,6 +59,7 @@ function LoginForm() {
         />
         <small data-testid="login-password-error">{errors.password?.message}</small>
       </div>
+      <SelectDisplayedStatus setStatus={setStatus} />
       <div className={styles.rememberAuth}>
         <Checkbox id="rememberAuth" onChange={setRememberAuth} />
         <label htmlFor="rememberAuth">Connexion Automatique</label>

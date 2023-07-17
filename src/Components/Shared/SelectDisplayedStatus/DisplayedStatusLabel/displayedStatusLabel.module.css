@@ -1,0 +1,26 @@
+.displayedStatusLabel {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  height: clamp(20px, 40px - 1vw, 40px);
+  cursor: default;
+
+  & span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border: solid 1px transparent;
+    cursor: cursor;
+    user-select: none;
+    padding-inline: 5px 1px;
+    margin-left: 2px;
+
+    &:hover {
+      border-color: #c1c1c1;
+    }
+
+    &.open {
+      border-color: #a0a0a0;
+    }
+  }
+}

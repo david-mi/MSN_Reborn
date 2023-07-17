@@ -1,0 +1,32 @@
+.displayedStatusesList {
+  position: absolute;
+  cursor: default;
+  user-select: none;
+  z-index: 999;
+  width: 100%;
+  background-color: #f2f2f2;
+  list-style: none;
+  border: solid 1px #a0a0a0;
+
+  & li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: clamp(20px, 40px - 1vw, 40px);
+
+    &:hover {
+      background-color: #0078d7;
+      color: white;
+    }
+
+    & div {
+      margin-left: 5px
+    }
+  }
+}
+
+.bgHide {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
