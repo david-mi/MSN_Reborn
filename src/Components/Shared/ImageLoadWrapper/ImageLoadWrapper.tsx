@@ -9,7 +9,8 @@ export type Props<T extends keyof JSX.IntrinsicElements> = {
     src: string
   }
   loaderOptions?: {
-    size: string
+    size: string;
+    thickness?: string;
   }
 }
 
@@ -29,7 +30,7 @@ function ImageLoadWrapper<T extends keyof JSX.IntrinsicElements>(props: Props<T>
 
   return (
     <Wrapper {...wrapperProps}>
-      {!loaded && <Loader size={loaderOptions?.size} />}
+      {!loaded && <Loader {...loaderOptions} />}
       <img
         alt="Avatar par défaut à choisir"
         {...imageProps}
