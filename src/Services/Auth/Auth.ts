@@ -2,9 +2,13 @@ import { firebase } from "@/firebase/config";
 import {
   sendEmailVerification,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   applyActionCode,
   reload,
-  fetchSignInMethodsForEmail
+  fetchSignInMethodsForEmail,
+  setPersistence,
+  browserSessionPersistence,
+  indexedDBLocalPersistence
 } from "firebase/auth";
 
 export class AuthService {
@@ -48,5 +52,17 @@ export class AuthService {
     }
 
     return true
+  }
+
+  public static async setPersitence(rememberAuth: boolean) {
+    const chosenPersitence = rememberAuth
+      ? indexedDBLocalPersistence
+      : browserSessionPersistence
+
+    setPersistence(firebase.auth, chosenPersitence)
+  }
+
+  public static async login(email: string, password: string) {
+    return signInWithEmailAndPassword(firebase.auth, email, password)
   }
 }

@@ -1,10 +1,11 @@
 import { reload } from "firebase/auth";
-import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 
 export interface UserProfile {
   avatarSrc: string
   username: string
+  displayedStatus: string
 }
 
 export class UserService {
@@ -18,10 +19,19 @@ export class UserService {
     return currentUser
   }
 
-  static setProfile(profileData: UserProfile) {
+  static setProfile(profileData: Omit<UserProfile, "displayedStatus">) {
     const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
-    return setDoc(profilesRef, profileData)
+    return setDoc(profilesRef, {
+      ...profileData,
+      displayedStatus: "offline"
+    })
+  }
+
+  static updateProfile(profileData: Partial<UserProfile>) {
+    const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
+
+    return updateDoc(userProfileRef, profileData)
   }
 
   static async getProfile(): Promise<UserProfile> {

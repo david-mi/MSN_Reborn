@@ -17,7 +17,7 @@ describe("UserService", () => {
       const currentUser = firebase.auth.currentUser!
 
       const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
-      const profileInfosToSet: UserProfile = {
+      const profileInfosToSet: Omit<UserProfile, "displayedStatus"> = {
         avatarSrc: "avatar",
         username: "patrick"
       }
@@ -39,7 +39,7 @@ describe("UserService", () => {
       const email = `user-${crypto.randomUUID()}@email.com`
       await AuthEmulator.createUser(email)
 
-      const profileInfosToUpdate: UserProfile = {
+      const profileInfosToUpdate: Omit<UserProfile, "displayedStatus"> = {
         avatarSrc: "picture",
         username: "jean"
       }
@@ -47,7 +47,10 @@ describe("UserService", () => {
       await UserService.setProfile(profileInfosToUpdate)
       const updatedProfile = await UserService.getProfile()
 
-      expect(updatedProfile).toEqual(profileInfosToUpdate)
+      expect(updatedProfile).toEqual({
+        ...profileInfosToUpdate,
+        displayedStatus: "offline"
+      })
     })
   })
 

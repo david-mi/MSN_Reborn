@@ -10,4 +10,8 @@ export interface UserState {
     status: ValidationStatus,
     error: null | string
   }
+  login: {
+    status: ValidationStatus,
+    error: null | string
+  }
 }

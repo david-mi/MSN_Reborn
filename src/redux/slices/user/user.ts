@@ -1,7 +1,9 @@
 import { UserState, AuthenticationState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { AuthService } from "@/Services";
+import { AuthService, UserService } from "@/Services";
+import { LoginFormFields } from "@/Components/Login/LoginForm/types";
+import { FirebaseError } from "firebase/app";
 
 export const initialUserState: UserState = {
   authState: "PENDING",
@@ -9,6 +11,10 @@ export const initialUserState: UserState = {
   displayedStatus: "offline",
   accountVerification: {
     status: "PENDING",
+    error: null
+  },
+  login: {
+    status: "IDLE",
     error: null
   }
 }
@@ -39,6 +45,18 @@ const userSlice = createSlice({
       state.accountVerification.status = "IDLE"
       state.verified = true
     })
+    builder.addCase(loginMiddleware.pending, (state) => {
+      state.login.status = "PENDING"
+      state.login.error = null
+    })
+    builder.addCase(loginMiddleware.rejected, (state, { error }) => {
+      state.login.status = "REJECTED"
+      state.login.error = (error as FirebaseError).message
+    })
+    builder.addCase(loginMiddleware.fulfilled, (state) => {
+      state.login.status = "IDLE"
+      state.authState = "AUTHENTICATED"
+    })
   }
 })
 
@@ -46,6 +64,16 @@ export const verifyEmail = createAppAsyncThunk(
   "register/verifyEmail",
   (oobCode: string | null) => AuthService.verifyEmail(oobCode)
 )
+
+export const loginMiddleware = createAppAsyncThunk(
+  "user/login",
+  async (loginData: LoginFormFields) => {
+    const { email, password, displayedStatus, rememberAuth } = loginData
+
+    await AuthService.setPersitence(rememberAuth)
+    await AuthService.login(email, password)
+    await UserService.updateProfile({ displayedStatus })
+  })
 
 export const { setAuthenticationState, setVerified } = userSlice.actions
 export const userReducer = userSlice.reducer
