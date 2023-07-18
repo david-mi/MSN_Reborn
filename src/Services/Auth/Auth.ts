@@ -8,7 +8,8 @@ import {
   fetchSignInMethodsForEmail,
   setPersistence,
   browserSessionPersistence,
-  indexedDBLocalPersistence
+  indexedDBLocalPersistence,
+  signOut
 } from "firebase/auth";
 
 export class AuthService {
@@ -64,5 +65,9 @@ export class AuthService {
 
   public static async login(email: string, password: string) {
     return signInWithEmailAndPassword(firebase.auth, email, password)
+  }
+
+  static async disconnect() {
+    await signOut(firebase.auth)
   }
 }

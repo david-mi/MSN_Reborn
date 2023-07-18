@@ -75,5 +75,10 @@ export const loginMiddleware = createAppAsyncThunk(
     await UserService.updateProfile({ displayedStatus })
   })
 
+export const disconnectMiddleware = createAppAsyncThunk(
+  "user/disconnect",
+  () => AuthService.disconnect()
+)
+
 export const { setAuthenticationState, setVerified } = userSlice.actions
 export const userReducer = userSlice.reducer
