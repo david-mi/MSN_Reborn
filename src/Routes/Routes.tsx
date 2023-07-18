@@ -1,14 +1,14 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "@/App";
 import { Register, Login, AccountVerify, Home } from "@/Pages"
-import Private from "./Private";
+import { AuthRoutes, PrivateRoutes } from "."
 
 const browserRouter = createBrowserRouter([
   {
     element: <App />,
     children: [
       {
-        element: <Private />,
+        element: <PrivateRoutes />,
         children: [
           {
             path: "/",
@@ -17,12 +17,17 @@ const browserRouter = createBrowserRouter([
         ]
       },
       {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
+        element: <AuthRoutes />,
+        children: [
+          {
+            path: "/register",
+            element: <Register />,
+          },
+          {
+            path: "/login",
+            element: <Login />,
+          },
+        ]
       },
       {
         path: "/verify-account",

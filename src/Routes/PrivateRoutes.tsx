@@ -7,7 +7,7 @@ function Private() {
 
   switch (authState) {
     case "PENDING": return <Loader size={"8rem"} />
-    case "DISCONNECTED": return <Navigate to="/register" />
+    case "DISCONNECTED": return <Navigate to="/login" />
     case "AUTHENTICATED": return <Outlet />
   }
 }
