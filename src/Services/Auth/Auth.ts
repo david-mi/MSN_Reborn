@@ -17,19 +17,28 @@ export class AuthService {
     EMAIL_UNAVAILABLE: "Cet email est déjà utilisé"
   }
 
+  static get currentUser() {
+    const currentUser = firebase.auth.currentUser
+
+    if (currentUser === null) {
+      throw "Utilisateur non connecté !"
+    }
+
+    return currentUser
+  }
+
   public static createUser(email: string, password: string) {
     return createUserWithEmailAndPassword(firebase.auth, email, password)
   }
 
   public static async sendVerificationEmail() {
-    const currentUser = firebase.auth.currentUser!
-    await reload(currentUser)
+    await reload(this.currentUser)
 
-    if (currentUser.emailVerified === true) {
+    if (this.currentUser.emailVerified === true) {
       throw new Error("Ce compte est déjà vérifié")
     }
 
-    return sendEmailVerification(currentUser)
+    return sendEmailVerification(this.currentUser)
   }
 
   public static async verifyEmail(oobCode: string | null) {
