@@ -2,6 +2,8 @@ import { useAppSelector } from "@/redux/hooks"
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout"
 import { EmailForm, ProfileForm, PasswordForm } from "@/Components/Register"
 import styles from "./register.module.css"
+import { Link } from "react-router-dom"
+import FooterLinks from "@/Components/Shared/FooterLinks/FooterLinks"
 
 function Register() {
   const registrationStep = useAppSelector(({ register }) => register.step)
@@ -25,6 +27,9 @@ function Register() {
     <div className={styles.register}>
       <ModaleLayout title={registerComponents[registrationStep].title}>
         {registerComponents[registrationStep].component}
+        <FooterLinks>
+          <Link to="/login">Déjà inscrit ? Connectez-vous</Link>
+        </FooterLinks>
       </ModaleLayout>
     </div>
   )

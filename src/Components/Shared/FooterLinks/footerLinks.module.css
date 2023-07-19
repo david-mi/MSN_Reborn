@@ -1,0 +1,14 @@
+.footerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 1rem - 0.8vw, 1rem);
+  align-items: center;
+  padding-block: 0.5rem;
+
+  & a {
+    font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+    font-weight: 500;
+    text-decoration: none;
+    color: #359BED;
+  }
+}
