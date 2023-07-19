@@ -1,6 +1,6 @@
-import { UserState, AuthenticationState, DisplayedStatus } from "./types";
+import { UserState, AuthenticationState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createAppAsyncThunk } from "@/redux/types";
+import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
@@ -79,21 +79,27 @@ const userSlice = createSlice({
       state.displayedStatus = payload.displayedStatus
       state.verified = payload.verified
     })
-    builder.addCase(checkAccountVerification.fulfilled, (state, { payload }: PayloadAction<boolean>) => {
-      state.verified = payload
-    })
   }
 })
 
 export const verifyEmail = createAppAsyncThunk(
   "register/verifyEmail",
-  (oobCode: string | null) => AuthService.verifyEmail(oobCode)
+  async (oobCode: string | null) => {
+    await AuthService.verifyEmail(oobCode)
+    localStorage.setItem("verified", "true")
+  }
 )
 
-export const checkAccountVerification = createAppAsyncThunk(
-  "register/checkAccountVerification",
-  () => UserService.checkIfVerified()
-)
+export function checkIfVerifiedFromLocalStorage() {
+  return (dispatch: AppThunkDispatch) => {
+    const hasVerifiedKeyInStorage = localStorage.getItem("verified")
+
+    if (hasVerifiedKeyInStorage) {
+      localStorage.removeItem("verified")
+      dispatch(setVerified(true))
+    }
+  }
+}
 
 export const loginMiddleware = createAppAsyncThunk(
   "user/login",
