@@ -2,6 +2,7 @@ import styles from "./sendEmailVerification.module.css";
 import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
+import { disconnectMiddleware } from "@/redux/slices/user/user";
 import { useEffect, useRef, useState } from "react";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
@@ -23,6 +24,10 @@ function SendEmailVerification() {
   function handleClick() {
     dispatch(sendVerificationEmail())
     setToogleVerifyTimer(prev => !prev)
+  }
+
+  function handleDisconnect() {
+    dispatch(disconnectMiddleware())
   }
 
   /**
@@ -79,6 +84,11 @@ function SendEmailVerification() {
               waitTimer={60}
               data-testid="register-verification-submit-button"
               onClick={handleClick}
+            />
+            <Button
+              title="Déconnexion"
+              theme="monochrome"
+              onClick={handleDisconnect}
             />
             <small data-testid="register-verification-submit-error">{submitError}</small>
           </div>
