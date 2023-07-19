@@ -3,11 +3,12 @@ import { useAppSelector } from "@/redux/hooks";
 
 function AuthRoutes() {
   const authState = useAppSelector(({ user }) => user.authState)
-  const registrationStep = useAppSelector(({ register }) => register.step)
-  const isNotIsRegistrationProcess = registrationStep === "EMAIL"
+  const isAccountVerified = useAppSelector(({ user }) => user.verified)
 
-  if (authState === "AUTHENTICATED" && isNotIsRegistrationProcess) {
-    return <Navigate to="/" />
+  if (authState === "AUTHENTICATED") {
+    return isAccountVerified
+      ? <Navigate to="/" />
+      : <Navigate to="/send-email-verification" />
   }
 
   return <Outlet />

@@ -1,7 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "@/App";
-import { Register, Login, AccountVerify, Home } from "@/Pages"
+import { Register, Login, AccountVerify, Home, SendEmailVerification } from "@/Pages"
 import { AuthRoutes, PrivateRoutes } from "."
+import VerifiedRoutes from "./VerifiedRoutes";
 
 const browserRouter = createBrowserRouter([
   {
@@ -11,8 +12,17 @@ const browserRouter = createBrowserRouter([
         element: <PrivateRoutes />,
         children: [
           {
-            path: "/",
-            element: <Home />
+            element: <VerifiedRoutes />,
+            children: [
+              {
+                path: "/",
+                element: <Home />
+              }
+            ]
+          },
+          {
+            path: "/send-email-verification",
+            element: <SendEmailVerification />,
           },
         ]
       },
@@ -26,7 +36,7 @@ const browserRouter = createBrowserRouter([
           {
             path: "/login",
             element: <Login />,
-          },
+          }
         ]
       },
       {
