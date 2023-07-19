@@ -6,6 +6,10 @@ button {
   cursor: pointer;
 }
 
+:root {
+  --separators-clr: #BED6E0;
+}
+
 #root {
   min-height: 100dvh;
   padding-inline: clamp(0.5rem, 3vw, 1rem);

@@ -6,6 +6,13 @@
 
 .sendEmailVerification {
   flex: 1;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-block: 30px;
+}
+
+.submitButtonContainer {
+  margin-top: auto;
 }
