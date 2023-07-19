@@ -3,20 +3,23 @@ import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Loader from "@/Components/Shared/Loader/Loader";
-import Instructions from "./Instructions/Instructions";
-import { UserService } from "@/Services";
+import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
+import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
+import { checkAccountVerification } from "@/redux/slices/user/user";
+import { useNavigate } from "react-router-dom";
 
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
-  const navigate = useNavigate()
+  const isAccountVerified = useAppSelector(({ user }) => user.verified)
   const verifyTimeoutIdRef = useRef<NodeJS.Timer>()
+  const [toogleVerifyTimer, setToogleVerifyTimer] = useState(false)
+  const navigate = useNavigate()
   const verifyIntervals = 2000
   const verifyTimeLimit = 1000 * 60 * 2
   const verifyStartTime = useRef(Date.now())
-  const [toogleVerifyTimer, setToogleVerifyTimer] = useState(false)
+
 
   function handleClick() {
     dispatch(sendVerificationEmail())
@@ -35,19 +38,15 @@ function SendEmailVerification() {
     const isVerifyTimeLimitReached = Date.now() - verifyStartTime.current > verifyTimeLimit
 
     if (verifyTimeoutIdRef.current || isVerifyTimeLimitReached) {
-      clearInterval(verifyTimeoutIdRef.current)
+      clearTimeout(verifyTimeoutIdRef.current)
 
       if (isVerifyTimeLimitReached) return
     }
 
     verifyTimeoutIdRef.current = setTimeout(async () => {
-      const isUserVerified = await UserService.checkIfVerified()
-
-      if (isUserVerified) {
-        navigate("/")
-      } else {
-        redirectIfUserIsVerified()
-      }
+      await dispatch(checkAccountVerification())
+      console.log("redirectIfUserIsVerified")
+      redirectIfUserIsVerified()
     }, verifyIntervals)
   }
 
@@ -60,23 +59,33 @@ function SendEmailVerification() {
     }
   }, [])
 
+  useEffect(() => {
+    if (isAccountVerified) {
+      navigate("/")
+    }
+  }, [isAccountVerified])
+
   return (
-    <div className={styles.sendEmailVerification}>
-      {submitStatus === "PENDING"
-        ? <Loader className={styles.loader} />
-        : <Instructions />
-      }
-      <hr />
-      <small data-testid="register-verification-submit-error">{submitError}</small>
-      <Button
-        // changing key value with reset will 
-        key={String(toogleVerifyTimer)}
-        title="Renvoyer"
-        theme="gradient"
-        waitTimer={60}
-        data-testid="register-verification-submit-button"
-        onClick={handleClick}
-      />
+    <div className={styles.container} data-testid="send-email-verification">
+      <ModaleLayout title="Vérification de l'email">
+        <div className={styles.sendEmailVerification}>
+          {submitStatus === "PENDING"
+            ? <Loader className={styles.loader} />
+            : <Instructions />
+          }
+          <hr />
+          <Button
+            // changing key value with reset will 
+            key={String(toogleVerifyTimer)}
+            title="Renvoyer"
+            theme="gradient"
+            waitTimer={60}
+            data-testid="register-verification-submit-button"
+            onClick={handleClick}
+          />
+          <small data-testid="register-verification-submit-error">{submitError}</small>
+        </div>
+      </ModaleLayout>
     </div>
   );
 }

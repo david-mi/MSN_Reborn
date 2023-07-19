@@ -1,7 +1,7 @@
 import { fireEvent, waitFor } from "@testing-library/react";
 import PasswordForm from "./PasswordForm";
 import { PasswordValidation } from "@/utils/Validation";
-import { renderWithProviders } from "@/tests/utils";
+import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
 import { initialUserState } from "@/redux/slices/user/user";
 import { RootState } from "@/redux/store";
@@ -89,7 +89,7 @@ describe("PasswordForm", () => {
   });
 
   it("should submit the form with valid passwords and without displaying any errors", async () => {
-    const { getByTestId, store } = renderWithProviders(<PasswordForm />, { preloadedState: preloadedStateAfterProfileStep });
+    const { getByTestId } = renderWithProviders(<PasswordForm />, { preloadedState: preloadedStateAfterProfileStep });
 
     const passwordInput = getByTestId("register-password-input");
     fireEvent.change(passwordInput, { target: { value: "validPassword123!" } });
@@ -100,9 +100,9 @@ describe("PasswordForm", () => {
     const submitButton = getByTestId("register-password-submit-button")
     fireEvent.click(submitButton)
 
-    await waitFor(() => {
-      const storeState = store.getState()
-      expect(storeState.register.step).toEqual("SEND_VERIFICATION_EMAIL")
-    });
+    expectNeverOccurs(() => {
+      const errorElement = getByTestId("register-password-error")
+      expect(errorElement).toHaveTextContent(/.+/)
+    })
   });
 });

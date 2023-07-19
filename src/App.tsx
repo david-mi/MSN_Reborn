@@ -3,17 +3,18 @@ import { firebase } from "./firebase/config";
 import { useAppDispatch } from "./redux/hooks";
 import { onAuthStateChanged } from "firebase/auth";
 import { Outlet } from "react-router-dom";
-import { setAuthenticationState } from "./redux/slices/user/user";
+import { setAuthenticationState, retrieveProfile } from "./redux/slices/user/user";
 import { AuthenticationState } from "./redux/slices/user/types";
 
 function App() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    onAuthStateChanged(firebase.auth, (currentUser) => {
+    onAuthStateChanged(firebase.auth, async (currentUser) => {
       let userAuthenticationState: AuthenticationState
 
       if (currentUser) {
+        await dispatch(retrieveProfile())
         userAuthenticationState = "AUTHENTICATED"
       } else {
         userAuthenticationState = "DISCONNECTED"

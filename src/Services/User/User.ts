@@ -1,11 +1,12 @@
 import { reload } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
+import { DisplayedStatus } from "@/redux/slices/user/types";
 
 export interface UserProfile {
   avatarSrc: string
   username: string
-  displayedStatus: string
+  displayedStatus: DisplayedStatus
 }
 
 export class UserService {

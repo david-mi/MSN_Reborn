@@ -1,11 +1,14 @@
-import { UserState, AuthenticationState } from "./types";
+import { UserState, AuthenticationState, DisplayedStatus } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
+import { UserProfile } from "@/Services/User/User";
 
 export const initialUserState: UserState = {
+  avatarSrc: "",
+  username: "",
   authState: "PENDING",
   verified: false,
   displayedStatus: "offline",
@@ -16,7 +19,11 @@ export const initialUserState: UserState = {
   login: {
     status: "IDLE",
     error: null
-  }
+  },
+  retrieveProfile: {
+    status: "IDLE",
+    error: null
+  },
 }
 
 const userSlice = createSlice({
@@ -57,12 +64,35 @@ const userSlice = createSlice({
       state.login.status = "IDLE"
       state.authState = "AUTHENTICATED"
     })
+    builder.addCase(retrieveProfile.pending, (state) => {
+      state.retrieveProfile.status = "PENDING"
+      state.retrieveProfile.error = null
+    })
+    builder.addCase(retrieveProfile.rejected, (state, { error }) => {
+      state.retrieveProfile.status = "REJECTED"
+      state.retrieveProfile.error = (error as FirebaseError).message
+    })
+    builder.addCase(retrieveProfile.fulfilled, (state, { payload }: PayloadAction<UserProfile & { verified: boolean }>) => {
+      state.retrieveProfile.status = "IDLE"
+      state.avatarSrc = payload.avatarSrc
+      state.username = payload.username
+      state.displayedStatus = payload.displayedStatus
+      state.verified = payload.verified
+    })
+    builder.addCase(checkAccountVerification.fulfilled, (state, { payload }: PayloadAction<boolean>) => {
+      state.verified = payload
+    })
   }
 })
 
 export const verifyEmail = createAppAsyncThunk(
   "register/verifyEmail",
   (oobCode: string | null) => AuthService.verifyEmail(oobCode)
+)
+
+export const checkAccountVerification = createAppAsyncThunk(
+  "register/checkAccountVerification",
+  () => UserService.checkIfVerified()
 )
 
 export const loginMiddleware = createAppAsyncThunk(
@@ -78,6 +108,19 @@ export const loginMiddleware = createAppAsyncThunk(
 export const disconnectMiddleware = createAppAsyncThunk(
   "user/disconnect",
   () => AuthService.disconnect()
+)
+
+export const retrieveProfile = createAppAsyncThunk(
+  "user/retrieveProfile",
+  async () => {
+    const profileInfos = await UserService.getProfile()
+    const isVerified = await UserService.checkIfVerified()
+
+    return {
+      ...profileInfos,
+      verified: isVerified
+    }
+  }
 )
 
 export const { setAuthenticationState, setVerified } = userSlice.actions
