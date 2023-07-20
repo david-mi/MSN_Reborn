@@ -1,10 +1,12 @@
 import { fireEvent, waitFor } from "@testing-library/react";
 import PasswordForm from "./PasswordForm";
 import { PasswordValidation } from "@/utils/Validation";
-import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
+import { renderWithProviders } from "@/tests/utils";
 import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
 import { initialUserState } from "@/redux/slices/user/user";
 import { RootState } from "@/redux/store";
+
+const email = "user-register-mock@gmail.com"
 
 describe("PasswordForm", () => {
   let passwordValidation: PasswordValidation;
@@ -19,7 +21,7 @@ describe("PasswordForm", () => {
       },
       register: {
         user: {
-          email: "user-register-mock@gmail.com",
+          email: email,
           password: "",
           username: "user-test",
           avatarSrc: "avatartest.jpg"
@@ -100,9 +102,11 @@ describe("PasswordForm", () => {
     const submitButton = getByTestId("register-password-submit-button")
     fireEvent.click(submitButton)
 
-    await expectNeverOccurs(() => {
-      const errorElement = getByTestId("register-password-error")
-      expect(errorElement).toHaveTextContent(/.+/)
+    const submitErrorElement = getByTestId("register-password-submit-error")
+
+    await waitFor(() => {
+      expect(AuthEmulator.currentUser.email).toBe(email)
+      expect(submitErrorElement).toBeEmptyDOMElement()
     })
   });
 });
