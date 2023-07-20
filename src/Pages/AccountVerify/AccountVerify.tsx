@@ -29,7 +29,7 @@ function AccountVerify() {
   }, [])
 
   return (
-    <div className={styles.accountVerify}>
+    <div className={styles.accountVerify} data-testid="verify-account">
       <ModaleLayout title={"Vérification du compte"}>
         <div className={styles.content}>
           {accountVerifyComponents[status]}

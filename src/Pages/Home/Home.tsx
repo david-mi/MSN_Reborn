@@ -9,7 +9,7 @@ function Home() {
   }
 
   return (
-    <div>
+    <div data-testid="home">
       <h1>Home</h1>
       <button onClick={handleClick}>Se déconnecter</button>
     </div>

@@ -6,7 +6,7 @@ import FooterLinks from "@/Components/Shared/FooterLinks/FooterLinks";
 
 function Login() {
   return (
-    <div className={styles.login}>
+    <div className={styles.login} data-testid="login">
       <GradientLayout>
         <LoginForm />
         <FooterLinks>

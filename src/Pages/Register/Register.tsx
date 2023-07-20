@@ -24,7 +24,7 @@ function Register() {
   };
 
   return (
-    <div className={styles.register}>
+    <div className={styles.register} data-testid="register">
       <ModaleLayout title={registerComponents[registrationStep].title}>
         {registerComponents[registrationStep].component}
         <FooterLinks>
