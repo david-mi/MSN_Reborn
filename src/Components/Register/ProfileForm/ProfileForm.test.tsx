@@ -56,7 +56,7 @@ describe("ProfileForm", () => {
       },
     });
 
-    expectNeverOccurs(() => {
+    await expectNeverOccurs(() => {
       expect(avatarElement.src).toContain(base64Str)
     }, { timeout: 100 })
 
@@ -119,7 +119,7 @@ describe("ProfileForm", () => {
       },
     });
 
-    expectNeverOccurs(() => {
+    await expectNeverOccurs(() => {
       expect(avatarElement.src).toContain(base64Str)
     }, { timeout: 100 })
 

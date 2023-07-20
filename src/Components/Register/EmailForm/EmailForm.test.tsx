@@ -54,7 +54,7 @@ describe("EmailForm", () => {
     expect(submitButton).not.toBeDisabled()
     fireEvent.click(submitButton)
 
-    expectNeverOccurs(() => {
+    await expectNeverOccurs(() => {
       const errorElement = getByTestId("register-email-error")
       expect(errorElement).toHaveTextContent(/.+/)
     })

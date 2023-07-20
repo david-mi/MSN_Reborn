@@ -62,7 +62,6 @@ const userSlice = createSlice({
     })
     builder.addCase(loginMiddleware.fulfilled, (state) => {
       state.login.status = "IDLE"
-      state.authState = "AUTHENTICATED"
     })
     builder.addCase(retrieveProfile.pending, (state) => {
       state.retrieveProfile.status = "PENDING"

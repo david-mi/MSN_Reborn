@@ -54,7 +54,7 @@ function LoginForm() {
         />
         <small data-testid="login-email-error">{errors.email?.message}</small>
       </div>
-      <div className="issou">
+      <div>
         <label htmlFor="password">Mot de passe :</label>
         <input
           id="password"
@@ -75,7 +75,7 @@ function LoginForm() {
           theme="gradient"
           wait={status == "PENDING"}
           disabled={hasErrors}
-          data-testid="login-email-submit-button"
+          data-testid="login-submit-button"
           className={styles.submitButton}
         />
         <small data-testid="login-submit-error">{error}</small>

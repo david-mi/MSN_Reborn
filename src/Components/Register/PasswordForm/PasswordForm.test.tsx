@@ -100,7 +100,7 @@ describe("PasswordForm", () => {
     const submitButton = getByTestId("register-password-submit-button")
     fireEvent.click(submitButton)
 
-    expectNeverOccurs(() => {
+    await expectNeverOccurs(() => {
       const errorElement = getByTestId("register-password-error")
       expect(errorElement).toHaveTextContent(/.+/)
     })
