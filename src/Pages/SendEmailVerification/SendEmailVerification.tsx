@@ -8,13 +8,10 @@ import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
 import { checkIfVerifiedFromLocalStorage } from "@/redux/slices/user/user";
-import { useNavigate } from "react-router-dom";
 
 function SendEmailVerification() {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { submitStatus, submitError } = useAppSelector(state => state.register)
-  const isAccountVerified = useAppSelector(({ user }) => user.verified)
   const [toogleVerifyTimer, setToogleVerifyTimer] = useState(false)
   const verifyIntervals = 2000
   const verifyTimeLimit = 1000 * 60 * 2
@@ -51,12 +48,6 @@ function SendEmailVerification() {
       dispatch(checkIfVerifiedFromLocalStorage())
     }, verifyIntervals)
   }
-
-  useEffect(() => {
-    if (isAccountVerified) {
-      navigate("/")
-    }
-  }, [isAccountVerified])
 
   useEffect(() => {
     dispatch(sendVerificationEmail())

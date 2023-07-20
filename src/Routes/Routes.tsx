@@ -1,16 +1,24 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "@/App";
 import { Register, Login, AccountVerify, Home, SendEmailVerification } from "@/Pages"
-import { AuthRoutes, PrivateRoutes } from "."
-import VerifiedRoutes from "./VerifiedRoutes";
+import { AuthenticationRoutes, AuthenticatedRoutes, UnverifiedRoutes, VerifiedRoutes } from "."
 
-const browserRouter = createBrowserRouter([
+export const routesConfig = [
   {
     element: <App />,
     children: [
       {
-        element: <PrivateRoutes />,
+        element: <AuthenticatedRoutes />,
         children: [
+          {
+            element: <UnverifiedRoutes />,
+            children: [
+              {
+                path: "/send-email-verification",
+                element: <SendEmailVerification />,
+              },
+            ]
+          },
           {
             element: <VerifiedRoutes />,
             children: [
@@ -20,14 +28,10 @@ const browserRouter = createBrowserRouter([
               }
             ]
           },
-          {
-            path: "/send-email-verification",
-            element: <SendEmailVerification />,
-          },
         ]
       },
       {
-        element: <AuthRoutes />,
+        element: <AuthenticationRoutes />,
         children: [
           {
             path: "/register",
@@ -49,6 +53,8 @@ const browserRouter = createBrowserRouter([
       }
     ]
   }
-])
+]
+
+const browserRouter = createBrowserRouter(routesConfig)
 
 export default browserRouter
