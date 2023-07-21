@@ -13,15 +13,11 @@ export interface UserState extends UserProfile {
   authState: AuthenticationState
   verified: boolean
   accountVerification: {
-    status: ValidationStatus,
-    error: null | string
-  }
-  login: {
-    status: ValidationStatus,
+    status: ValidationStatus
     error: null | string
   }
   retrieveProfile: {
-    status: ValidationStatus,
+    status: ValidationStatus
     error: null | string
   }
 }

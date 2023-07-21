@@ -8,14 +8,14 @@ import { useForm } from "react-hook-form";
 import type { LoginFormFields } from "./types";
 import { EmailValidation, PasswordValidation } from "@/utils/Validation";
 import { DisplayedStatus } from "@/redux/slices/user/types";
-import { loginMiddleware } from "@/redux/slices/user/user";
+import { login } from "@/redux/slices/login/login";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import styles from "./loginForm.module.css"
 
 const passwordValidation = new PasswordValidation()
 
 function LoginForm() {
-  const { error, status } = useAppSelector(({ user }) => user.login)
+  const { submitError, submitStatus } = useAppSelector(({ login }) => login)
   const dispatch = useAppDispatch()
   const {
     register,
@@ -31,7 +31,7 @@ function LoginForm() {
   const hasErrors = Object.keys(errors).length > 0
 
   function onSubmit(formFields: LoginFormFields) {
-    dispatch(loginMiddleware(formFields))
+    dispatch(login(formFields))
   }
 
   function setRememberAuth({ target }: ChangeEvent<HTMLInputElement>) {
@@ -73,12 +73,12 @@ function LoginForm() {
         <Button
           title="Connexion"
           theme="gradient"
-          wait={status == "PENDING"}
+          wait={submitStatus == "PENDING"}
           disabled={hasErrors}
           data-testid="login-submit-button"
           className={styles.submitButton}
         />
-        <small data-testid="login-submit-error">{error}</small>
+        <small data-testid="login-submit-error">{submitError}</small>
       </div>
     </FormLayout>
   );

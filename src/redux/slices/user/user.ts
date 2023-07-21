@@ -2,23 +2,18 @@ import { UserState, AuthenticationState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
-import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
 import { UserProfile } from "./types";
 
 export const initialUserState: UserState = {
   avatarSrc: "",
   username: "",
-  authState: "PENDING",
-  verified: false,
   displayedStatus: "offline",
   personalMessage: "",
+  authState: "PENDING",
+  verified: false,
   accountVerification: {
     status: "PENDING",
-    error: null
-  },
-  login: {
-    status: "IDLE",
     error: null
   },
   retrieveProfile: {
@@ -31,11 +26,11 @@ const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
-    setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
-      state.authState = payload
-    },
     setVerified(state, { payload }: PayloadAction<boolean>) {
       state.verified = payload
+    },
+    setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
+      state.authState = payload
     }
   },
   extraReducers: (builder) => {
@@ -52,17 +47,6 @@ const userSlice = createSlice({
     builder.addCase(verifyEmail.fulfilled, (state) => {
       state.accountVerification.status = "IDLE"
       state.verified = true
-    })
-    builder.addCase(loginMiddleware.pending, (state) => {
-      state.login.status = "PENDING"
-      state.login.error = null
-    })
-    builder.addCase(loginMiddleware.rejected, (state, { error }) => {
-      state.login.status = "REJECTED"
-      state.login.error = (error as FirebaseError).message
-    })
-    builder.addCase(loginMiddleware.fulfilled, (state) => {
-      state.login.status = "IDLE"
     })
     builder.addCase(retrieveProfile.pending, (state) => {
       state.retrieveProfile.status = "PENDING"
@@ -101,16 +85,6 @@ export function checkIfVerifiedFromLocalStorage() {
   }
 }
 
-export const loginMiddleware = createAppAsyncThunk(
-  "user/login",
-  async (loginData: LoginFormFields) => {
-    const { email, password, displayedStatus, rememberAuth } = loginData
-
-    await AuthService.setPersitence(rememberAuth)
-    await AuthService.login(email, password)
-    await UserService.updateProfile({ displayedStatus })
-  })
-
 export const disconnectMiddleware = createAppAsyncThunk(
   "user/disconnect",
   () => AuthService.disconnect()
@@ -129,5 +103,5 @@ export const retrieveProfile = createAppAsyncThunk(
   }
 )
 
-export const { setAuthenticationState, setVerified } = userSlice.actions
+export const { setVerified, setAuthenticationState } = userSlice.actions
 export const userReducer = userSlice.reducer

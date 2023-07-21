@@ -5,6 +5,7 @@ import { expectNeverOccurs, renderWithProviders } from "@/tests/utils";
 import { RootState } from "@/redux/store";
 import type { Store } from "@/redux/types";
 import { initialUserState } from "@/redux/slices/user/user";
+import { initialLoginState } from "@/redux/slices/login/login";
 
 const { body } = document
 
@@ -19,10 +20,6 @@ describe("ProfileForm", () => {
 
   beforeEach(() => {
     preloadedStateAfterEmailStep = {
-
-      user: {
-        ...initialUserState
-      },
       register: {
         user: {
           email: "user-register-mock@gmail.com",
@@ -38,6 +35,12 @@ describe("ProfileForm", () => {
           getDefaultAvatarsStatus: "PENDING",
           getDefaultAvatarsError: null
         }
+      },
+      login: {
+        ...initialLoginState
+      },
+      user: {
+        ...initialUserState
       }
     };
 

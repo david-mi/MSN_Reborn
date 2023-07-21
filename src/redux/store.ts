@@ -1,9 +1,11 @@
 import { configureStore, PreloadedState, combineReducers } from "@reduxjs/toolkit";
 import { registerReducer } from "./slices/register/register";
 import { userReducer } from "./slices/user/user";
+import { loginReducer } from "./slices/login/login";
 
 const rootReducer = combineReducers({
   register: registerReducer,
+  login: loginReducer,
   user: userReducer
 })
 

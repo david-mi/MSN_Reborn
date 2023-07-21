@@ -4,6 +4,7 @@ import { PasswordValidation } from "@/utils/Validation";
 import { renderWithProviders } from "@/tests/utils";
 import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
 import { initialUserState } from "@/redux/slices/user/user";
+import { initialLoginState } from "@/redux/slices/login/login";
 import { RootState } from "@/redux/store";
 
 const email = "user-register-mock@gmail.com"
@@ -15,10 +16,6 @@ describe("PasswordForm", () => {
   beforeEach(() => {
     passwordValidation = new PasswordValidation();
     preloadedStateAfterProfileStep = {
-
-      user: {
-        ...initialUserState
-      },
       register: {
         user: {
           email: email,
@@ -34,6 +31,12 @@ describe("PasswordForm", () => {
           getDefaultAvatarsStatus: "PENDING",
           getDefaultAvatarsError: null
         }
+      },
+      login: {
+        ...initialLoginState
+      },
+      user: {
+        ...initialUserState
       }
     };
   });
