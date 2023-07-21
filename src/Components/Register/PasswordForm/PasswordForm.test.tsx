@@ -17,19 +17,21 @@ describe("PasswordForm", () => {
     passwordValidation = new PasswordValidation();
     preloadedStateAfterProfileStep = {
       register: {
-        user: {
+        userData: {
           email: email,
           password: "",
           username: "user-test",
           avatarSrc: "avatartest.jpg"
         },
         step: "PASSWORD",
-        submitStatus: "IDLE",
-        submitError: null,
-        profile: {
-          defaultAvatars: [],
-          getDefaultAvatarsStatus: "PENDING",
-          getDefaultAvatarsError: null
+        request: {
+          status: "IDLE",
+          error: null
+        },
+        defaultAvatars: [],
+        getDefaultAvatarsRequest: {
+          status: "IDLE",
+          error: null
         }
       },
       login: {
@@ -93,8 +95,8 @@ describe("PasswordForm", () => {
     });
   });
 
-  it("should submit the form with valid passwords and without displaying any errors", async () => {
-    const { getByTestId } = renderWithProviders(<PasswordForm />, { preloadedState: preloadedStateAfterProfileStep });
+  it("should submit the form with valid passwords and without displaying any errors, then register user", async () => {
+    const { getByTestId, } = renderWithProviders(<PasswordForm />, { preloadedState: preloadedStateAfterProfileStep });
 
     const passwordInput = getByTestId("register-password-input");
     fireEvent.change(passwordInput, { target: { value: "validPassword123!" } });

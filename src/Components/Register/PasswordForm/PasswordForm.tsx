@@ -15,10 +15,10 @@ function PasswordForm() {
     formState: { errors }
   } = useForm<PasswordFormFields>()
   const dispatch = useAppDispatch()
-  const { submitStatus, submitError } = useAppSelector(state => state.register)
+  const request = useAppSelector(({ register }) => register.request)
 
   const hasErrors = Object.keys(errors).length > 0
-  const preventFormSubmit = hasErrors || submitStatus === "PENDING"
+  const preventFormSubmit = hasErrors || request.status === "PENDING"
 
   async function onSubmit({ password }: PasswordFormFields) {
     dispatch(setPassword(password))
@@ -55,11 +55,11 @@ function PasswordForm() {
         <Button
           title="Suivant"
           theme="monochrome"
-          wait={submitStatus === "PENDING"}
+          wait={request.status === "PENDING"}
           data-testid="register-password-submit-button"
           disabled={preventFormSubmit}
         />
-        <small data-testid="register-password-submit-error">{submitError}</small>
+        <small data-testid="register-password-submit-error">{request.error}</small>
       </div>
     </FormLayout>
   )

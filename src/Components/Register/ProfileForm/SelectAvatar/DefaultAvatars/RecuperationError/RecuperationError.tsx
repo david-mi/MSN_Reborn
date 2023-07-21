@@ -4,7 +4,7 @@ import { getDefaultAvatars } from "@/redux/slices/register/register";
 import Button from "@/Components/Shared/Button/Button";
 
 function RecuperationError() {
-  const { getDefaultAvatarsError } = useAppSelector(({ register }) => register.profile)
+  const getDefaultAvatarsRequestError = useAppSelector(({ register }) => register.getDefaultAvatarsRequest.error)
   const dispatch = useAppDispatch()
 
   function handleClick() {
@@ -13,7 +13,7 @@ function RecuperationError() {
 
   return (
     <div className={styles.recuperationError}>
-      <small>{getDefaultAvatarsError}</small>
+      <small>{getDefaultAvatarsRequestError}</small>
       <Button
         title="Réessayer"
         theme="gradient"

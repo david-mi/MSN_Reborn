@@ -12,9 +12,8 @@ interface Props {
 }
 
 function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
-  const { getDefaultAvatarsStatus } = useAppSelector(({ register }) => register.profile)
+  const getDefaultAvatarsRequestStatus = useAppSelector(({ register }) => register.getDefaultAvatarsRequest.status)
   const { setValue, clearErrors } = useFormContext<ProfileFormFields>()
-
 
   function handleClick(imageUrl: string) {
     return function () {
@@ -23,11 +22,11 @@ function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
     }
   }
 
-  if (getDefaultAvatarsStatus === "PENDING") {
+  if (getDefaultAvatarsRequestStatus === "PENDING") {
     return <Loader className={styles.loader} />
   }
 
-  if (getDefaultAvatarsStatus === "REJECTED") {
+  if (getDefaultAvatarsRequestStatus === "REJECTED") {
     return <RecuperationError />
   }
 

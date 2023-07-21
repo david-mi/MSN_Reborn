@@ -11,7 +11,7 @@ import { handleVerifiedFromLocalStorage } from "@/redux/slices/user/user";
 
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
-  const { submitStatus, submitError } = useAppSelector(state => state.register)
+  const request = useAppSelector(({ register }) => register.request)
   const [toogleVerifyTimer, setToogleVerifyTimer] = useState(false)
   const verifyIntervals = 2000
   const verifyTimeLimit = 1000 * 60 * 2
@@ -62,7 +62,7 @@ function SendEmailVerification() {
     <div className={styles.container} data-testid="send-email-verification">
       <ModaleLayout title="Vérification de l'email">
         <div className={styles.sendEmailVerification}>
-          {submitStatus === "PENDING"
+          {request.status === "PENDING"
             ? <Loader className={styles.loader} size="3rem" />
             : <Instructions />
           }
@@ -81,7 +81,7 @@ function SendEmailVerification() {
               theme="monochrome"
               onClick={handleDisconnect}
             />
-            <small data-testid="register-verification-submit-error">{submitError}</small>
+            <small data-testid="register-verification-submit-error">{request.error}</small>
           </div>
         </div>
       </ModaleLayout>

@@ -6,8 +6,10 @@ import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
 
 export const initialLoginState: LoginSlice = {
-  submitStatus: "IDLE",
-  submitError: null,
+  request: {
+    status: "IDLE",
+    error: null
+  }
 }
 
 const loginSlice = createSlice({
@@ -16,15 +18,15 @@ const loginSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(loginAndUpdateDisplayStatus.pending, (state) => {
-      state.submitStatus = "PENDING"
-      state.submitError = null
+      state.request.status = "PENDING"
+      state.request.error = null
     })
     builder.addCase(loginAndUpdateDisplayStatus.rejected, (state, { error }) => {
-      state.submitStatus = "REJECTED"
-      state.submitError = (error as FirebaseError).message
+      state.request.status = "REJECTED"
+      state.request.error = (error as FirebaseError).message
     })
     builder.addCase(loginAndUpdateDisplayStatus.fulfilled, (state) => {
-      state.submitStatus = "IDLE"
+      state.request.status = "IDLE"
     })
   }
 })

@@ -16,11 +16,11 @@ function EmailForm() {
     setError
   } = useForm<EmailFormFields>()
   const dispatch = useAppDispatch()
-  const { submitStatus } = useAppSelector(state => state.register)
+  const request = useAppSelector(({ register }) => register.request)
   const unavailableEmailsRef = useRef(new Set<string>())
 
   const hasErrors = Object.keys(errors).length > 0
-  const preventFormSubmit = hasErrors || submitStatus === "PENDING"
+  const preventFormSubmit = hasErrors || request.status === "PENDING"
 
   async function onSubmit({ email }: EmailFormFields) {
     try {
@@ -56,9 +56,9 @@ function EmailForm() {
       <Button
         title="Suivant"
         theme="monochrome"
-        wait={submitStatus === "PENDING"}
-        data-testid="register-email-submit-button"
+        wait={request.status === "PENDING"}
         disabled={preventFormSubmit}
+        data-testid="register-email-submit-button"
       />
     </FormLayout>
   )

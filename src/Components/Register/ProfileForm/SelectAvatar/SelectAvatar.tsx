@@ -11,7 +11,8 @@ import type { ProfileFormFields } from "../types"
 function SelectAvatar() {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([])
   const dispatch = useAppDispatch()
-  const { defaultAvatars, getDefaultAvatarsStatus } = useAppSelector(state => state.register.profile)
+  const getDefaultAvatarsRequestStatus = useAppSelector(({ register }) => register.getDefaultAvatarsRequest.status)
+  const defaultAvatars = useAppSelector(({ register }) => register.defaultAvatars)
   const { formState: { errors } } = useFormContext<ProfileFormFields>()
 
   function loadNextPicture() {
@@ -31,12 +32,12 @@ function SelectAvatar() {
   }, [])
 
   useEffect(() => {
-    const isReadyToLoadFirstDefaultAvatar = getDefaultAvatarsStatus === "IDLE" && picturesComponents.length === 0
+    const isReadyToLoadFirstDefaultAvatar = getDefaultAvatarsRequestStatus === "IDLE" && picturesComponents.length === 0
 
     if (isReadyToLoadFirstDefaultAvatar) {
       setPicturesComponent([defaultAvatars[0]])
     }
-  }, [getDefaultAvatarsStatus])
+  }, [getDefaultAvatarsRequestStatus])
 
   return (
     <div className={styles.selectAvatar}>

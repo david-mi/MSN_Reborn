@@ -21,19 +21,21 @@ describe("ProfileForm", () => {
   beforeEach(() => {
     preloadedStateAfterEmailStep = {
       register: {
-        user: {
+        userData: {
           email: "user-register-mock@gmail.com",
           password: "",
           username: "",
           avatarSrc: ""
         },
         step: "PROFILE",
-        submitStatus: "IDLE",
-        submitError: null,
-        profile: {
-          defaultAvatars: [],
-          getDefaultAvatarsStatus: "PENDING",
-          getDefaultAvatarsError: null
+        request: {
+          status: "IDLE",
+          error: null
+        },
+        defaultAvatars: [],
+        getDefaultAvatarsRequest: {
+          status: "IDLE",
+          error: null
         }
       },
       login: {

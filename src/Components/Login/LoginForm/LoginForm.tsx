@@ -15,7 +15,7 @@ import styles from "./loginForm.module.css"
 const passwordValidation = new PasswordValidation()
 
 function LoginForm() {
-  const { submitError, submitStatus } = useAppSelector(({ login }) => login)
+  const loginRequest = useAppSelector(({ login }) => login.request)
   const dispatch = useAppDispatch()
   const {
     register,
@@ -73,12 +73,12 @@ function LoginForm() {
         <Button
           title="Connexion"
           theme="gradient"
-          wait={submitStatus == "PENDING"}
+          wait={loginRequest.status == "PENDING"}
           disabled={hasErrors}
           data-testid="login-submit-button"
           className={styles.submitButton}
         />
-        <small data-testid="login-submit-error">{submitError}</small>
+        <small data-testid="login-submit-error">{loginRequest.error}</small>
       </div>
     </FormLayout>
   );

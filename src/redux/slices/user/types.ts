@@ -12,11 +12,11 @@ export interface UserProfile {
 export interface UserSlice extends UserProfile {
   authState: AuthenticationState
   verified: boolean
-  accountVerification: {
+  accountVerificationRequest: {
     status: ValidationStatus
     error: null | string
   }
-  getProfile: {
+  getProfileRequest: {
     status: ValidationStatus
     error: null | string
   }

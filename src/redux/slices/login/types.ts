@@ -1,6 +1,8 @@
 export type RequestStatus = "IDLE" | "PENDING" | "REJECTED"
 
 export interface LoginSlice {
-  submitStatus: RequestStatus
-  submitError: string | null
+  request: {
+    status: RequestStatus
+    error: string | null
+  }
 }

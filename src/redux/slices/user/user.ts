@@ -12,11 +12,11 @@ export const initialUserState: UserSlice = {
   personalMessage: "",
   authState: "PENDING",
   verified: false,
-  accountVerification: {
+  accountVerificationRequest: {
     status: "PENDING",
     error: null
   },
-  getProfile: {
+  getProfileRequest: {
     status: "IDLE",
     error: null
   },
@@ -35,29 +35,29 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(verifyEmail.pending, (state) => {
-      state.accountVerification.status = "PENDING"
-      state.accountVerification.error = null
+      state.accountVerificationRequest.status = "PENDING"
+      state.accountVerificationRequest.error = null
     })
     builder.addCase(verifyEmail.rejected, (state, { error }) => {
-      state.accountVerification.status = "REJECTED"
-      state.accountVerification.error = error.code === "auth/invalid-action-code"
+      state.accountVerificationRequest.status = "REJECTED"
+      state.accountVerificationRequest.error = error.code === "auth/invalid-action-code"
         ? "Code de validation invalide"
         : error.message!
     })
     builder.addCase(verifyEmail.fulfilled, (state) => {
-      state.accountVerification.status = "IDLE"
+      state.accountVerificationRequest.status = "IDLE"
       state.verified = true
     })
     builder.addCase(getProfile.pending, (state) => {
-      state.getProfile.status = "PENDING"
-      state.getProfile.error = null
+      state.getProfileRequest.status = "PENDING"
+      state.getProfileRequest.error = null
     })
     builder.addCase(getProfile.rejected, (state, { error }) => {
-      state.getProfile.status = "REJECTED"
-      state.getProfile.error = (error as FirebaseError).message
+      state.getProfileRequest.status = "REJECTED"
+      state.getProfileRequest.error = (error as FirebaseError).message
     })
     builder.addCase(getProfile.fulfilled, (state, { payload }: PayloadAction<UserProfile & { verified: boolean }>) => {
-      state.getProfile.status = "IDLE"
+      state.getProfileRequest.status = "IDLE"
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username
       state.displayedStatus = payload.displayedStatus

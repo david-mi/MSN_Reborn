@@ -6,19 +6,21 @@ import { AuthService, UserService, StorageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 
 const initialProfileState: RegisterSlice = {
-  user: {
+  userData: {
     email: "",
     password: "",
     username: "",
     avatarSrc: ""
   },
   step: "EMAIL",
-  submitStatus: "IDLE",
-  submitError: null,
-  profile: {
-    defaultAvatars: [],
-    getDefaultAvatarsStatus: "IDLE",
-    getDefaultAvatarsError: null
+  request: {
+    status: "IDLE",
+    error: null,
+  },
+  defaultAvatars: [],
+  getDefaultAvatarsRequest: {
+    status: "IDLE",
+    error: null
   }
 }
 
@@ -27,12 +29,12 @@ const registerSlice = createSlice({
   initialState: initialProfileState,
   reducers: {
     completeProfileStep(state, { payload }: PayloadAction<ProfileFormFields>) {
-      state.user.avatarSrc = payload.avatarSrc
-      state.user.username = payload.username
+      state.userData.avatarSrc = payload.avatarSrc
+      state.userData.username = payload.username
       state.step = "PASSWORD"
     },
     setPassword(state, { payload }: PayloadAction<string>) {
-      state.user.password = payload
+      state.userData.password = payload
     },
     setStep(state, { payload }: PayloadAction<RegistrationStep>) {
       state.step = payload
@@ -40,50 +42,50 @@ const registerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(registerIfEmailIsAvailable.pending, (state) => {
-      state.submitStatus = "PENDING"
+      state.request.status = "PENDING"
     })
     builder.addCase(registerIfEmailIsAvailable.rejected, (state) => {
-      state.submitStatus = "REJECTED"
+      state.request.status = "REJECTED"
     })
     builder.addCase(registerIfEmailIsAvailable.fulfilled, (state, { payload }) => {
-      state.submitStatus = "IDLE"
-      state.user.email = payload
+      state.request.status = "IDLE"
+      state.userData.email = payload
       state.step = "PROFILE"
-      state.profile.getDefaultAvatarsStatus = "PENDING"
+      state.getDefaultAvatarsRequest.status = "PENDING"
     })
     builder.addCase(getDefaultAvatars.pending, (state) => {
-      state.profile.getDefaultAvatarsStatus = "PENDING"
-      state.profile.getDefaultAvatarsError = null
+      state.getDefaultAvatarsRequest.status = "PENDING"
+      state.getDefaultAvatarsRequest.error = null
     })
     builder.addCase(getDefaultAvatars.rejected, (state, { payload }) => {
-      state.profile.getDefaultAvatarsStatus = "REJECTED"
-      state.profile.getDefaultAvatarsError = payload as string
+      state.getDefaultAvatarsRequest.status = "REJECTED"
+      state.getDefaultAvatarsRequest.error = payload as string
     })
     builder.addCase(getDefaultAvatars.fulfilled, (state, { payload }) => {
-      state.profile.getDefaultAvatarsStatus = "IDLE"
-      state.profile.defaultAvatars = payload
+      state.getDefaultAvatarsRequest.status = "IDLE"
+      state.defaultAvatars = payload
     })
     builder.addCase(createUserAndSetProfile.pending, (state) => {
-      state.submitStatus = "PENDING"
-      state.submitError = null
+      state.request.status = "PENDING"
+      state.request.error = null
     })
     builder.addCase(createUserAndSetProfile.rejected, (state, { payload, error }) => {
-      state.submitStatus = "REJECTED"
-      state.submitError = payload || (error as FirebaseError)?.message || "Une erreur est survenue"
+      state.request.status = "REJECTED"
+      state.request.error = payload || (error as FirebaseError)?.message || "Une erreur est survenue"
     })
     builder.addCase(createUserAndSetProfile.fulfilled, (state) => {
-      state.submitStatus = "IDLE"
+      state.request.status = "IDLE"
     })
     builder.addCase(sendVerificationEmail.pending, (state) => {
-      state.submitStatus = "PENDING"
-      state.submitError = null
+      state.request.status = "PENDING"
+      state.request.error = null
     })
     builder.addCase(sendVerificationEmail.rejected, (state, { error }) => {
-      state.submitStatus = "REJECTED"
-      state.submitError = error.message || "L'envoi du mail de confirmation à échoué"
+      state.request.status = "REJECTED"
+      state.request.error = error.message || "L'envoi du mail de confirmation à échoué"
     })
     builder.addCase(sendVerificationEmail.fulfilled, (state) => {
-      state.submitStatus = "IDLE"
+      state.request.status = "IDLE"
     })
   }
 })
@@ -120,7 +122,7 @@ export const getDefaultAvatars = createAppAsyncThunk(
 export const createUserAndSetProfile = createAppAsyncThunk(
   "register/createUserAndSetProfile",
   async (_, { getState, rejectWithValue }) => {
-    const { email, password, ...profileData } = getState().register.user
+    const { email, password, ...profileData } = getState().register.userData
     await AuthService.createUser(email, password)
 
     try {

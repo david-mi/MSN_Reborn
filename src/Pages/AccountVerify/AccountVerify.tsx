@@ -8,7 +8,7 @@ import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
 import AccountVerified from "@/Components/AccountVerify/AccountVerified/AccountVerified";
 
 function AccountVerify() {
-  const { status, error } = useAppSelector(({ user }) => user.accountVerification)
+  const { status, error } = useAppSelector(({ user }) => user.accountVerificationRequest)
   const dispatch = useAppDispatch()
   const [params] = useSearchParams()
   const oobCode = params.get("oobCode")
