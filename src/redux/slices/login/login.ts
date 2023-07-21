@@ -15,22 +15,22 @@ const loginSlice = createSlice({
   initialState: initialLoginState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(login.pending, (state) => {
+    builder.addCase(loginAndUpdateDisplayStatus.pending, (state) => {
       state.submitStatus = "PENDING"
       state.submitError = null
     })
-    builder.addCase(login.rejected, (state, { error }) => {
+    builder.addCase(loginAndUpdateDisplayStatus.rejected, (state, { error }) => {
       state.submitStatus = "REJECTED"
       state.submitError = (error as FirebaseError).message
     })
-    builder.addCase(login.fulfilled, (state) => {
+    builder.addCase(loginAndUpdateDisplayStatus.fulfilled, (state) => {
       state.submitStatus = "IDLE"
     })
   }
 })
 
-export const login = createAppAsyncThunk(
-  "user/login",
+export const loginAndUpdateDisplayStatus = createAppAsyncThunk(
+  "user/loginAndUpdateDisplayStatus",
   async (loginData: LoginFormFields) => {
     const { email, password, displayedStatus, rememberAuth } = loginData
 

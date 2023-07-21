@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import type { PasswordFormFields } from "./types"
 import { PasswordValidation } from "@/utils/Validation"
-import { createUser, setPassword, } from "@/redux/slices/register/register"
+import { createUserAndSetProfile, setPassword, } from "@/redux/slices/register/register"
 
 const passwordValidation = new PasswordValidation()
 
@@ -22,7 +22,7 @@ function PasswordForm() {
 
   async function onSubmit({ password }: PasswordFormFields) {
     dispatch(setPassword(password))
-    dispatch(createUser())
+    dispatch(createUserAndSetProfile())
   }
 
   return (

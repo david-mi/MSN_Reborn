@@ -16,7 +16,7 @@ export interface UserSlice extends UserProfile {
     status: ValidationStatus
     error: null | string
   }
-  retrieveProfile: {
+  getProfile: {
     status: ValidationStatus
     error: null | string
   }

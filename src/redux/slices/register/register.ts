@@ -39,39 +39,39 @@ const registerSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(registerEmailMiddleware.pending, (state) => {
+    builder.addCase(registerIfEmailIsAvailable.pending, (state) => {
       state.submitStatus = "PENDING"
     })
-    builder.addCase(registerEmailMiddleware.rejected, (state) => {
+    builder.addCase(registerIfEmailIsAvailable.rejected, (state) => {
       state.submitStatus = "REJECTED"
     })
-    builder.addCase(registerEmailMiddleware.fulfilled, (state, { payload }) => {
+    builder.addCase(registerIfEmailIsAvailable.fulfilled, (state, { payload }) => {
       state.submitStatus = "IDLE"
       state.user.email = payload
       state.step = "PROFILE"
       state.profile.getDefaultAvatarsStatus = "PENDING"
     })
-    builder.addCase(setDefaultAvatars.pending, (state) => {
+    builder.addCase(getDefaultAvatars.pending, (state) => {
       state.profile.getDefaultAvatarsStatus = "PENDING"
       state.profile.getDefaultAvatarsError = null
     })
-    builder.addCase(setDefaultAvatars.rejected, (state, { payload }) => {
+    builder.addCase(getDefaultAvatars.rejected, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "REJECTED"
       state.profile.getDefaultAvatarsError = payload as string
     })
-    builder.addCase(setDefaultAvatars.fulfilled, (state, { payload }) => {
+    builder.addCase(getDefaultAvatars.fulfilled, (state, { payload }) => {
       state.profile.getDefaultAvatarsStatus = "IDLE"
       state.profile.defaultAvatars = payload
     })
-    builder.addCase(createUser.pending, (state) => {
+    builder.addCase(createUserAndSetProfile.pending, (state) => {
       state.submitStatus = "PENDING"
       state.submitError = null
     })
-    builder.addCase(createUser.rejected, (state, { payload, error }) => {
+    builder.addCase(createUserAndSetProfile.rejected, (state, { payload, error }) => {
       state.submitStatus = "REJECTED"
       state.submitError = payload || (error as FirebaseError)?.message || "Une erreur est survenue"
     })
-    builder.addCase(createUser.fulfilled, (state) => {
+    builder.addCase(createUserAndSetProfile.fulfilled, (state) => {
       state.submitStatus = "IDLE"
     })
     builder.addCase(sendVerificationEmail.pending, (state) => {
@@ -88,13 +88,13 @@ const registerSlice = createSlice({
   }
 })
 
-interface RegisterEmailMiddlewarePayload {
+interface RegisterIfEmailIsAvailablePayload {
   email: string,
 }
 
-export const registerEmailMiddleware = createAppAsyncThunk(
+export const registerIfEmailIsAvailable = createAppAsyncThunk(
   "register/email",
-  async ({ email }: RegisterEmailMiddlewarePayload, { rejectWithValue }) => {
+  async ({ email }: RegisterIfEmailIsAvailablePayload, { rejectWithValue }) => {
     try {
       await AuthService.checkDatabaseEmailAvailability(email)
       return email
@@ -104,7 +104,7 @@ export const registerEmailMiddleware = createAppAsyncThunk(
     }
   })
 
-export const setDefaultAvatars = createAppAsyncThunk(
+export const getDefaultAvatars = createAppAsyncThunk(
   "register/getDefaultAvatars",
   async (_, { rejectWithValue }) => {
     try {
@@ -117,8 +117,8 @@ export const setDefaultAvatars = createAppAsyncThunk(
     }
   })
 
-export const createUser = createAppAsyncThunk(
-  "register/createUser",
+export const createUserAndSetProfile = createAppAsyncThunk(
+  "register/createUserAndSetProfile",
   async (_, { getState, rejectWithValue }) => {
     const { email, password, ...profileData } = getState().register.user
     await AuthService.createUser(email, password)

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react"
 import styles from "./selectAvatar.module.css"
-import { setDefaultAvatars } from "@/redux/slices/register/register"
+import { getDefaultAvatars } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import DefaultAvatars from "./DefaultAvatars/DefaultAvatars"
 import AddOrPreview from "./AddOrPreview/AddOrPreview"
@@ -27,7 +27,7 @@ function SelectAvatar() {
   }
 
   useEffect(() => {
-    dispatch(setDefaultAvatars())
+    dispatch(getDefaultAvatars())
   }, [])
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import styles from "./recuperationError.module.css";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { setDefaultAvatars } from "@/redux/slices/register/register";
+import { getDefaultAvatars } from "@/redux/slices/register/register";
 import Button from "@/Components/Shared/Button/Button";
 
 function RecuperationError() {
@@ -8,7 +8,7 @@ function RecuperationError() {
   const dispatch = useAppDispatch()
 
   function handleClick() {
-    dispatch(setDefaultAvatars())
+    dispatch(getDefaultAvatars())
   }
 
   return (

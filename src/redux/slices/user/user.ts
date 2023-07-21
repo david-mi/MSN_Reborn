@@ -16,7 +16,7 @@ export const initialUserState: UserSlice = {
     status: "PENDING",
     error: null
   },
-  retrieveProfile: {
+  getProfile: {
     status: "IDLE",
     error: null
   },
@@ -48,16 +48,16 @@ const userSlice = createSlice({
       state.accountVerification.status = "IDLE"
       state.verified = true
     })
-    builder.addCase(retrieveProfile.pending, (state) => {
-      state.retrieveProfile.status = "PENDING"
-      state.retrieveProfile.error = null
+    builder.addCase(getProfile.pending, (state) => {
+      state.getProfile.status = "PENDING"
+      state.getProfile.error = null
     })
-    builder.addCase(retrieveProfile.rejected, (state, { error }) => {
-      state.retrieveProfile.status = "REJECTED"
-      state.retrieveProfile.error = (error as FirebaseError).message
+    builder.addCase(getProfile.rejected, (state, { error }) => {
+      state.getProfile.status = "REJECTED"
+      state.getProfile.error = (error as FirebaseError).message
     })
-    builder.addCase(retrieveProfile.fulfilled, (state, { payload }: PayloadAction<UserProfile & { verified: boolean }>) => {
-      state.retrieveProfile.status = "IDLE"
+    builder.addCase(getProfile.fulfilled, (state, { payload }: PayloadAction<UserProfile & { verified: boolean }>) => {
+      state.getProfile.status = "IDLE"
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username
       state.displayedStatus = payload.displayedStatus
@@ -74,7 +74,7 @@ export const verifyEmail = createAppAsyncThunk(
   }
 )
 
-export function checkIfVerifiedFromLocalStorage() {
+export function handleVerifiedFromLocalStorage() {
   return (dispatch: AppThunkDispatch) => {
     const hasVerifiedKeyInStorage = localStorage.getItem("verified")
 
@@ -85,13 +85,13 @@ export function checkIfVerifiedFromLocalStorage() {
   }
 }
 
-export const disconnectMiddleware = createAppAsyncThunk(
+export const disconnect = createAppAsyncThunk(
   "user/disconnect",
   () => AuthService.disconnect()
 )
 
-export const retrieveProfile = createAppAsyncThunk(
-  "user/retrieveProfile",
+export const getProfile = createAppAsyncThunk(
+  "user/getProfile",
   async () => {
     const profileInfos = await UserService.getProfile()
     const isVerified = await UserService.checkIfVerified()

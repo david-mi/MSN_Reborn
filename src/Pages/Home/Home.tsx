@@ -1,11 +1,11 @@
 import { useAppDispatch } from "@/redux/hooks";
-import { disconnectMiddleware } from "@/redux/slices/user/user";
+import { disconnect } from "@/redux/slices/user/user";
 
 function Home() {
   const dispatch = useAppDispatch()
 
   function handleClick() {
-    dispatch(disconnectMiddleware())
+    dispatch(disconnect())
   }
 
   return (

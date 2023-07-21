@@ -3,7 +3,7 @@ import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
 import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
-import { registerEmailMiddleware } from "@/redux/slices/register/register"
+import { registerIfEmailIsAvailable } from "@/redux/slices/register/register"
 import { EmailValidation } from "@/utils/Validation"
 import type { EmailFormFields } from "./types"
 import { AuthService } from "@/Services"
@@ -24,7 +24,7 @@ function EmailForm() {
 
   async function onSubmit({ email }: EmailFormFields) {
     try {
-      await dispatch(registerEmailMiddleware({ email })).unwrap()
+      await dispatch(registerIfEmailIsAvailable({ email })).unwrap()
     } catch (error) {
       if (error === AuthService.errorsMessages.EMAIL_UNAVAILABLE) {
         unavailableEmailsRef.current.add(email)

@@ -2,12 +2,12 @@ import styles from "./sendEmailVerification.module.css";
 import Button from "@/Components/Shared/Button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
-import { disconnectMiddleware } from "@/redux/slices/user/user";
+import { disconnect } from "@/redux/slices/user/user";
 import { useEffect, useRef, useState } from "react";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
 import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
-import { checkIfVerifiedFromLocalStorage } from "@/redux/slices/user/user";
+import { handleVerifiedFromLocalStorage } from "@/redux/slices/user/user";
 
 function SendEmailVerification() {
   const dispatch = useAppDispatch()
@@ -24,7 +24,7 @@ function SendEmailVerification() {
   }
 
   function handleDisconnect() {
-    dispatch(disconnectMiddleware())
+    dispatch(disconnect())
   }
 
   /**
@@ -45,7 +45,7 @@ function SendEmailVerification() {
     }
 
     verifyIntervalIdRef.current = setInterval(() => {
-      dispatch(checkIfVerifiedFromLocalStorage())
+      dispatch(handleVerifiedFromLocalStorage())
     }, verifyIntervals)
   }
 

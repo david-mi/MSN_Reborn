@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import type { LoginFormFields } from "./types";
 import { EmailValidation, PasswordValidation } from "@/utils/Validation";
 import { DisplayedStatus } from "@/redux/slices/user/types";
-import { login } from "@/redux/slices/login/login";
+import { loginAndUpdateDisplayStatus } from "@/redux/slices/login/login";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import styles from "./loginForm.module.css"
 
@@ -31,7 +31,7 @@ function LoginForm() {
   const hasErrors = Object.keys(errors).length > 0
 
   function onSubmit(formFields: LoginFormFields) {
-    dispatch(login(formFields))
+    dispatch(loginAndUpdateDisplayStatus(formFields))
   }
 
   function setRememberAuth({ target }: ChangeEvent<HTMLInputElement>) {
