@@ -1,11 +1,11 @@
-import { UserState, AuthenticationState } from "./types";
+import { UserSlice, AuthenticationState } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { UserProfile } from "./types";
 
-export const initialUserState: UserState = {
+export const initialUserState: UserSlice = {
   avatarSrc: "",
   username: "",
   displayedStatus: "offline",

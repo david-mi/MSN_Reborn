@@ -9,7 +9,7 @@ export interface UserProfile {
   displayedStatus: DisplayedStatus
 }
 
-export interface UserState extends UserProfile {
+export interface UserSlice extends UserProfile {
   authState: AuthenticationState
   verified: boolean
   accountVerification: {

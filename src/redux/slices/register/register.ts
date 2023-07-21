@@ -1,11 +1,11 @@
-import type { ProfileState, RegistrationStep } from "./types";
+import type { RegisterSlice, RegistrationStep } from "./types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService, StorageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 
-const initialProfileState: ProfileState = {
+const initialProfileState: RegisterSlice = {
   user: {
     email: "",
     password: "",

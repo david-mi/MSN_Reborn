@@ -2,7 +2,7 @@
 
 export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD"
 export type ValidationStatus = "IDLE" | "PENDING" | "REJECTED"
-export interface ProfileState {
+export interface RegisterSlice {
   user: {
     email: string
     password: string
