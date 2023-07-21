@@ -3,7 +3,7 @@ import { deleteDoc, doc } from "firebase/firestore"
 import { createUserWithEmailAndPassword, sendEmailVerification, applyActionCode, signOut } from "firebase/auth"
 import { setDoc } from "firebase/firestore";
 import { firebase } from "@/firebase/config"
-import type { UserProfile } from "@/Services/User/User";
+import { UserProfile } from "@/redux/slices/user/types";
 
 export class AuthEmulator extends Emulator {
   static async deleteAllUsers() {
@@ -55,12 +55,13 @@ export class AuthEmulator extends Emulator {
     return foundOobDetails.oobCode
   }
 
-  public static setUserProfile(profileData: Omit<UserProfile, "displayedStatus">) {
+  public static setUserProfile(profileData: Pick<UserProfile, "avatarSrc" | "username">) {
     const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     return setDoc(profilesRef, {
       ...profileData,
-      displayedStatus: "offline"
+      displayedStatus: "offline",
+      personalMessage: ""
     })
   }
 }

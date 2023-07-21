@@ -1,13 +1,7 @@
 import { reload } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
-import { DisplayedStatus } from "@/redux/slices/user/types";
-
-export interface UserProfile {
-  avatarSrc: string
-  username: string
-  displayedStatus: DisplayedStatus
-}
+import { UserProfile } from "@/redux/slices/user/types";
 
 export class UserService {
 
@@ -20,12 +14,13 @@ export class UserService {
     return currentUser
   }
 
-  static setProfile(profileData: Omit<UserProfile, "displayedStatus">) {
+  static setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username">) {
     const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     return setDoc(profilesRef, {
       ...profileData,
-      displayedStatus: "offline"
+      displayedStatus: "offline",
+      personalMessage: ""
     })
   }
 

@@ -3,7 +3,7 @@ import { UserService } from ".."
 import { firebase } from "@/firebase/config"
 import { fetchSignInMethodsForEmail } from "firebase/auth"
 import { setDoc, doc } from "firebase/firestore"
-import type { UserProfile } from "./User"
+import { UserProfile } from "@/redux/slices/user/types"
 
 describe("UserService", () => {
   describe("getProfile", () => {
@@ -17,9 +17,11 @@ describe("UserService", () => {
       const currentUser = firebase.auth.currentUser!
 
       const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
-      const profileInfosToSet: Omit<UserProfile, "displayedStatus"> = {
+      const profileInfosToSet: UserProfile = {
         avatarSrc: "avatar",
-        username: "patrick"
+        username: "patrick",
+        displayedStatus: "away",
+        personalMessage: "hello les potes"
       }
 
       await setDoc(userProfileRef, profileInfosToSet)
@@ -39,7 +41,7 @@ describe("UserService", () => {
       const email = `user-${crypto.randomUUID()}@email.com`
       await AuthEmulator.createUser(email)
 
-      const profileInfosToUpdate: Omit<UserProfile, "displayedStatus"> = {
+      const profileInfosToUpdate: Pick<UserProfile, "avatarSrc" | "username"> = {
         avatarSrc: "picture",
         username: "jean"
       }
@@ -49,7 +51,8 @@ describe("UserService", () => {
 
       expect(updatedProfile).toEqual({
         ...profileInfosToUpdate,
-        displayedStatus: "offline"
+        displayedStatus: "offline",
+        personalMessage: ""
       })
     })
   })

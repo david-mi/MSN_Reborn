@@ -4,7 +4,7 @@ import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
-import { UserProfile } from "@/Services/User/User";
+import { UserProfile } from "./types";
 
 export const initialUserState: UserState = {
   avatarSrc: "",
@@ -12,6 +12,7 @@ export const initialUserState: UserState = {
   authState: "PENDING",
   verified: false,
   displayedStatus: "offline",
+  personalMessage: "",
   accountVerification: {
     status: "PENDING",
     error: null
