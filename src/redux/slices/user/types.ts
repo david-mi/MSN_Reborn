@@ -1,5 +1,6 @@
+import type { RequestStatus } from "../types"
+
 export type AuthenticationState = "PENDING" | "AUTHENTICATED" | "DISCONNECTED"
-export type ValidationStatus = "IDLE" | "PENDING" | "REJECTED"
 export type DisplayedStatus = "online" | "busy" | "beRightBack" | "away" | "onThePhone" | "outToLunch" | "offline"
 
 export interface UserProfile {
@@ -13,11 +14,11 @@ export interface UserSlice extends UserProfile {
   authState: AuthenticationState
   verified: boolean
   accountVerificationRequest: {
-    status: ValidationStatus
+    status: RequestStatus
     error: null | string
   }
   getProfileRequest: {
-    status: ValidationStatus
+    status: RequestStatus
     error: null | string
   }
 }

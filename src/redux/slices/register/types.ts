@@ -1,7 +1,7 @@
 
+import type { RequestStatus } from "../types"
 
 export type RegistrationStep = "EMAIL" | "PROFILE" | "PASSWORD"
-export type RequestStatus = "IDLE" | "PENDING" | "REJECTED"
 export interface RegisterSlice {
   userData: {
     email: string

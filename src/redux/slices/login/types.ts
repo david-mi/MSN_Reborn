@@ -1,4 +1,4 @@
-export type RequestStatus = "IDLE" | "PENDING" | "REJECTED"
+import type { RequestStatus } from "../types"
 
 export interface LoginSlice {
   request: {

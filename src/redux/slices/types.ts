@@ -1,0 +1,1 @@
+export type RequestStatus = "IDLE" | "PENDING" | "REJECTED"
