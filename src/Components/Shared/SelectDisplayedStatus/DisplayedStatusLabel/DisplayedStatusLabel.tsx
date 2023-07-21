@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import ArrowIcon from "../../Icons/ArrowIcon/ArrowIcon";
+import { ArrowIcon } from "../..";
 import styles from "./displayedStatusLabel.module.css";
 
 interface Props {

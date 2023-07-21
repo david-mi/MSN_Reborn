@@ -1,5 +1,5 @@
-import styles from "./modaleLayout.module.css"
 import msnLogo from "/msn-logo.png"
+import styles from "./modaleLayout.module.css"
 
 export interface Props {
   title: string

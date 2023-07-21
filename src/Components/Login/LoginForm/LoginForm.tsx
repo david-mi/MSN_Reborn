@@ -1,15 +1,11 @@
 import { ChangeEvent } from "react";
-import FormLayout from "@/Components/Shared/FormLayout/FormLayout";
-import Avatar from "@/Components/Shared/Avatar/Avatar";
-import Button from "@/Components/Shared/Button/Button";
-import Checkbox from "@/Components/Shared/Checkbox/Checkbox";
-import SelectDisplayedStatus from "@/Components/Shared/SelectDisplayedStatus/SelectDisplayedStatus";
 import { useForm } from "react-hook-form";
-import type { LoginFormFields } from "./types";
+import { Avatar, Button, Checkbox, SelectDisplayedStatus, FormLayout } from "@/Components/Shared"
 import { EmailValidation, PasswordValidation } from "@/utils/Validation";
-import { DisplayedStatus } from "@/redux/slices/user/types";
-import { loginAndUpdateDisplayStatus } from "@/redux/slices/login/login";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { loginAndUpdateDisplayStatus } from "@/redux/slices/login/login";
+import type { DisplayedStatus } from "@/redux/slices/user/types";
+import type { LoginFormFields } from "./types";
 import styles from "./loginForm.module.css"
 
 const passwordValidation = new PasswordValidation()

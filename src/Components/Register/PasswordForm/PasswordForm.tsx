@@ -1,10 +1,9 @@
-import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
-import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
+import { Button, FormLayout } from "@/Components/Shared"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { createUserAndSetProfile, setPassword, } from "@/redux/slices/register/register"
 import type { PasswordFormFields } from "./types"
 import { PasswordValidation } from "@/utils/Validation"
-import { createUserAndSetProfile, setPassword, } from "@/redux/slices/register/register"
 
 const passwordValidation = new PasswordValidation()
 

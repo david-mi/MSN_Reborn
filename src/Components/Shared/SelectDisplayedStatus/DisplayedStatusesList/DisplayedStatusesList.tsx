@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction, MouseEvent } from "react";
-import styles from "./displayedStatusesList.module.css";
 import statuses from "../statusesData";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
-import ImageLoadWrapper from "../../ImageLoadWrapper/ImageLoadWrapper";
+import { ImageLoadWrapper } from "../..";
+import styles from "./displayedStatusesList.module.css";
 
 interface Props {
   setStatusSentence: Dispatch<SetStateAction<string>>

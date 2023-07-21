@@ -1,11 +1,10 @@
-import { useSearchParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { verifyEmail } from "@/redux/slices/user/user";
-import styles from "./accountVerify.module.css";
-import Loader from "@/Components/Shared/Loader/Loader";
-import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
+import { Loader, ModaleLayout } from "@/Components/Shared";
 import AccountVerified from "@/Components/AccountVerify/AccountVerified/AccountVerified";
+import styles from "./accountVerify.module.css";
 
 function AccountVerify() {
   const { status, error } = useAppSelector(({ user }) => user.accountVerificationRequest)

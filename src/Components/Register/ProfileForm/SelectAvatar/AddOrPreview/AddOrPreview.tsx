@@ -1,11 +1,10 @@
-import { ChangeEvent } from "react"
-import Avatar from "@/Components/Shared/Avatar/Avatar";
-import styles from "./addOrPreview.module.css";
-import AddImageIcon from "@/Components/Shared/Icons/AddImageIcon/AddImageIcon";
+import type { ChangeEvent } from "react"
+import { Avatar, AddImageIcon } from "@/Components/Shared";
 import { useFormContext } from "react-hook-form";
 import { ProfileValidation } from "@/utils/Validation/";
-import type { ProfileFormFields } from "../../types";
 import { convertFileToBase64 } from "@/utils/convertFileToBase64";
+import type { ProfileFormFields } from "../../types";
+import styles from "./addOrPreview.module.css";
 
 function AddOrPreview() {
   const { setError, setValue, watch, clearErrors } = useFormContext<ProfileFormFields>()

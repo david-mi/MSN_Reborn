@@ -1,12 +1,11 @@
+import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { ProfileValidation } from "@/utils/Validation/"
-import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
+import { FormLayout, Button } from "@/Components/Shared"
 import SelectAvatar from "./SelectAvatar/SelectAvatar"
-import Button from "@/Components/Shared/Button/Button"
-import { completeProfileStep } from "@/redux/slices/register/register"
 import { useAppDispatch } from "@/redux/hooks"
+import { completeProfileStep } from "@/redux/slices/register/register"
 import { ProfileFormFields } from "./types"
-import { useEffect } from "react"
 
 type Props = React.ComponentProps<"form">
 

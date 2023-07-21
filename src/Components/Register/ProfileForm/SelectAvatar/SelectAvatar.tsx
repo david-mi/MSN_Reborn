@@ -1,12 +1,12 @@
 
 import { useState, useEffect } from "react"
-import styles from "./selectAvatar.module.css"
+import { useFormContext } from "react-hook-form"
 import { getDefaultAvatars } from "@/redux/slices/register/register"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import DefaultAvatars from "./DefaultAvatars/DefaultAvatars"
 import AddOrPreview from "./AddOrPreview/AddOrPreview"
-import { useFormContext } from "react-hook-form"
 import type { ProfileFormFields } from "../types"
+import styles from "./selectAvatar.module.css"
 
 function SelectAvatar() {
   const [picturesComponents, setPicturesComponent] = useState<string[]>([])

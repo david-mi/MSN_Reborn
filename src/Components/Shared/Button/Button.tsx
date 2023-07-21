@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"
-import Loader from "./Loader/Loader"
+import DotLoader from "./DotLoader/DotLoader"
 import styles from "./button.module.css"
 
 type Props = React.ComponentProps<"button"> & {
@@ -37,7 +37,7 @@ function Button({ title, theme, wait, waitTimer = 0, ...props }: Props) {
   return (
     <button {...props} disabled={disabled} className={className}>
       {wait || waitTime
-        ? <Loader className={styles.wait} waitTime={waitTime} />
+        ? <DotLoader className={styles.wait} waitTime={waitTime} />
         : title
       }
     </button>

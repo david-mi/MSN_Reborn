@@ -1,13 +1,11 @@
-import styles from "./sendEmailVerification.module.css";
-import Button from "@/Components/Shared/Button/Button";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
-import { disconnect } from "@/redux/slices/user/user";
-import { useEffect, useRef, useState } from "react";
+import { handleVerifiedFromLocalStorage, disconnect } from "@/redux/slices/user/user";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
-import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout";
-import { handleVerifiedFromLocalStorage } from "@/redux/slices/user/user";
+import { ModaleLayout, Button } from "@/Components/Shared";
+import styles from "./sendEmailVerification.module.css";
 
 function SendEmailVerification() {
   const dispatch = useAppDispatch()

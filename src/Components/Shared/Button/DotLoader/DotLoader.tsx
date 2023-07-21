@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef } from "react"
-import styles from "./loader.module.css"
+import styles from "./dotLoader.module.css"
 
 interface Props {
   className: string
   waitTime: number
 }
 
-function Loader({ className, waitTime }: Props) {
+function DotLoader({ className, waitTime }: Props) {
   const [dots, setDots] = useState("")
   const maxDots = 4
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const classNames = `${styles.loader} ${className ? className : ""}`
+  const classNames = `${styles.dotLoader} ${className ? className : ""}`
 
   useEffect(() => {
     timeoutRef.current = setInterval(handleDots, 300)
@@ -36,4 +36,4 @@ function Loader({ className, waitTime }: Props) {
   );
 }
 
-export default Loader;
+export default DotLoader;

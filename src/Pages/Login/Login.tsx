@@ -1,8 +1,7 @@
-import styles from "./login.module.css";
-import GradientLayout from "@/Components/Shared/GradientLayout/GradientLayout";
-import LoginForm from "@/Components/Login/LoginForm/LoginForm";
 import { Link } from "react-router-dom";
-import FooterLinks from "@/Components/Shared/FooterLinks/FooterLinks";
+import { GradientLayout, FooterLinks } from "@/Components/Shared";
+import LoginForm from "@/Components/Login/LoginForm/LoginForm";
+import styles from "./login.module.css";
 
 function Login() {
   return (

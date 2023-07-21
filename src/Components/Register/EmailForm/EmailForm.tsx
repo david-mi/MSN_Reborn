@@ -1,7 +1,6 @@
 import { useRef } from "react"
-import FormLayout from "@/Components/Shared/FormLayout/FormLayout"
-import Button from "@/Components/Shared/Button/Button"
 import { useForm } from "react-hook-form"
+import { Button, FormLayout } from "@/Components/Shared"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { registerIfEmailIsAvailable } from "@/redux/slices/register/register"
 import { EmailValidation } from "@/utils/Validation"

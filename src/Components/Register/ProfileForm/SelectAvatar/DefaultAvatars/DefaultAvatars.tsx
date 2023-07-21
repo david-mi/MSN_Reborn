@@ -1,10 +1,9 @@
-import Loader from "@/Components/Shared/Loader/Loader";
-import styles from "./defaultAvatars.module.css";
-import ImageLoadWrapper from "@/Components/Shared/ImageLoadWrapper/ImageLoadWrapper";
-import { useAppSelector } from "@/redux/hooks";
 import { useFormContext } from "react-hook-form";
-import type { ProfileFormFields } from "../../types";
+import { Loader, ImageLoadWrapper } from "@/Components/Shared";
 import RecuperationError from "./RecuperationError/RecuperationError";
+import { useAppSelector } from "@/redux/hooks";
+import type { ProfileFormFields } from "../../types";
+import styles from "./defaultAvatars.module.css";
 
 interface Props {
   picturesComponents: string[]

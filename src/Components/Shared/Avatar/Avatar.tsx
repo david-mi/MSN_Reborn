@@ -1,7 +1,7 @@
-import styles from "./avatar.module.css"
 import avatarPlaceholder from "./avatar-placeholder.jpg"
 import ImageLoadWrapper from "../ImageLoadWrapper/ImageLoadWrapper"
 import type { ComponentProps } from "react"
+import styles from "./avatar.module.css"
 
 interface Props {
   size: "medium" | "small"

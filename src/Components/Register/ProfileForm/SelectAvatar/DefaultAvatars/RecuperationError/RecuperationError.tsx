@@ -1,7 +1,7 @@
-import styles from "./recuperationError.module.css";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { getDefaultAvatars } from "@/redux/slices/register/register";
-import Button from "@/Components/Shared/Button/Button";
+import { Button } from "@/Components/Shared";
+import styles from "./recuperationError.module.css";
 
 function RecuperationError() {
   const getDefaultAvatarsRequestError = useAppSelector(({ register }) => register.getDefaultAvatarsRequest.error)

@@ -1,8 +1,8 @@
 import { useState } from "react"
-import styles from "./selectShowStatus.module.css";
 import statuses from "./statusesData";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { DisplayedStatusLabel, DisplayedStatusesList } from ".";
+import styles from "./selectShowStatus.module.css";
 
 interface Props {
   setStatus: (status: DisplayedStatus) => void

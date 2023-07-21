@@ -1,5 +1,6 @@
 
 import styles from "./loader.module.css";
+
 interface Props {
   className?: string
   size?: string

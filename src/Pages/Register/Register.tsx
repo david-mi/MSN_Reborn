@@ -1,9 +1,8 @@
+import { Link } from "react-router-dom"
 import { useAppSelector } from "@/redux/hooks"
-import ModaleLayout from "@/Components/Shared/ModaleLayout/ModaleLayout"
+import { ModaleLayout, FooterLinks } from "@/Components/Shared";
 import { EmailForm, ProfileForm, PasswordForm } from "@/Components/Register"
 import styles from "./register.module.css"
-import { Link } from "react-router-dom"
-import FooterLinks from "@/Components/Shared/FooterLinks/FooterLinks"
 
 function Register() {
   const registrationStep = useAppSelector(({ register }) => register.step)
