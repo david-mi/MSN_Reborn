@@ -5,11 +5,9 @@
   background-color: #f8f8f8;
   border: solid 1px #888888;
   margin-right: 4px;
-  width: 13px;
-  height: 13px;
   width: clamp(13px, 20px - 0.8vw, 20px);
   height: clamp(13px, 20px - 0.8vw, 20px);
-
+  cursor: default;
 
   &:hover::before {
     border-color: #88d0f8;
