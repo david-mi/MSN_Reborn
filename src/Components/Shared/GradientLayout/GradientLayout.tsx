@@ -1,12 +1,15 @@
+import type { ComponentProps } from "react";
 import styles from "./gradientLayout.module.css";
 
-interface Props {
-  children: JSX.Element[] | JSX.Element
+type Props = ComponentProps<"div"> & {
+  children: JSX.Element | JSX.Element[]
 }
 
-function GradientLayout({ children }: Props) {
+function GradientLayout({ children, ...props }: Props) {
+  const classNames = `${styles.gradientLayout} ${props.className ? props.className : ""}`
+
   return (
-    <div className={styles.gradientLayout}>
+    <div {...props} className={classNames}>
       {children}
     </div>
   );
