@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction, MouseEvent } from "react";
-import statuses from "../statusesData";
+import { statusesArray } from "../statusesData";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { ImageLoadWrapper } from "../..";
 import styles from "./displayedStatusesList.module.css";
@@ -27,7 +27,7 @@ function DisplayedStatusesList({ setStatusSentence, setStatus, setShowStatusesLi
   return (
     <ul className={styles.displayedStatusesList}>
       <div className={styles.bgHide} onClick={closeShowStatusMenu}></div>
-      {statuses.map((status) => {
+      {statusesArray.map((status) => {
         return (
           <li
             key={status.key}

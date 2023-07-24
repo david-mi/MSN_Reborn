@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import styles from "./displayProfile.module.css";
 import { Avatar } from "@/Components/Shared";
+import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 
 interface Props {
   toggleProfileState: () => void
@@ -16,7 +17,7 @@ function DisplayProfile({ toggleProfileState }: Props) {
     <div className={styles.displayProfile} onClick={toggleProfileState}>
       <Avatar size="small" src={avatarSrc} />
       <p>{username}</p>
-      <p>({displayedStatus})</p>
+      <p>({statusesObject[displayedStatus].sentence})</p>
       <p>{personalMessage}</p>
     </div>
   );

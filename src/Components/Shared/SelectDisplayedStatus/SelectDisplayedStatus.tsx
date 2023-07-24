@@ -1,15 +1,16 @@
 import { useState } from "react"
-import statuses from "./statusesData";
+import { statusesObject } from "./statusesData";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { DisplayedStatusLabel, DisplayedStatusesList } from ".";
 import styles from "./selectShowStatus.module.css";
 
 interface Props {
   setStatus: (status: DisplayedStatus) => void
+  defaultStatus?: string
 }
 
-function SelectDisplayedStatus({ setStatus }: Props) {
-  const [statusSentence, setStatusSentence] = useState(statuses[0].sentence)
+function SelectDisplayedStatus({ setStatus, defaultStatus = statusesObject.online.sentence }: Props) {
+  const [statusSentence, setStatusSentence] = useState(defaultStatus)
   const [showStatusesList, setShowStatusesList] = useState(false)
 
   return (
