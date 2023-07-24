@@ -7,9 +7,10 @@ export interface Props {
   title: string
   children: JSX.Element | JSX.Element[]
   closable?: boolean
+  onCloseButtonClick?: () => void
 }
 
-function ModaleLayout({ title, children, closable = false }: Props) {
+function ModaleLayout({ title, children, closable = false, onCloseButtonClick }: Props) {
   const [closedModale, setClosedModale] = useState(false)
 
   if (closedModale) {
@@ -18,6 +19,10 @@ function ModaleLayout({ title, children, closable = false }: Props) {
 
   function closeModale() {
     setClosedModale(true)
+
+    if (typeof onCloseButtonClick === "function") {
+      onCloseButtonClick()
+    }
   }
 
   return (
