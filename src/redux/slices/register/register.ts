@@ -51,7 +51,6 @@ const registerSlice = createSlice({
       state.request.status = "IDLE"
       state.userData.email = payload
       state.step = "PROFILE"
-      state.getDefaultAvatarsRequest.status = "PENDING"
     })
     builder.addCase(getDefaultAvatars.pending, (state) => {
       state.getDefaultAvatarsRequest.status = "PENDING"

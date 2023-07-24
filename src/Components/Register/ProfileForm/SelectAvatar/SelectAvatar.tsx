@@ -17,6 +17,7 @@ function SelectAvatar() {
 
   function loadNextPicture() {
     const nextPictureToLoad = defaultAvatars[picturesComponents.length]
+
     if (!nextPictureToLoad) return
 
     setPicturesComponent(picturesComponents => {
@@ -32,7 +33,7 @@ function SelectAvatar() {
   }, [])
 
   useEffect(() => {
-    const isReadyToLoadFirstDefaultAvatar = getDefaultAvatarsRequestStatus === "IDLE" && picturesComponents.length === 0
+    const isReadyToLoadFirstDefaultAvatar = defaultAvatars.length !== 0 && picturesComponents.length === 0
 
     if (isReadyToLoadFirstDefaultAvatar) {
       setPicturesComponent([defaultAvatars[0]])
