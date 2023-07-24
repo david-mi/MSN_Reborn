@@ -1,0 +1,18 @@
+.closeButton {
+  background-color: transparent;
+  border: none;
+
+  &:hover path {
+    fill: #0088e0;
+    background-color: red;
+  }
+
+  & svg {
+    height: clamp(25px, 35px - 2vw, 30px);
+  }
+
+  & path {
+    transition: 200ms;
+    fill: #a8a8a8;
+  }
+}

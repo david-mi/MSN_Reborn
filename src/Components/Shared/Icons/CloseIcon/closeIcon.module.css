@@ -1,0 +1,9 @@
+.closeIcon {
+  color: #bec9c9;
+  width: 2em;
+  height: 2em;
+
+  & g {
+    fill: #a8a8a8;
+  }
+}
