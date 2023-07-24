@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import SelectAvatar from "@/Components/Register/ProfileForm/SelectAvatar/SelectAvatar";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { FormLayout, Button, ModaleLayout } from "@/Components/Shared";
@@ -30,6 +30,7 @@ function EditProfileForm({ toggleProfileState }: Props) {
   })
   const { register, handleSubmit, setValue, formState: { errors } } = useFormRef
   const dispatch = useAppDispatch()
+  const formRef = useRef<HTMLFormElement>(null!)
 
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors
@@ -51,7 +52,7 @@ function EditProfileForm({ toggleProfileState }: Props) {
     <div className={styles.editProfileForm}>
       <ModaleLayout title="Editer votre profil" closable onCloseButtonClick={toggleProfileState}>
         <FormProvider {...useFormRef} >
-          <FormLayout onSubmit={handleSubmit(onSubmit)}>
+          <FormLayout onSubmit={handleSubmit(onSubmit)} ref={formRef}>
             <SelectAvatar />
             <SelectDisplayedStatus setStatus={setStatus} defaultStatus={displayedStatus} />
             <div>

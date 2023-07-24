@@ -1,14 +1,15 @@
+import { forwardRef, ForwardedRef } from "react"
 import styles from "./formLayout.module.css"
 
 export type Props = React.ComponentProps<"form">
 
-function FormLayout({ className, children, ...props }: Props) {
+const FormLayout = forwardRef(({ className, children, ...props }: Props, ref: ForwardedRef<HTMLFormElement>) => {
   const classNames = `${styles.form} ${className ? className : ""}`
 
   return (
-    <form className={classNames} {...props}>
+    <form {...props} className={classNames} ref={ref}>
       {children}
     </form>
   )
-}
+})
 export default FormLayout
