@@ -7,6 +7,9 @@ const errorsMessages = {
   username: {
     REQUIRED: "Champ requis",
     OUTSIDE_SIZE_RANGE: "Doit comprendre entre 2 et 40 caractères",
+  },
+  personalMessage: {
+    TOO_LONG: "Ne doit pas dépasser 80 caractères",
   }
 } as const
 
@@ -18,6 +21,7 @@ export class ProfileValidation {
   private static AVATAR_MIME_TYPES = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
   private static USERNAME_MIN_LENGTH = 2
   private static USERNAME_MAX_LENGTH = 40
+  private static PERSONAL_MESSAGE_MAX_LENGTH = 80
   public static errorsMessages = errorsMessages
 
   public static validateAvatar(avatar: File): true | AvatarError {
@@ -51,5 +55,13 @@ export class ProfileValidation {
 
   private static checkAvatarSizeValidity(avatar: File): boolean {
     return avatar.size <= this.AVATAR_MAX_SIZE
+  }
+
+  public static validatePersonalMessage = (personalMessage: string) => {
+    if (personalMessage.length > this.PERSONAL_MESSAGE_MAX_LENGTH) {
+      return this.errorsMessages.personalMessage.TOO_LONG
+    }
+
+    return true
   }
 }
