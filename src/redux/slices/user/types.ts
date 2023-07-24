@@ -21,4 +21,8 @@ export interface UserSlice extends UserProfile {
     status: RequestStatus
     error: null | string
   }
+  editProfileRequest: {
+    status: RequestStatus
+    error: null | string
+  }
 }

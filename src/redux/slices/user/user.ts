@@ -20,6 +20,10 @@ export const initialUserState: UserSlice = {
     status: "IDLE",
     error: null
   },
+  editProfileRequest: {
+    status: "IDLE",
+    error: null
+  },
 }
 
 const userSlice = createSlice({
@@ -63,6 +67,21 @@ const userSlice = createSlice({
       state.displayedStatus = payload.displayedStatus
       state.verified = payload.verified
     })
+    builder.addCase(editProfile.pending, (state) => {
+      state.editProfileRequest.status = "PENDING"
+      state.editProfileRequest.error = null
+    })
+    builder.addCase(editProfile.rejected, (state, { error }) => {
+      state.editProfileRequest.status = "REJECTED"
+      state.editProfileRequest.error = (error as FirebaseError).message
+    })
+    builder.addCase(editProfile.fulfilled, (state, { payload }) => {
+      state.avatarSrc = payload.avatarSrc
+      state.username = payload.username
+      state.displayedStatus = payload.displayedStatus
+      state.personalMessage = payload.personalMessage
+      state.editProfileRequest.status = "IDLE"
+    })
   }
 })
 
@@ -100,6 +119,14 @@ export const getProfile = createAppAsyncThunk(
       ...profileInfos,
       verified: isVerified
     }
+  }
+)
+
+export const editProfile = createAppAsyncThunk(
+  "user/editProfile",
+  async (profileData: UserProfile) => {
+    await UserService.updateProfile(profileData)
+    return profileData
   }
 )
 
