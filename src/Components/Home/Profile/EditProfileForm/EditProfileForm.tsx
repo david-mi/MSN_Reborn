@@ -1,0 +1,96 @@
+import { useEffect } from "react";
+import SelectAvatar from "@/Components/Register/ProfileForm/SelectAvatar/SelectAvatar";
+import type { DisplayedStatus } from "@/redux/slices/user/types";
+import { FormLayout, Button, ModaleLayout } from "@/Components/Shared";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { FormProvider, useForm } from "react-hook-form"
+import { ProfileValidation } from "@/utils/Validation";
+import { EditProfileFormFields } from "./types";
+import { SelectDisplayedStatus } from "@/Components/Shared";
+import { editProfile } from "@/redux/slices/user/user";
+import styles from "./editProfileForm.module.css";
+
+interface Props {
+  toggleProfileState: () => void
+}
+
+function EditProfileForm({ toggleProfileState }: Props) {
+  const avatarSrc = useAppSelector(({ user }) => user.avatarSrc)
+  const username = useAppSelector(({ user }) => user.username)
+  const displayedStatus = useAppSelector(({ user }) => user.displayedStatus)
+  const personalMessage = useAppSelector(({ user }) => user.personalMessage)
+  const editProfileRequest = useAppSelector(({ user }) => user.editProfileRequest)
+  const useFormRef = useForm<EditProfileFormFields>({
+    defaultValues: {
+      avatarSrc,
+      username,
+      displayedStatus,
+      personalMessage
+    }
+  })
+  const { register, handleSubmit, setValue, formState: { errors } } = useFormRef
+  const dispatch = useAppDispatch()
+
+  const hasErrors = Object.keys(errors).length > 0
+  const preventFormSubmit = hasErrors
+
+  function onSubmit(formEntries: EditProfileFormFields) {
+    console.log(formEntries)
+    dispatch(editProfile(formEntries))
+  }
+
+  function setStatus(displayedStatus: DisplayedStatus) {
+    setValue("displayedStatus", displayedStatus)
+  }
+
+  useEffect(() => {
+    register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
+  }, [register])
+
+  return (
+    <div className={styles.editProfileForm}>
+      <ModaleLayout title="Editer votre profil" closable onCloseButtonClick={toggleProfileState}>
+        <FormProvider {...useFormRef} >
+          <FormLayout onSubmit={handleSubmit(onSubmit)}>
+            <SelectAvatar />
+            <SelectDisplayedStatus setStatus={setStatus} defaultStatus={displayedStatus} />
+            <div>
+              <label htmlFor="username">Pseudo :</label>
+              <input
+                id="username"
+                defaultValue={username}
+                type="text"
+                data-testid="home-profile-username-input"
+                {...register("username", { validate: ProfileValidation.validateUsername })}
+              />
+              <small data-testid="home-profile-username-error">{errors.username?.message}</small>
+            </div>
+            <div>
+              <label htmlFor="personalMessage">Message perso :</label>
+              <input
+                id="personalMessage"
+                defaultValue={personalMessage}
+                type="text"
+                data-testid="home-profile-personalMessage-input"
+                {...register("personalMessage", { validate: ProfileValidation.validatePersonalMessage })}
+              />
+              <small data-testid="home-profile-personalMessage-error">{errors.personalMessage?.message}</small>
+            </div>
+            <div>
+              <Button
+                title="Confirmer"
+                theme="monochrome"
+                data-testid="home-profile-submit-button"
+                wait={editProfileRequest.status === "PENDING"}
+                disabled={preventFormSubmit}
+              />
+              <small data-testid="home-profile-submit-error">{editProfileRequest.error}</small>
+            </div>
+          </FormLayout>
+        </FormProvider>
+      </ModaleLayout>
+    </div>
+  );
+}
+
+export default EditProfileForm;
