@@ -15,8 +15,10 @@
   background: url("./header-background.jpg");
   background-size: cover;
   height: 40px;
+  height: clamp(40px, 55px - 2vw, 50px);
   user-select: none;
   border-bottom: solid 1px var(--separators-clr);
+  padding-inline: 10px;
 }
 
 .header h1 {
@@ -26,5 +28,8 @@
 
 .header img {
   height: 31px;
-  margin-left: 10px;
+}
+
+.header button {
+  margin-left: auto;
 }
