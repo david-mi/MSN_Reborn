@@ -29,7 +29,9 @@ function SelectAvatar() {
   }
 
   useEffect(() => {
-    dispatch(getDefaultAvatars())
+    if (defaultAvatars.length === 0) {
+      dispatch(getDefaultAvatars())
+    }
   }, [])
 
   useEffect(() => {
