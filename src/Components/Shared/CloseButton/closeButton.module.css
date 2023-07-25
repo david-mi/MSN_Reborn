@@ -2,6 +2,10 @@
   background-color: transparent;
   border: none;
 
+  &::disabled path {
+    fill: #C1C1C1;
+  }
+
   &:hover path {
     fill: #0088e0;
     background-color: red;
