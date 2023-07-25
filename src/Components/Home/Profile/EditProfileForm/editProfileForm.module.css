@@ -5,3 +5,8 @@
   display: grid;
   place-items: center;
 }
+
+.form div:last-child {
+  align-self: center;
+  align-items: center;
+}

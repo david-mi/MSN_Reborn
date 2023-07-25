@@ -1,30 +1,105 @@
 .displayProfile {
-  background-color: white;
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-rows: auto auto;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
+  justify-content: flex-start;
   grid-template-areas:
     "avatar username status"
-    "avatar personalSentence ."
-  ;
+    "avatar personalSentence personalSentence";
+  column-gap: 5px;
+  padding: 8px;
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.41) 0%,
+      rgba(255, 255, 255, 0.4) 49.16%,
+      #ffffff 100%);
+  border-style: solid;
+  border-width: 1px;
+  border-image: linear-gradient(180deg,
+      rgba(44, 98, 138, 1) 0%,
+      rgba(44, 98, 138, 0.58) 10%,
+      rgba(44, 98, 138, 0.42) 40%,
+      rgba(44, 98, 138, 0.26) 100%) 1;
+
+  &::before,
+  &::after {
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  &::before {
+    border-image: linear-gradient(180deg, #428aa681 0%, rgba(255, 255, 255, 1) 100%) 1;
+    z-index: 1;
+    inset: 1px 1px 0 1px;
+    border-width: 2px;
+  }
+
+  &::after {
+    inset: 0;
+    border-image: linear-gradient(90deg,
+        rgba(126, 174, 195, 1) 0%,
+        rgba(127, 238, 242, 1) 25%,
+        rgba(126, 255, 255, 1) 50%,
+        rgba(127, 238, 242, 1) 75%,
+        rgba(126, 174, 195, 1) 100%) 1;
+  }
 }
 
-.displayProfile div:nth-child(1) {
-  background-color: green;
+.displayProfile button {
+  background-color: transparent;
+  border: none;
+  border: solid transparent 1px;
+  position: relative;
+  z-index: 10;
+  width: fit-content;
+
+  &:not(:nth-child(1)) {
+    padding-inline: 5px;
+  }
+
+  &:hover {
+    border: 1px solid #4890c8;
+    cursor: pointer;
+
+    &::before {
+      position: absolute;
+      content: "";
+      inset: 0;
+      border: 1px solid white;
+      background: linear-gradient(to bottom,
+          rgb(224, 240, 240) 0%,
+          rgb(192, 224, 232) 93%,
+          rgb(192, 224, 232) 100%);
+      z-index: -1;
+    }
+  }
+}
+
+.displayProfile button:nth-child(1) {
   grid-area: avatar;
 }
 
-.displayProfile div:nth-child(2) {
-  background-color: blue;
+.displayProfile button:nth-child(2) {
   grid-area: username;
+  font-weight: 500;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.displayProfile div:nth-child(3) {
-  background-color: orange;
+.displayProfile button:nth-child(3) {
   grid-area: status;
 }
 
-.displayProfile div:nth-child(4) {
-  background-color: red;
+.displayProfile button:nth-child(4) {
   grid-area: personalSentence;
+  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

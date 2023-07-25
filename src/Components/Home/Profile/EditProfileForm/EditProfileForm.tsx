@@ -11,10 +11,11 @@ import { editProfile } from "@/redux/slices/user/user";
 import styles from "./editProfileForm.module.css";
 
 interface Props {
-  toggleProfileState: () => void
+  closeEditProfileForm: () => void
+  elementToTargetInForm: keyof Omit<EditProfileFormFields, "avatarSrc">
 }
 
-function EditProfileForm({ toggleProfileState }: Props) {
+function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props) {
   const avatarSrc = useAppSelector(({ user }) => user.avatarSrc)
   const username = useAppSelector(({ user }) => user.username)
   const displayedStatus = useAppSelector(({ user }) => user.displayedStatus)
@@ -35,9 +36,11 @@ function EditProfileForm({ toggleProfileState }: Props) {
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors
 
-  function onSubmit(formEntries: EditProfileFormFields) {
-    console.log(formEntries)
-    dispatch(editProfile(formEntries))
+  async function onSubmit(formEntries: EditProfileFormFields) {
+    try {
+      await dispatch(editProfile(formEntries)).unwrap()
+      closeEditProfileForm()
+    } catch (error) { }
   }
 
   function setStatus(displayedStatus: DisplayedStatus) {
@@ -48,13 +51,31 @@ function EditProfileForm({ toggleProfileState }: Props) {
     register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
   }, [register])
 
+  useEffect(() => {
+    if (elementToTargetInForm === "personalMessage" || elementToTargetInForm === "username") {
+      formRef.current[elementToTargetInForm].select()
+    }
+  }, [])
+
   return (
     <div className={styles.editProfileForm}>
-      <ModaleLayout title="Editer votre profil" closable onCloseButtonClick={toggleProfileState}>
+      <ModaleLayout
+        title="Editer votre profil"
+        closable
+        onCloseButtonClick={closeEditProfileForm}
+      >
         <FormProvider {...useFormRef} >
-          <FormLayout onSubmit={handleSubmit(onSubmit)} ref={formRef}>
+          <FormLayout
+            onSubmit={handleSubmit(onSubmit)}
+            ref={formRef}
+            className={styles.form}
+          >
             <SelectAvatar />
-            <SelectDisplayedStatus setStatus={setStatus} defaultStatus={displayedStatus} />
+            <SelectDisplayedStatus
+              setStatus={setStatus}
+              defaultStatus={displayedStatus}
+              defaultListOpen={elementToTargetInForm === "displayedStatus"}
+            />
             <div>
               <label htmlFor="username">Pseudo :</label>
               <input
