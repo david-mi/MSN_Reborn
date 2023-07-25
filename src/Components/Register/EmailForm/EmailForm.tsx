@@ -46,6 +46,7 @@ function EmailForm() {
       <div>
         <label htmlFor="email">Adresse de messagerie :</label>
         <input
+          autoFocus
           id="email"
           data-testid="register-email-input"
           {...register("email", { validate: handleInputValidation })}

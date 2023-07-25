@@ -36,6 +36,7 @@ function LoginForm() {
         <div>
           <label htmlFor="email">Adresse de messagerie :</label>
           <input
+            autoFocus
             id="email"
             data-testid="login-email-input"
             {...register("email", { validate: EmailValidation.validateFromInput })}

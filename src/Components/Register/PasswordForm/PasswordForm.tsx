@@ -29,6 +29,7 @@ function PasswordForm() {
       <div>
         <label htmlFor="password">Mot de passe :</label>
         <input
+          autoFocus
           id="password"
           type="password"
           data-testid="register-password-input"

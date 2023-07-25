@@ -25,6 +25,7 @@ function ProfileForm() {
         <div>
           <label htmlFor="username">Pseudo :</label>
           <input
+            autoFocus
             id="username"
             type="text"
             data-testid="register-profile-username-input"
