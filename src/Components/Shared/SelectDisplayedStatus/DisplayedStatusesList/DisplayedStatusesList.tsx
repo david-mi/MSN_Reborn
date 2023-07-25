@@ -3,20 +3,23 @@ import { statusesArray } from "../statusesData";
 import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { ImageLoadWrapper } from "../..";
 import styles from "./displayedStatusesList.module.css";
+import { useFormContext } from "react-hook-form";
+import type { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
   setStatusSentence: Dispatch<SetStateAction<string>>
   setShowStatusesList: Dispatch<SetStateAction<boolean>>
-  setStatus: (status: DisplayedStatus) => void
 }
 
-function DisplayedStatusesList({ setStatusSentence, setStatus, setShowStatusesList }: Props) {
+function DisplayedStatusesList({ setStatusSentence, setShowStatusesList }: Props) {
+  const { setValue } = useFormContext<Pick<UserProfile, "displayedStatus">>()
+
   function handleStatusClick({ currentTarget }: MouseEvent) {
     const retrievedStatus = (currentTarget as HTMLLIElement).dataset.key as DisplayedStatus
     const retrievedStatusSentence = (currentTarget as HTMLLIElement).innerText
 
     setStatusSentence(retrievedStatusSentence)
-    setStatus(retrievedStatus)
+    setValue("displayedStatus", retrievedStatus)
     closeShowStatusMenu()
   }
 

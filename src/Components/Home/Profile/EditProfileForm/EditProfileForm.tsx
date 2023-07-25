@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import SelectAvatar from "@/Components/Register/ProfileForm/SelectAvatar/SelectAvatar";
-import type { DisplayedStatus } from "@/redux/slices/user/types";
 import { FormLayout, Button, ModaleLayout } from "@/Components/Shared";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { FormProvider, useForm } from "react-hook-form"
@@ -29,7 +28,7 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
       personalMessage
     }
   })
-  const { register, handleSubmit, setValue, formState: { errors } } = useFormRef
+  const { register, handleSubmit, formState: { errors } } = useFormRef
   const dispatch = useAppDispatch()
   const formRef = useRef<HTMLFormElement>(null!)
 
@@ -41,10 +40,6 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
       await dispatch(editProfile(formEntries)).unwrap()
       closeEditProfileForm()
     } catch (error) { }
-  }
-
-  function setStatus(displayedStatus: DisplayedStatus) {
-    setValue("displayedStatus", displayedStatus)
   }
 
   useEffect(() => {
@@ -68,7 +63,6 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
           >
             <SelectAvatar />
             <SelectDisplayedStatus
-              setStatus={setStatus}
               defaultStatus={displayedStatus}
               defaultListOpen={elementToTargetInForm === "displayedStatus"}
             />
