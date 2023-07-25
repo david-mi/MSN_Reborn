@@ -1,13 +1,12 @@
 .displayProfile {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, auto) 1fr;
   grid-template-rows: repeat(2, auto);
-  justify-content: flex-start;
+  /* justify-content: flex-start; */
   grid-template-areas:
-    "avatar username status"
-    "avatar personalSentence personalSentence";
-  column-gap: 5px;
+    "avatar username status ."
+    "avatar personalSentence personalSentence personalSentence";
   padding: 8px;
   background: linear-gradient(180deg,
       rgba(255, 255, 255, 0.41) 0%,
@@ -57,7 +56,7 @@
   width: fit-content;
 
   &:not(:nth-child(1)) {
-    padding-inline: 5px;
+    padding-inline: 4px;
   }
 
   &:hover {
@@ -80,6 +79,7 @@
 
 .displayProfile button:nth-child(1) {
   grid-area: avatar;
+  margin-right: 4px;
 }
 
 .displayProfile button:nth-child(2) {

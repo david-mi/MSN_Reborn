@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { ProfileValidation } from "@/utils/Validation/"
 import { FormLayout, Button } from "@/Components/Shared"
@@ -7,9 +6,7 @@ import { useAppDispatch } from "@/redux/hooks"
 import { completeProfileStep } from "@/redux/slices/register/register"
 import { ProfileFormFields } from "./types"
 
-type Props = React.ComponentProps<"form">
-
-function ProfileForm(props: Props) {
+function ProfileForm() {
   const useFormRef = useForm<ProfileFormFields>()
   const { register, handleSubmit, formState: { errors } } = useFormRef
   const dispatch = useAppDispatch()
@@ -23,7 +20,7 @@ function ProfileForm(props: Props) {
 
   return (
     <FormProvider {...useFormRef} >
-      <FormLayout onSubmit={handleSubmit(onSubmit)} {...props}>
+      <FormLayout onSubmit={handleSubmit(onSubmit)}>
         <SelectAvatar />
         <div>
           <label htmlFor="username">Pseudo :</label>
