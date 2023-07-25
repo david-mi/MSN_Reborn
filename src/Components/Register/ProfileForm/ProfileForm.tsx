@@ -21,10 +21,6 @@ function ProfileForm(props: Props) {
     dispatch(completeProfileStep(formEntries))
   }
 
-  useEffect(() => {
-    register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
-  }, [register])
-
   return (
     <FormProvider {...useFormRef} >
       <FormLayout onSubmit={handleSubmit(onSubmit)} {...props}>

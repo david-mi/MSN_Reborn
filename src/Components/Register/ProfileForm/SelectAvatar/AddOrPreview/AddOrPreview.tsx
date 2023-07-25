@@ -1,13 +1,13 @@
-import type { ChangeEvent } from "react"
+import { ChangeEvent, useEffect } from "react"
 import { Avatar, AddImageIcon } from "@/Components/Shared";
 import { useFormContext } from "react-hook-form";
 import { ProfileValidation } from "@/utils/Validation/";
 import { convertFileToBase64 } from "@/utils/convertFileToBase64";
-import type { ProfileFormFields } from "../../types";
 import styles from "./addOrPreview.module.css";
+import type { UserProfile } from "@/redux/slices/user/types";
 
 function AddOrPreview() {
-  const { setError, setValue, watch, clearErrors } = useFormContext<ProfileFormFields>()
+  const { setError, setValue, watch, clearErrors, register } = useFormContext<Pick<UserProfile, "avatarSrc">>()
   const avatarSrc = watch("avatarSrc")
 
   async function handleChange({ target }: ChangeEvent<HTMLInputElement>) {
@@ -22,6 +22,10 @@ function AddOrPreview() {
       setValue("avatarSrc", base64Avatar)
     }
   }
+
+  useEffect(() => {
+    register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
+  }, [register])
 
   return (
     <label htmlFor="avatar-add" className={styles.previewLabel}>

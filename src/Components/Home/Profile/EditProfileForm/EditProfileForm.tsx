@@ -48,10 +48,6 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
   }
 
   useEffect(() => {
-    register("avatarSrc", { required: ProfileValidation.errorsMessages.avatar.REQUIRED })
-  }, [register])
-
-  useEffect(() => {
     if (elementToTargetInForm === "personalMessage" || elementToTargetInForm === "username") {
       formRef.current[elementToTargetInForm].select()
     }
