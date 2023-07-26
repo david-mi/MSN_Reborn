@@ -5,3 +5,7 @@
   border: solid 1px #bed6e0;
   background-color: white;
 }
+
+.addContactButton {
+  margin-left: auto;
+}
