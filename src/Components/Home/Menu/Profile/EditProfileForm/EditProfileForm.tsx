@@ -49,59 +49,58 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
   }, [])
 
   return (
-    <div className={styles.editProfileForm}>
-      <ModaleLayout
-        title="Editer votre profil"
-        closable
-        onCloseButtonClick={closeEditProfileForm}
-      >
-        <FormProvider {...useFormRef} >
-          <FormLayout
-            onSubmit={handleSubmit(onSubmit)}
-            ref={formRef}
-            className={styles.form}
-          >
-            <SelectAvatar />
-            <SelectDisplayedStatus
-              defaultStatus={displayedStatus}
-              defaultListOpen={elementToTargetInForm === "displayedStatus"}
+    <ModaleLayout
+      title="Editer votre profil"
+      closable
+      onCloseButtonClick={closeEditProfileForm}
+      overlay
+    >
+      <FormProvider {...useFormRef} >
+        <FormLayout
+          onSubmit={handleSubmit(onSubmit)}
+          ref={formRef}
+          className={styles.form}
+        >
+          <SelectAvatar />
+          <SelectDisplayedStatus
+            defaultStatus={displayedStatus}
+            defaultListOpen={elementToTargetInForm === "displayedStatus"}
+          />
+          <div>
+            <label htmlFor="username">Pseudo :</label>
+            <input
+              id="username"
+              defaultValue={username}
+              type="text"
+              data-testid="home-profile-username-input"
+              {...register("username", { validate: ProfileValidation.validateUsername })}
             />
-            <div>
-              <label htmlFor="username">Pseudo :</label>
-              <input
-                id="username"
-                defaultValue={username}
-                type="text"
-                data-testid="home-profile-username-input"
-                {...register("username", { validate: ProfileValidation.validateUsername })}
-              />
-              <small data-testid="home-profile-username-error">{errors.username?.message}</small>
-            </div>
-            <div>
-              <label htmlFor="personalMessage">Message perso :</label>
-              <input
-                id="personalMessage"
-                defaultValue={personalMessage}
-                type="text"
-                data-testid="home-profile-personalMessage-input"
-                {...register("personalMessage", { validate: ProfileValidation.validatePersonalMessage })}
-              />
-              <small data-testid="home-profile-personalMessage-error">{errors.personalMessage?.message}</small>
-            </div>
-            <div>
-              <Button
-                title="Confirmer"
-                theme="monochrome"
-                data-testid="home-profile-submit-button"
-                wait={editProfileRequest.status === "PENDING"}
-                disabled={preventFormSubmit}
-              />
-              <small data-testid="home-profile-submit-error">{editProfileRequest.error}</small>
-            </div>
-          </FormLayout>
-        </FormProvider>
-      </ModaleLayout>
-    </div>
+            <small data-testid="home-profile-username-error">{errors.username?.message}</small>
+          </div>
+          <div>
+            <label htmlFor="personalMessage">Message perso :</label>
+            <input
+              id="personalMessage"
+              defaultValue={personalMessage}
+              type="text"
+              data-testid="home-profile-personalMessage-input"
+              {...register("personalMessage", { validate: ProfileValidation.validatePersonalMessage })}
+            />
+            <small data-testid="home-profile-personalMessage-error">{errors.personalMessage?.message}</small>
+          </div>
+          <div>
+            <Button
+              title="Confirmer"
+              theme="monochrome"
+              data-testid="home-profile-submit-button"
+              wait={editProfileRequest.status === "PENDING"}
+              disabled={preventFormSubmit}
+            />
+            <small data-testid="home-profile-submit-error">{editProfileRequest.error}</small>
+          </div>
+        </FormLayout>
+      </FormProvider>
+    </ModaleLayout>
   );
 }
 

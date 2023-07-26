@@ -7,10 +7,17 @@ export interface Props {
   title: string
   children: JSX.Element | JSX.Element[]
   closable?: boolean
+  overlay?: boolean
   onCloseButtonClick?: () => void
 }
 
-function ModaleLayout({ title, children, closable = false, onCloseButtonClick }: Props) {
+function ModaleLayout({
+  title,
+  children,
+  closable = false,
+  onCloseButtonClick,
+  overlay = false
+}: Props) {
   const [closedModale, setClosedModale] = useState(false)
 
   if (closedModale) {
@@ -25,7 +32,7 @@ function ModaleLayout({ title, children, closable = false, onCloseButtonClick }:
     }
   }
 
-  return (
+  const layoutContent = (
     <div className={styles.layout}>
       <header className={styles.header}>
         <img className={styles.logo} src={msnLogo} />
@@ -35,6 +42,14 @@ function ModaleLayout({ title, children, closable = false, onCloseButtonClick }:
       {children}
     </div >
   )
+
+  return overlay
+    ? (
+      <div className={styles.overlay}>
+        {layoutContent}
+      </div>
+    )
+    : layoutContent
 }
 
 export default ModaleLayout

@@ -1,11 +1,3 @@
-.editProfileForm {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(5px);
-  display: grid;
-  place-items: center;
-}
-
 .form div:last-child {
   align-self: center;
   align-items: center;
