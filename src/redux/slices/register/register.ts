@@ -125,7 +125,7 @@ export const createUserAndSetProfile = createAppAsyncThunk(
     await AuthService.createUser(email, password)
 
     try {
-      await UserService.setProfile(profileData)
+      return UserService.setProfile(profileData)
     } catch (error) {
       await UserService.deleteAccount()
       return rejectWithValue((error as FirebaseError).message)

@@ -6,14 +6,16 @@ import { Outlet } from "react-router-dom";
 import { setAuthenticationState, getProfile, disconnect } from "./redux/slices/user/user";
 import { AuthenticationState } from "./redux/slices/user/types";
 import Loader from "./Components/Shared/Loader/Loader";
+import store from "./redux/store";
 
 function App() {
   const dispatch = useAppDispatch()
   const authState = useAppSelector(({ user }) => user.authState)
 
   useEffect(() => {
-    onAuthStateChanged(firebase.auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(firebase.auth, async (currentUser) => {
       let userAuthenticationState: AuthenticationState
+      if (store.getState().register.request.status === "PENDING") return
 
       if (currentUser) {
         try {
@@ -27,6 +29,8 @@ function App() {
       }
 
       dispatch(setAuthenticationState(userAuthenticationState))
+
+      return () => unsubscribe()
     })
   }, [])
 

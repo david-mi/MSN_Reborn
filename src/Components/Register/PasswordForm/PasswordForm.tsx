@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { createUserAndSetProfile, setPassword, } from "@/redux/slices/register/register"
 import type { PasswordFormFields } from "./types"
 import { PasswordValidation } from "@/utils/Validation"
+import { setAuthenticationState } from "@/redux/slices/user/user"
 
 const passwordValidation = new PasswordValidation()
 
@@ -21,7 +22,8 @@ function PasswordForm() {
 
   async function onSubmit({ password }: PasswordFormFields) {
     dispatch(setPassword(password))
-    dispatch(createUserAndSetProfile())
+    await dispatch(createUserAndSetProfile())
+    dispatch(setAuthenticationState("AUTHENTICATED"))
   }
 
   return (
