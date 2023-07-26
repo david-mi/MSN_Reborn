@@ -22,7 +22,7 @@ function DefaultAvatars({ picturesComponents, loadNextPicture }: Props) {
   }
 
   if (getDefaultAvatarsRequestStatus === "PENDING") {
-    return <Loader className={styles.loader} />
+    return <Loader className={styles.loader} size="40%" />
   }
 
   if (getDefaultAvatarsRequestStatus === "REJECTED") {
