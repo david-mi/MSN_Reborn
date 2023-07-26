@@ -1,14 +1,10 @@
-import { ButtonWithImage } from "@/Components/Shared";
-import addContactIcon from "/icons/add-contact.png"
 import styles from "./heading.module.css";
+import SendFriendRequest from "./SendFriendRequest/SendFriendRequest";
 
 function Heading() {
   return (
     <div className={styles.heading}>
-      <ButtonWithImage
-        src={addContactIcon}
-        className={styles.addContactButton}
-      />
+      <SendFriendRequest />
     </div>
   );
 }
