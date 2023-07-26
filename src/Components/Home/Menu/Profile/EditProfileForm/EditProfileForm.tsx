@@ -8,6 +8,7 @@ import { EditProfileFormFields } from "./types";
 import { SelectDisplayedStatus } from "@/Components/Shared";
 import { editProfile } from "@/redux/slices/user/user";
 import styles from "./editProfileForm.module.css";
+import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 
 interface Props {
   closeEditProfileForm: () => void
@@ -63,7 +64,7 @@ function EditProfileForm({ closeEditProfileForm, elementToTargetInForm }: Props)
         >
           <SelectAvatar />
           <SelectDisplayedStatus
-            defaultStatus={displayedStatus}
+            defaultStatus={statusesObject[displayedStatus].sentence}
             defaultListOpen={elementToTargetInForm === "displayedStatus"}
           />
           <div>
