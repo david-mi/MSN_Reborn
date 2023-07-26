@@ -9,7 +9,7 @@ export type Props<T extends keyof JSX.IntrinsicElements> = {
     src: string
   }
   loaderOptions?: {
-    size: string;
+    size?: string;
     thickness?: string;
   }
 }
