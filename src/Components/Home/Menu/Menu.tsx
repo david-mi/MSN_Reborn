@@ -1,6 +1,6 @@
 import { useAppDispatch } from "@/redux/hooks";
 import { disconnect } from "@/redux/slices/user/user";
-import { Header, Profile } from ".";
+import { Header, Profile, Contacts } from ".";
 import { GradientLayout } from "@/Components/Shared";
 import styles from "./menu.module.css"
 
@@ -15,6 +15,7 @@ function Menu() {
     <GradientLayout className={styles.menu} data-testid="menu">
       <Header />
       <Profile />
+      <Contacts />
       <button onClick={handleClick}>Se déconnecter</button>
     </GradientLayout>
   );
