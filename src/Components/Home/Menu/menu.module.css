@@ -1,0 +1,9 @@
+.menu {
+  --menu-vertical-gap: 10px;
+  align-items: stretch;
+  flex: 1;
+  padding-inline: 8px;
+  gap: var(--menu-vertical-gap);
+  display: flex;
+  flex-direction: column;
+}
