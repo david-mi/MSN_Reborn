@@ -1,9 +1,10 @@
 import { UserSlice, AuthenticationState } from "./types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
 import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { UserProfile } from "./types";
+export const disconnectAction = createAction("reset")
 
 export const initialUserState: UserSlice = {
   avatarSrc: "",
@@ -82,6 +83,7 @@ const userSlice = createSlice({
       state.personalMessage = payload.personalMessage
       state.editProfileRequest.status = "IDLE"
     })
+    builder.addCase(resetAction, () => initialUserState)
   }
 })
 
@@ -89,6 +91,7 @@ export const verifyEmail = createAppAsyncThunk(
   "register/verifyEmail",
   async (oobCode: string | null) => {
     await AuthService.verifyEmail(oobCode)
+
     localStorage.setItem("verified", "true")
   }
 )
@@ -106,7 +109,10 @@ export function handleVerifiedFromLocalStorage() {
 
 export const disconnect = createAppAsyncThunk(
   "user/disconnect",
-  () => AuthService.disconnect()
+  async (_, { dispatch }) => {
+    await AuthService.disconnect()
+    dispatch(disconnectAction())
+  }
 )
 
 export const getProfile = createAppAsyncThunk(

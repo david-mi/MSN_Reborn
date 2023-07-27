@@ -4,6 +4,7 @@ import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { LoginFormFields } from "@/Components/Login/LoginForm/types";
 import { FirebaseError } from "firebase/app";
+import { disconnectAction } from "../user/user";
 
 export const initialLoginState: LoginSlice = {
   request: {
@@ -28,6 +29,7 @@ const loginSlice = createSlice({
     builder.addCase(loginAndUpdateDisplayStatus.fulfilled, (state) => {
       state.request.status = "IDLE"
     })
+    builder.addCase(disconnectAction, () => initialLoginState)
   }
 })
 

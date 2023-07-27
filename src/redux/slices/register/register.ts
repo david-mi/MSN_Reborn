@@ -4,8 +4,9 @@ import { ProfileFormFields } from "@/Components/Register/ProfileForm/types";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService, StorageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
+import { disconnectAction } from "../user/user";
 
-const initialProfileState: RegisterSlice = {
+const initialRegisterState: RegisterSlice = {
   userData: {
     email: "",
     password: "",
@@ -26,7 +27,7 @@ const initialProfileState: RegisterSlice = {
 
 const registerSlice = createSlice({
   name: "register",
-  initialState: initialProfileState,
+  initialState: initialRegisterState,
   reducers: {
     completeProfileStep(state, { payload }: PayloadAction<ProfileFormFields>) {
       state.userData.avatarSrc = payload.avatarSrc
@@ -85,6 +86,12 @@ const registerSlice = createSlice({
     })
     builder.addCase(sendVerificationEmail.fulfilled, (state) => {
       state.request.status = "IDLE"
+    })
+    builder.addCase(disconnectAction, (state) => {
+      return {
+        ...initialRegisterState,
+        defaultAvatars: state.defaultAvatars
+      }
     })
   }
 })
