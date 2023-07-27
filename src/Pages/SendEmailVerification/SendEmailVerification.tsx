@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { sendVerificationEmail } from "@/redux/slices/register/register";
-import { handleVerifiedFromLocalStorage, disconnect } from "@/redux/slices/user/user";
+import { checkIfUserIsVerified, disconnect } from "@/redux/slices/user/user";
 import Loader from "@/Components/Shared/Loader/Loader";
 import Instructions from "@/Components/SendEmailVerification/Instructions/Instructions";
 import { ModaleLayout, Button } from "@/Components/Shared";
@@ -14,7 +14,8 @@ function SendEmailVerification() {
   const verifyIntervals = 2000
   const verifyTimeLimit = 1000 * 60 * 2
   const verifyStartTime = useRef(Date.now())
-  const verifyIntervalIdRef = useRef<NodeJS.Timer>()
+  const verifyTimeoutIdRef = useRef<NodeJS.Timer>()
+  const isUserVerifiedRef = useRef(false)
 
   function handleClick() {
     dispatch(sendVerificationEmail())
@@ -36,14 +37,15 @@ function SendEmailVerification() {
   function checkIfUserIsVerifiedAtIntervals() {
     const isVerifyTimeLimitReached = Date.now() - verifyStartTime.current > verifyTimeLimit
 
-    if (verifyIntervalIdRef.current || isVerifyTimeLimitReached) {
-      clearInterval(verifyIntervalIdRef.current)
+    if (verifyTimeoutIdRef.current || isVerifyTimeLimitReached || isUserVerifiedRef.current) {
+      clearTimeout(verifyTimeoutIdRef.current)
 
-      if (isVerifyTimeLimitReached) return
+      if (isVerifyTimeLimitReached || isUserVerifiedRef.current) return
     }
 
-    verifyIntervalIdRef.current = setInterval(() => {
-      dispatch(handleVerifiedFromLocalStorage())
+    verifyTimeoutIdRef.current = setTimeout(async () => {
+      isUserVerifiedRef.current = await dispatch(checkIfUserIsVerified())
+      checkIfUserIsVerifiedAtIntervals()
     }, verifyIntervals)
   }
 
@@ -52,7 +54,7 @@ function SendEmailVerification() {
       .then(checkIfUserIsVerifiedAtIntervals)
 
     return () => {
-      clearInterval(verifyIntervalIdRef.current)
+      clearTimeout(verifyTimeoutIdRef.current)
     }
   }, [])
 

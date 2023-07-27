@@ -83,27 +83,28 @@ const userSlice = createSlice({
       state.personalMessage = payload.personalMessage
       state.editProfileRequest.status = "IDLE"
     })
-    builder.addCase(resetAction, () => initialUserState)
+    builder.addCase(disconnectAction, () => {
+      return {
+        ...initialUserState,
+        authState: "DISCONNECTED"
+      }
+    })
   }
 })
 
 export const verifyEmail = createAppAsyncThunk(
   "register/verifyEmail",
-  async (oobCode: string | null) => {
-    await AuthService.verifyEmail(oobCode)
-
-    localStorage.setItem("verified", "true")
-  }
+  (oobCode: string | null) => AuthService.verifyEmail(oobCode)
 )
 
-export function handleVerifiedFromLocalStorage() {
-  return (dispatch: AppThunkDispatch) => {
-    const hasVerifiedKeyInStorage = localStorage.getItem("verified")
-
-    if (hasVerifiedKeyInStorage) {
-      localStorage.removeItem("verified")
+export function checkIfUserIsVerified() {
+  return async (dispatch: AppThunkDispatch) => {
+    const isUserVerified = await UserService.checkIfVerified()
+    if (isUserVerified) {
       dispatch(setVerified(true))
     }
+
+    return isUserVerified
   }
 }
 
