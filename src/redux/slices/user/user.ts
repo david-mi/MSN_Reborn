@@ -11,6 +11,7 @@ export const initialUserState: UserSlice = {
   username: "",
   displayedStatus: "offline",
   personalMessage: "",
+  email: "",
   authState: "PENDING",
   verified: false,
   accountVerificationRequest: {

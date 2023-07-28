@@ -128,8 +128,8 @@ export const getDefaultAvatars = createAppAsyncThunk(
 export const createUserAndSetProfile = createAppAsyncThunk(
   "register/createUserAndSetProfile",
   async (_, { getState, rejectWithValue }) => {
-    const { email, password, ...profileData } = getState().register.userData
-    await AuthService.createUser(email, password)
+    const { password, ...profileData } = getState().register.userData
+    await AuthService.createUser(profileData.email, password)
 
     try {
       return UserService.setProfile(profileData)

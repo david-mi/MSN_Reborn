@@ -4,6 +4,7 @@ export type AuthenticationState = "PENDING" | "AUTHENTICATED" | "DISCONNECTED"
 export type DisplayedStatus = "online" | "busy" | "beRightBack" | "away" | "onThePhone" | "outToLunch" | "offline"
 
 export interface UserProfile {
+  email: string
   avatarSrc: string,
   username: string,
   personalMessage: string
