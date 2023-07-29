@@ -6,6 +6,7 @@ import { RootState } from "@/redux/store";
 import type { Store } from "@/redux/types";
 import { initialUserState } from "@/redux/slices/user/user";
 import { initialLoginState } from "@/redux/slices/login/login";
+import { initialContactState } from "@/redux/slices/contact/contact";
 
 const { body } = document
 
@@ -43,6 +44,9 @@ describe("ProfileForm", () => {
       },
       user: {
         ...initialUserState
+      },
+      contact: {
+        ...initialContactState
       }
     };
 

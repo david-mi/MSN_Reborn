@@ -21,7 +21,8 @@ describe("UserService", () => {
         avatarSrc: "avatar",
         username: "patrick",
         displayedStatus: "away",
-        personalMessage: "hello les potes"
+        personalMessage: "hello les potes",
+        email: ""
       }
 
       await setDoc(userProfileRef, profileInfosToSet)

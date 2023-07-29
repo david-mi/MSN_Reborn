@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { useAppSelector, useAppDispatch } from "@/redux/hooks"
-import { Button, FormLayout, Loader, ModaleLayout } from "@/Components/Shared"
+import { Button, FormLayout, ModaleLayout } from "@/Components/Shared"
 import type { EmailFormFields } from "@/Components/Register/EmailForm/types"
 import { UserService } from "@/Services"
 import { sendFriendRequest } from "@/redux/slices/contact/contact"

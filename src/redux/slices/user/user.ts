@@ -132,7 +132,7 @@ export const getProfile = createAppAsyncThunk(
 
 export const editProfile = createAppAsyncThunk(
   "user/editProfile",
-  async (profileData: UserProfile) => {
+  async (profileData: Omit<UserProfile, "email">) => {
     await UserService.updateProfile(profileData)
     return profileData
   }

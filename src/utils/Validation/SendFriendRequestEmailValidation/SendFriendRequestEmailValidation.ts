@@ -5,8 +5,6 @@ const errorsMessages = {
   CONTACT_ALREADY_ADDED: "Ce contact est présent dans votre liste",
 } as const
 
-type sendFriendRequestEmailValidationErrorMessage = typeof errorsMessages[keyof typeof errorsMessages]
-
 interface ValidateProps {
   emailInput: string,
   currentUserEmail: string

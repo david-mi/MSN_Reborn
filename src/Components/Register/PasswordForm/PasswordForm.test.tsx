@@ -5,6 +5,7 @@ import { renderWithProviders } from "@/tests/utils";
 import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
 import { initialUserState } from "@/redux/slices/user/user";
 import { initialLoginState } from "@/redux/slices/login/login";
+import { initialContactState } from "@/redux/slices/contact/contact";
 import { RootState } from "@/redux/store";
 
 const email = "user-register-mock@gmail.com"
@@ -39,6 +40,9 @@ describe("PasswordForm", () => {
       },
       user: {
         ...initialUserState
+      },
+      contact: {
+        ...initialContactState
       }
     };
   });
