@@ -7,15 +7,15 @@ import addContactIcon from "/icons/add-contact.png"
 function SendFriendRequest() {
   const [sendContactRequestFormOpen, setSendContactRequestFormOpen] = useState(false)
 
-  function toggleSendContactRequestForm() {
+  function toggleSendFriendRequestForm() {
     setSendContactRequestFormOpen((state) => !state)
   }
 
   return sendContactRequestFormOpen
-    ? <SendFriendRequestForm toggleSendContactRequestForm={toggleSendContactRequestForm} />
+    ? <SendFriendRequestForm toggleSendFriendRequestForm={toggleSendFriendRequestForm} />
     : (
       <ButtonWithImage
-        onClick={toggleSendContactRequestForm}
+        onClick={toggleSendFriendRequestForm}
         src={addContactIcon}
         className={styles.addContactButton}
       />
