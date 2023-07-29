@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contactsList {
+  display: flex;
+  flex-direction: column;
+  border: solid black 2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
