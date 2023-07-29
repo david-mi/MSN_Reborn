@@ -1,5 +1,5 @@
 import { reload } from "firebase/auth";
-import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc, deleteDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import { UserProfile } from "@/redux/slices/user/types";
 
@@ -49,5 +49,20 @@ export class UserService {
     await reload(this.currentUser)
 
     return this.currentUser.emailVerified
+  }
+
+  public static async findByEmailAndGetId(email: string) {
+    const findUserByEmailQuery = query(
+      collection(firebase.firestore, "users"),
+      where("email", "==", email)
+    )
+
+    const retrievedUsersSnapShot = await getDocs(findUserByEmailQuery)
+
+    if (retrievedUsersSnapShot.empty) {
+      throw new Error("Utilisateur non trouvé")
+    }
+
+    return retrievedUsersSnapShot.docs[0].id
   }
 }
