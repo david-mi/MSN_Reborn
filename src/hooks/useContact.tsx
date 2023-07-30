@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 import { onSnapshot, query, collection, where, documentId } from "firebase/firestore";
-import { firebase as firebaseInstance } from "@/firebase/config";
+import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getContactsIds, getContactsProfile } from "@/redux/slices/contact/contact";
-
+import { UserService } from "@/Services";
+import { doc } from "firebase/firestore";
 
 function useContact() {
   const dispatch = useAppDispatch()
@@ -12,14 +13,20 @@ function useContact() {
   const getContactsRequest = useAppSelector(({ contact }) => contact.getContactsRequest)
 
   useEffect(() => {
-    dispatch(getContactsIds())
+    const contactsRef = doc(firebase.firestore, "contacts", UserService.currentUser.uid)
+
+    const unsubscribe = onSnapshot(contactsRef, async (snapshot) => {
+      dispatch(getContactsIds(snapshot.data()))
+    })
+
+    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
     if (contactsIds.length === 0) return
 
     const queryUserContacts = query(
-      collection(firebaseInstance.firestore, "users"),
+      collection(firebase.firestore, "users"),
       where(documentId(), "in", contactsIds)
     )
 

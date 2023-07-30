@@ -114,8 +114,8 @@ export const getFriendRequestingUsers = createAppAsyncThunk(
 
 export const getContactsIds = createAppAsyncThunk(
   "contact/getContactsIds",
-  async () => {
-    return ContactService.getUserContactsIds()
+  async (contactsDocumentData: DocumentData | undefined) => {
+    return ContactService.getUserContactsIds(contactsDocumentData)
   })
 
 export const getContactsProfile = createAppAsyncThunk(

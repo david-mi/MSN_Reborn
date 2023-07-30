@@ -32,12 +32,7 @@ export class ContactService {
     })
   }
 
-  public static async getUserContactsIds() {
-    const contactsRef = doc(firebase.firestore, "contacts", this.currentUser.uid)
-
-    const contactsSnapshot = await getDoc(contactsRef)
-    const contactsDocumentData = contactsSnapshot.data()
-
+  public static async getUserContactsIds(contactsDocumentData: DocumentData | undefined) {
     if (!contactsDocumentData) {
       return []
     }

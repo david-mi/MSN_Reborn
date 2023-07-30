@@ -9,8 +9,6 @@ import { getFriendRequestingUsers } from "@/redux/slices/contact/contact";
 function useFriendRequest() {
   const dispatch = useAppDispatch()
   const friendRequestingUsers = useAppSelector(({ contact }) => contact.friendRequestingUsers)
-
-
   const hasFriendRequests = friendRequestingUsers.length !== 0
 
   useEffect(() => {
