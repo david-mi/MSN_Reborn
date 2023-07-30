@@ -1,14 +1,10 @@
-import { Loader, ImageLoadWrapper, Avatar } from "@/Components/Shared";
+import { ImageLoadWrapper, Avatar } from "@/Components/Shared";
 import useContact from "@/hooks/useContact";
 import styles from "./contactsList.module.css"
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 
 function ContactsList() {
-  const { contacts, contactsError, isLoadingContacts } = useContact()
-
-  if (isLoadingContacts) {
-    return <Loader />
-  }
+  const { contacts, contactsError } = useContact()
 
   if (contactsError) {
     return <small>Une erreur est survenue lors de la récupération des contacts</small>
