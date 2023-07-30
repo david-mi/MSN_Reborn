@@ -5,6 +5,8 @@ import type { EmailFormFields } from "@/Components/Register/EmailForm/types"
 import { UserService } from "@/Services"
 import { sendFriendRequest } from "@/redux/slices/contact/contact"
 import { SendFriendRequestEmailValidation, EmailValidation } from "@/utils/Validation"
+import styles from "./sendFriendRequestForm.module.css"
+
 interface Props {
   toggleSendFriendRequestForm: () => void
 }
@@ -19,7 +21,10 @@ function SendFriendRequestForm({ toggleSendFriendRequestForm }: Props) {
   const preventFormSubmit = hasErrors || request.status === "PENDING"
 
   async function onSubmit({ email }: EmailFormFields) {
-    dispatch(sendFriendRequest(email))
+    try {
+      await dispatch(sendFriendRequest(email)).unwrap()
+      toggleSendFriendRequestForm()
+    } catch { }
   }
 
   function handleInputValidation(emailInput: string) {
@@ -51,7 +56,7 @@ function SendFriendRequestForm({ toggleSendFriendRequestForm }: Props) {
           />
           <small data-testid="send-friend-request-email-error">{errors.email?.message}</small>
         </div>
-        <div>
+        <div className={styles.submitContainer}>
           <Button
             title="Envoyer"
             theme="monochrome"
