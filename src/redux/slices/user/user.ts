@@ -67,6 +67,7 @@ const userSlice = createSlice({
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username
       state.displayedStatus = payload.displayedStatus
+      state.personalMessage = payload.personalMessage
       state.verified = payload.verified
     })
     builder.addCase(editProfile.pending, (state) => {
