@@ -1,9 +1,8 @@
 import { Emulator } from "./Emulator";
 import { deleteDoc, doc } from "firebase/firestore"
 import { createUserWithEmailAndPassword, sendEmailVerification, applyActionCode, signOut } from "firebase/auth"
-import { setDoc } from "firebase/firestore";
 import { firebase } from "@/firebase/config"
-import { UserProfile } from "@/redux/slices/user/types";
+import { AuthService, UserService } from "@/Services";
 
 export class AuthEmulator extends Emulator {
   static async deleteAllUsers() {
@@ -13,8 +12,13 @@ export class AuthEmulator extends Emulator {
     await fetch(fetchUrl, { method: "DELETE" })
   }
 
-  public static async createUser(email: string, password = "myP@ssworD!") {
+  public static async createUser() {
+    const email = `mock-user-${crypto.randomUUID()}@email.com`
+    const password = "myP@ssworD1234!"
+
     await createUserWithEmailAndPassword(firebase.auth, email, password)
+
+    return { email, password, currentUser: this.currentUser }
   }
 
   public static async verifyCurrentUser() {
@@ -35,11 +39,6 @@ export class AuthEmulator extends Emulator {
     await signOut(firebase.auth)
   }
 
-  public static async createAndVerifyUser(email: string, password = "myP@ssworD!") {
-    await this.createUser(email, password)
-    await this.verifyCurrentUser()
-  }
-
   public static async getOobCodeForEmail(email: string) {
     const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
     const response = await fetch(`http://127.0.0.1:9099/emulator/v1/projects/${projectId}/oobCodes`)
@@ -55,13 +54,19 @@ export class AuthEmulator extends Emulator {
     return foundOobDetails.oobCode
   }
 
-  public static setUserProfile(profileData: Pick<UserProfile, "avatarSrc" | "username">) {
-    const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
+  public static async createUserAndSetProfile({ verify }: { verify?: boolean } = {}) {
+    const email = `mock-user-${crypto.randomUUID()}@email.com`
+    const password = "myP@ssworD1234!"
+    const username = `user-mock-${crypto.randomUUID()}`
+    const avatarSrc = "./random.jpg"
 
-    return setDoc(profilesRef, {
-      ...profileData,
-      displayedStatus: "offline",
-      personalMessage: ""
-    })
+    await AuthService.createUser(email, password)
+    await UserService.setProfile({ email, username, avatarSrc })
+
+    if (verify) {
+      await this.verifyCurrentUser()
+    }
+
+    return { email, username, avatarSrc, password, currentUser: this.currentUser }
   }
 }

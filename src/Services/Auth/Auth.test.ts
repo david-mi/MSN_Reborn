@@ -2,7 +2,6 @@ import { AuthService } from ".."
 import { AuthEmulator } from "@/tests/Emulator/AuthEmulator"
 import { FirebaseError } from "firebase/app"
 import { reload, sendEmailVerification } from "firebase/auth"
-import { firebase } from "@/firebase/config"
 
 describe("Auth", () => {
   describe("createUser", () => {
@@ -11,9 +10,7 @@ describe("Auth", () => {
     })
 
     it("Should reject if email already exists in database", async () => {
-      const email = `user-${crypto.randomUUID()}@email.com`
-      const password = "superPassword!123"
-      await AuthEmulator.createAndVerifyUser(email)
+      const { email, password } = await AuthEmulator.createUserAndSetProfile()
 
       await expect(AuthService.createUser(email, password))
         .rejects
@@ -21,8 +18,8 @@ describe("Auth", () => {
     })
 
     it("Should create an user if email doesnt exist in database", async () => {
-      const email = `user-${crypto.randomUUID()}@email.com`
-      const password = "superPassword!123"
+      const email = `mock-user-${crypto.randomUUID()}@email.com`
+      const password = "myP@ssworD!"
 
       await expect(AuthService.createUser(email, password))
         .resolves
@@ -37,8 +34,7 @@ describe("Auth", () => {
     })
 
     it("Should reject if email is already verified", async () => {
-      const email = `user-${crypto.randomUUID()}@email.com`
-      await AuthEmulator.createAndVerifyUser(email)
+      await AuthEmulator.createUserAndSetProfile({ verify: true })
 
       await expect(AuthService.sendVerificationEmail())
         .rejects
@@ -46,8 +42,7 @@ describe("Auth", () => {
     })
 
     it("Should send an email if user is not verified", async () => {
-      const email = `user-${crypto.randomUUID()}@email.com`
-      await AuthEmulator.createUser(email)
+      await AuthEmulator.createUser()
 
       await expect(AuthService.sendVerificationEmail())
         .resolves
@@ -69,9 +64,7 @@ describe("Auth", () => {
     })
 
     it("Should verify an email with a correct oobCode", async () => {
-      const email = `user-${crypto.randomUUID()}@email.com`
-      await AuthEmulator.createUser(email)
-      const currentUser = firebase.auth.currentUser!
+      const { email, currentUser } = await AuthEmulator.createUser()
       await sendEmailVerification(currentUser)
       const oobCode = await AuthEmulator.getOobCodeForEmail(email)
 
@@ -97,10 +90,9 @@ describe("Auth", () => {
     });
 
     it("should throw an error for a registered email", async () => {
-      const email = "alreadyRegistered@test-firebase.com";
       const expectedError = AuthService.errorsMessages.EMAIL_UNAVAILABLE
 
-      await AuthEmulator.createUser(email)
+      const { email } = await AuthEmulator.createUser()
       await expect(AuthService.checkDatabaseEmailAvailability(email)).rejects.toThrowError(expectedError)
     });
   });

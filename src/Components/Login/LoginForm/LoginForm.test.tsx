@@ -59,15 +59,11 @@ describe("LoginForm", () => {
   })
 
   describe("Existing account", () => {
-    const email = "plafond-solution@yahoo.fr"
-    const password = "superPassw0rd!12"
+    let email: string
+    let password: string
 
     beforeAll(async () => {
-      await AuthEmulator.createAndVerifyUser(email, password)
-      await AuthEmulator.setUserProfile({
-        avatarSrc: "avatar.jpg",
-        username: "Erwan Plafond"
-      })
+      ({ email, password } = await AuthEmulator.createUserAndSetProfile({ verify: true }))
       await AuthEmulator.disconnectCurrentUser()
     })
 

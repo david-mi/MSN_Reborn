@@ -64,11 +64,7 @@ describe("Unauthenticated user", () => {
 
 describe("Authenticated user", () => {
   beforeAll(async () => {
-    await AuthEmulator.createUser("routes-user@gmail.com")
-    await AuthEmulator.setUserProfile({
-      avatarSrc: "./routes-avatar.jpg",
-      username: "Mr. Router"
-    })
+    await AuthEmulator.createUserAndSetProfile({ verify: false })
   })
 
   afterAll(async () => {
