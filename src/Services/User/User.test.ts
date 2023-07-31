@@ -92,4 +92,26 @@ describe("UserService", () => {
         .toBe(true)
     })
   })
+
+  describe("findByEmailAndGetId", () => {
+    afterAll(async () => {
+      await AuthEmulator.deleteCurrentUser()
+    })
+
+    it("should throw error if email is not registered", async () => {
+      const email = `mock-user-${crypto.randomUUID()}@email.com`
+
+      await expect(UserService.findByEmailAndGetId(email))
+        .rejects
+        .toThrow()
+    })
+
+    it("should find user id if email is registered", async () => {
+      const { email, currentUser } = await AuthEmulator.createUserAndSetProfile()
+
+      await expect(UserService.findByEmailAndGetId(email))
+        .resolves
+        .toBe(currentUser.uid)
+    })
+  })
 })
