@@ -9,7 +9,7 @@ import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 export const initialContactState: ContactSlice = {
   contactsList: [],
   contactsIds: [],
-  friendRequestingUsers: [],
+  usersWhoSentFriendRequest: [],
   getFriendsRequest: {
     status: "PENDING",
     error: null
@@ -40,17 +40,17 @@ const contactSlice = createSlice({
     builder.addCase(sendFriendRequest.fulfilled, (state) => {
       state.request.status = "IDLE"
     })
-    builder.addCase(getFriendRequestingUsers.pending, (state) => {
+    builder.addCase(getUsersWhoSentFriendRequest.pending, (state) => {
       state.getFriendsRequest.status = "PENDING"
       state.getFriendsRequest.error = null
     })
-    builder.addCase(getFriendRequestingUsers.rejected, (state, { error }) => {
+    builder.addCase(getUsersWhoSentFriendRequest.rejected, (state, { error }) => {
       state.getFriendsRequest.status = "REJECTED"
       state.getFriendsRequest.error = (error as FirebaseError).message
     })
-    builder.addCase(getFriendRequestingUsers.fulfilled, (state, { payload }) => {
+    builder.addCase(getUsersWhoSentFriendRequest.fulfilled, (state, { payload }) => {
       state.getFriendsRequest.status = "IDLE"
-      state.friendRequestingUsers = payload
+      state.usersWhoSentFriendRequest = payload
     })
     builder.addCase(getContactsIds.pending, (state) => {
       state.getContactsRequest.status = "PENDING"
@@ -106,10 +106,10 @@ export const denyFriendRequest = createAppAsyncThunk(
     return ContactService.denyFriendRequest(requestingUserId)
   })
 
-export const getFriendRequestingUsers = createAppAsyncThunk(
-  "contact/getFriendRequestingUsers",
+export const getUsersWhoSentFriendRequest = createAppAsyncThunk(
+  "contact/getUsersWhoSentFriendRequest",
   async (receveidFriendRequestsDocumentData: DocumentData | undefined) => {
-    return ContactService.getFriendRequestingUsersFromSnapshot(receveidFriendRequestsDocumentData)
+    return ContactService.getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData)
   })
 
 export const getContactsIds = createAppAsyncThunk(

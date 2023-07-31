@@ -4,11 +4,11 @@ import FriendRequestAlert from "@/Components/Home/FriendRequestAlert/FriendReque
 import useFriendRequest from "@/hooks/useFriendRequest";
 
 function Home() {
-  const { friendRequestingUsers, hasFriendRequests } = useFriendRequest()
+  const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
 
   return (
     <div className={styles.home} data-testid="home">
-      {hasFriendRequests && <FriendRequestAlert friendRequestingUser={friendRequestingUsers[0]} />}
+      {haveFriendRequest && <FriendRequestAlert userWhoSentFriendRequest={usersWhoSentFriendRequest[0]} />}
       <Menu />
     </div>
   );

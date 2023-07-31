@@ -4,7 +4,7 @@ import { UserProfileWithId } from "@/Components/Home/FriendRequestAlert/types"
 export interface ContactSlice {
   contactsList: UserProfileWithId[]
   contactsIds: string[]
-  friendRequestingUsers: UserProfileWithId[]
+  usersWhoSentFriendRequest: UserProfileWithId[]
   getFriendsRequest: {
     status: RequestStatus
     error: string | null

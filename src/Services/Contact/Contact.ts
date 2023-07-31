@@ -13,18 +13,18 @@ export class ContactService {
     return currentUser
   }
 
-  public static async getFriendRequestingUsersFromSnapshot(receveidFriendRequestsDocumentData: DocumentData | undefined): Promise<UserProfileWithId[]> {
+  public static async getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData: DocumentData | undefined): Promise<UserProfileWithId[]> {
     if (!receveidFriendRequestsDocumentData) {
       return []
     }
 
-    const requestingUsersSnapshot = await Promise.all(
+    const userWhoSentFriendRequestSnapshot = await Promise.all(
       Object
         .keys(receveidFriendRequestsDocumentData)
         .map((userId) => getDoc<UserProfile>(receveidFriendRequestsDocumentData[userId]))
     )
 
-    return requestingUsersSnapshot.map((docSnap) => {
+    return userWhoSentFriendRequestSnapshot.map((docSnap) => {
       return {
         ...docSnap.data()!,
         id: docSnap.id
@@ -37,21 +37,25 @@ export class ContactService {
       return []
     }
 
-    const requestingUsersSnapshot = await Promise.all(
+    const userWhoSentFriendRequestSnapshot = await Promise.all(
       Object
         .keys(contactsDocumentData)
         .map((userId) => getDoc<UserProfile>(contactsDocumentData[userId]))
     )
 
-    return requestingUsersSnapshot.map((docSnap) => docSnap.id)
+    return userWhoSentFriendRequestSnapshot.map((docSnap) => docSnap.id)
   }
 
   public static async getContactsProfile(contactsProfileSnapshot: QueryDocumentSnapshot<DocumentData>[]) {
-
     const contactsProfilesRefsPromise = contactsProfileSnapshot.map(snap => getDoc(snap.ref))
 
     const contactsProfile = (await Promise.all(contactsProfilesRefsPromise))
-      .map((profileSnapshot) => profileSnapshot.data()!)
+      .map((profileSnapshot) => {
+        return {
+          ...profileSnapshot.data()!,
+          id: profileSnapshot.id
+        }
+      })
 
     return contactsProfile as UserProfileWithId[]
   }
@@ -65,14 +69,14 @@ export class ContactService {
     }, { merge: true })
   }
 
-  public static async acceptFriendRequest(requestingUserId: string) {
-    await this.addUserToContacts(requestingUserId, this.currentUser.uid)
-    await this.addUserToContacts(this.currentUser.uid, requestingUserId)
-    return this.removeUserFromReceivedRequests(requestingUserId)
+  public static async acceptFriendRequest(userWhoSentFriendRequestId: string) {
+    await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid)
+    await this.addUserToContacts(this.currentUser.uid, userWhoSentFriendRequestId)
+    return this.removeUserFromReceivedRequests(userWhoSentFriendRequestId)
   }
 
-  public static async denyFriendRequest(requestingUserId: string) {
-    return this.removeUserFromReceivedRequests(requestingUserId)
+  public static async denyFriendRequest(userWhoSentFriendRequestId: string) {
+    return this.removeUserFromReceivedRequests(userWhoSentFriendRequestId)
   }
 
   private static async addUserToContacts(userIdToAdd: string, userIdToAccept: string) {

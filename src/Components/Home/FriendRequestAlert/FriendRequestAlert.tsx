@@ -6,11 +6,11 @@ import { UserProfileWithId } from "./types";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 interface Props {
-  friendRequestingUser: UserProfileWithId
+  userWhoSentFriendRequest: UserProfileWithId
 }
 
-function FriendRequestAlert({ friendRequestingUser }: Props) {
-  const { avatarSrc, username, id, email } = friendRequestingUser
+function FriendRequestAlert({ userWhoSentFriendRequest }: Props) {
+  const { avatarSrc, username, id, email } = userWhoSentFriendRequest
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ contact }) => contact.request)
 
