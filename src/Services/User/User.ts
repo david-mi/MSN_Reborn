@@ -14,7 +14,7 @@ export class UserService {
     return currentUser
   }
 
-  static setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username">) {
+  static setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username" | "email">) {
     const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     return setDoc(profilesRef, {
