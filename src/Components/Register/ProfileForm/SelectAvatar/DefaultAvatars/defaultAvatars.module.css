@@ -16,9 +16,3 @@
 .defaultPictureButton:hover {
   border-color: #55759C;
 }
-
-.loader {
-  width: 85px;
-  height: 85px;
-  align-self: center;
-}

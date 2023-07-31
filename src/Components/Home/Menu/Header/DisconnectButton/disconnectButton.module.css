@@ -1,4 +1,5 @@
-.closeButton {
+.disconnectButton {
+  margin-left: auto;
   background-color: transparent;
   border: none;
 
@@ -7,15 +8,18 @@
   }
 
   &:hover path {
-    fill: #0088e0;
+    fill: white;
   }
 
   & svg {
     height: clamp(20px, 35px - 2.5vw, 30px);
+    position: relative;
+    left: 4px;
+    top: 1px;
   }
 
   & path {
     transition: 200ms;
-    fill: #a8a8a8;
+    fill: rgb(233, 233, 233);
   }
 }

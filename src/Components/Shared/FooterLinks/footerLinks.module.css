@@ -3,7 +3,10 @@
   flex-direction: column;
   gap: clamp(0.3rem, 1rem - 0.8vw, 1rem);
   align-items: center;
-  padding-block: 0.5rem;
+  padding-block: 1rem;
+  margin-bottom: calc(var(--modale-gap) * -1);
+  margin-inline: calc(var(--modale-inline-padding) * -1);
+  border-top: solid 1px var(--separators-clr);
 
   & a {
     font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);

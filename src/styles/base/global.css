@@ -8,11 +8,21 @@ button {
 
 :root {
   --separators-clr: #BED6E0;
+  --padding-global: clamp(0.5rem, 3vw, 1rem);
+  --font-size-global: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+  --modale-gap: 30px;
+  --modale-inline-padding: clamp(0.5rem, 15vw - 2vmax, 5rem);
 }
 
 #root {
   min-height: 100dvh;
-  padding: clamp(0.5rem, 3vw, 1rem);
+  padding: var(--padding-global);
   display: flex;
   flex-direction: column;
+  font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+
+  small {
+    font-style: italic;
+    font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+  }
 }

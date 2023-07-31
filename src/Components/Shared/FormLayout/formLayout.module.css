@@ -3,14 +3,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  --gap: 30px;
   --error-min-height: 20px;
-  --padding-inline-form: clamp(0.5rem, 15vw - 2vmax, 5rem);
-  padding-inline: var(--padding-inline-form);
-  padding-block: var(--gap);
-  gap: var(--gap);
+  gap: var(--modale-gap);
   justify-content: center;
-  border-bottom: solid 1px var(--separators-clr);
 }
 
 .form > :first-child {
@@ -36,8 +31,6 @@
 .form small {
   display: block;
   color: red;
-  font-style: italic;
-  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
 }
 
 .form > button:last-child {

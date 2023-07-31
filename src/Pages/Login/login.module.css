@@ -3,3 +3,13 @@
   display: grid;
   place-items: center;
 }
+
+.layout {
+  padding-block: var(--modale-gap);
+  padding-inline: var(--modale-inline-padding);
+  gap: var(--modale-gap);
+
+  & > :last-child {
+    align-self: stretch;
+  }
+}

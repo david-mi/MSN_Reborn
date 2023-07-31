@@ -10,12 +10,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  padding-inline: clamp(0.5rem, 15vw - 3vmax, 4rem);
+  gap: var(--modale-gap);
 }
 
 .content small {
   color: red;
-  font-style: italic;
-  font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
 }

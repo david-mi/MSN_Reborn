@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: repeat(3, auto) 1fr;
   grid-template-rows: repeat(2, auto);
-  /* justify-content: flex-start; */
+  user-select: none;
   grid-template-areas:
     "avatar username status ."
     "avatar personalSentence personalSentence personalSentence";

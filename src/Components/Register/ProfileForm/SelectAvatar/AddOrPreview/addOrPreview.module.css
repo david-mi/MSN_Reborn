@@ -26,5 +26,5 @@
 
 .avatar {
   margin-inline: auto;
-  margin-bottom: var(--gap);
+  margin-bottom: var(--modale-gap);
 }

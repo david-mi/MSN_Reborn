@@ -6,7 +6,7 @@ import styles from "./login.module.css";
 function Login() {
   return (
     <div className={styles.login} data-testid="login">
-      <GradientLayout>
+      <GradientLayout className={styles.layout}>
         <LoginForm />
         <FooterLinks>
           <Link to="/register">Pas de compte ? Inscrivez-vous</Link>
