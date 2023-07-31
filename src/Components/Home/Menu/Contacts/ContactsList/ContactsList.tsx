@@ -15,15 +15,14 @@ function ContactsList() {
       {contacts.map(({ email, username, displayedStatus, avatarSrc, personalMessage }) => {
         return (
           <li className={styles.contactsList} key={email}>
-            <Avatar src={avatarSrc} size="small" />
-            <span>{username}</span>
-            <span className={styles.status}>
-              {statusesObject[displayedStatus].sentence}
+            <div className={styles.avatarContainer}>
+              <Avatar src={avatarSrc} size="small" />
               <ImageLoadWrapper
                 imageProps={{ src: statusesObject[displayedStatus].icon, alt: "icône du status de l'utilisateur" }}
                 loaderOptions={{ size: "16px", thickness: "2px" }}
               />
-            </span>
+            </div>
+            <span>{username}</span>
             <small> {personalMessage}</small>
           </li>
         )
