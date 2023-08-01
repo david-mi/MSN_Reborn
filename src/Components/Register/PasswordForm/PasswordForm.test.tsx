@@ -2,7 +2,7 @@ import { fireEvent, waitFor } from "@testing-library/react";
 import PasswordForm from "./PasswordForm";
 import { PasswordValidation } from "@/utils/Validation";
 import { renderWithProviders } from "@/tests/utils";
-import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
+import { Emulator } from "@/tests/Emulator/Emulator";
 import { initialUserState } from "@/redux/slices/user/user";
 import { initialLoginState } from "@/redux/slices/login/login";
 import { initialContactState } from "@/redux/slices/contact/contact";
@@ -48,7 +48,7 @@ describe("PasswordForm", () => {
   });
 
   afterAll(async () => {
-    await AuthEmulator.deleteCurrentUser()
+    await Emulator.deleteCurrentUser()
   })
 
   it("should display the correct error for an empty password field", async () => {
@@ -114,7 +114,7 @@ describe("PasswordForm", () => {
     const submitErrorElement = getByTestId("register-password-submit-error")
 
     await waitFor(() => {
-      expect(AuthEmulator.currentUser.email).toBe(email)
+      expect(Emulator.currentUser.email).toBe(email)
       expect(submitErrorElement).toBeEmptyDOMElement()
     })
   });

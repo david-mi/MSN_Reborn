@@ -2,7 +2,7 @@ import { renderWithProviders } from "@/tests/utils";
 import { routesConfig } from "./Routes";
 import { createMemoryRouter } from "react-router-dom";
 import { RouterProvider } from "react-router-dom"
-import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
+import { Emulator } from "@/tests/Emulator/Emulator";
 
 describe("Unauthenticated user", () => {
   it("should give access to '/login'", async () => {
@@ -64,11 +64,11 @@ describe("Unauthenticated user", () => {
 
 describe("Authenticated user", () => {
   beforeAll(async () => {
-    await AuthEmulator.createUserAndSetProfile({ verify: false })
+    await Emulator.createUser({ setProfile: true })
   })
 
   afterAll(async () => {
-    await AuthEmulator.deleteCurrentUser()
+    await Emulator.deleteCurrentUser()
   })
 
   describe("Unverified user", () => {
@@ -130,7 +130,7 @@ describe("Authenticated user", () => {
 
   describe("Verified user", () => {
     beforeAll(async () => {
-      await AuthEmulator.verifyCurrentUser()
+      await Emulator.verifyCurrentUser()
     })
 
     it("should give access to '/'", async () => {

@@ -1,16 +1,16 @@
 import { AuthService } from ".."
-import { AuthEmulator } from "@/tests/Emulator/AuthEmulator"
+import { Emulator } from "@/tests/Emulator/Emulator"
 import { FirebaseError } from "firebase/app"
 import { reload, sendEmailVerification } from "firebase/auth"
 
 describe("Auth", () => {
   describe("createUser", () => {
     afterEach(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should reject if email already exists in database", async () => {
-      const { email, password } = await AuthEmulator.createUserAndSetProfile()
+      const { email, password } = await Emulator.createUser({ setProfile: true })
 
       await expect(AuthService.createUser(email, password))
         .rejects
@@ -30,11 +30,11 @@ describe("Auth", () => {
 
   describe("sendVerificationEmail", () => {
     afterEach(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should reject if email is already verified", async () => {
-      await AuthEmulator.createUserAndSetProfile({ verify: true })
+      await Emulator.createUser({ setProfile: true, verify: true })
 
       await expect(AuthService.sendVerificationEmail())
         .rejects
@@ -42,7 +42,7 @@ describe("Auth", () => {
     })
 
     it("Should send an email if user is not verified", async () => {
-      await AuthEmulator.createUser()
+      await Emulator.createUser()
 
       await expect(AuthService.sendVerificationEmail())
         .resolves
@@ -53,7 +53,7 @@ describe("Auth", () => {
 
   describe("verifyEmail", () => {
     afterAll(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should reject if no oobCode is given", async () => {
@@ -64,9 +64,9 @@ describe("Auth", () => {
     })
 
     it("Should verify an email with a correct oobCode", async () => {
-      const { email, currentUser } = await AuthEmulator.createUser()
+      const { email, currentUser } = await Emulator.createUser()
       await sendEmailVerification(currentUser)
-      const oobCode = await AuthEmulator.getOobCodeForEmail(email)
+      const oobCode = await Emulator.getOobCodeForEmail(email)
 
       await expect(AuthService.verifyEmail(oobCode))
         .resolves
@@ -80,7 +80,7 @@ describe("Auth", () => {
 
   describe("checkDatabaseEmailAvailability", () => {
     afterAll(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("should return true for an available email", async () => {
@@ -92,7 +92,7 @@ describe("Auth", () => {
     it("should throw an error for a registered email", async () => {
       const expectedError = AuthService.errorsMessages.EMAIL_UNAVAILABLE
 
-      const { email } = await AuthEmulator.createUser()
+      const { email } = await Emulator.createUser()
       await expect(AuthService.checkDatabaseEmailAvailability(email)).rejects.toThrowError(expectedError)
     });
   });

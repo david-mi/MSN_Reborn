@@ -2,7 +2,7 @@ import { fireEvent, waitFor } from "@testing-library/react";
 import LoginForm from "./LoginForm";
 import { renderWithProviders } from "@/tests/utils";
 import { EmailValidation, PasswordValidation } from "@/utils/Validation";
-import { AuthEmulator } from "@/tests/Emulator/AuthEmulator";
+import { Emulator } from "@/tests/Emulator/Emulator";
 
 const passwordValidation = new PasswordValidation()
 
@@ -63,12 +63,12 @@ describe("LoginForm", () => {
     let password: string
 
     beforeAll(async () => {
-      ({ email, password } = await AuthEmulator.createUserAndSetProfile({ verify: true }))
-      await AuthEmulator.disconnectCurrentUser()
+      ({ email, password } = await Emulator.createUser({ setProfile: true, verify: true }))
+      await Emulator.disconnectCurrentUser()
     })
 
     afterAll(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("should submit form for an existing account", async () => {
@@ -94,7 +94,7 @@ describe("LoginForm", () => {
       const submitErrorElement = getByTestId("login-submit-error")
 
       await waitFor(() => {
-        expect(AuthEmulator.currentUser.email).toBe(email)
+        expect(Emulator.currentUser.email).toBe(email)
         expect(submitErrorElement).toBeEmptyDOMElement()
       })
     })
@@ -123,7 +123,7 @@ describe("LoginForm", () => {
 
       await waitFor(() => {
         expect(() => {
-          AuthEmulator.currentUser;
+          Emulator.currentUser;
         }).toThrow();
         const errorElement = getByText("Firebase: Error (auth/user-not-found).");
         expect(errorElement).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import { AuthEmulator } from "@/tests/Emulator/AuthEmulator"
+import { Emulator } from "@/tests/Emulator/Emulator"
 import { UserService } from ".."
 import { firebase } from "@/firebase/config"
 import { fetchSignInMethodsForEmail } from "firebase/auth"
@@ -8,11 +8,11 @@ import { UserProfile } from "@/redux/slices/user/types"
 describe("UserService", () => {
   describe("getProfile", () => {
     afterEach(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should retrieve user profileInfos", async () => {
-      const { currentUser } = await AuthEmulator.createUserAndSetProfile({ verify: false })
+      const { currentUser } = await Emulator.createUser({ setProfile: true })
 
       const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
       const profileInfosToSet: UserProfile = {
@@ -33,11 +33,11 @@ describe("UserService", () => {
 
   describe("setProfile", () => {
     afterEach(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should update user profile with given arguments", async () => {
-      const { email } = await AuthEmulator.createUserAndSetProfile({ verify: false })
+      const { email } = await Emulator.createUser({ setProfile: true })
 
       const profileInfosToUpdate: Pick<UserProfile, "avatarSrc" | "username" | "email"> = {
         avatarSrc: "picture",
@@ -58,7 +58,7 @@ describe("UserService", () => {
 
   describe("deleteAccount", () => {
     it("Should delete user from database", async () => {
-      const { email } = await AuthEmulator.createUserAndSetProfile({ verify: false })
+      const { email } = await Emulator.createUser({ setProfile: true })
 
       await expect(UserService.deleteAccount())
         .resolves
@@ -73,11 +73,11 @@ describe("UserService", () => {
 
   describe("checkIfVerified", async () => {
     afterEach(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("Should return false for a non verified user", async () => {
-      await AuthEmulator.createUserAndSetProfile()
+      await Emulator.createUser({ setProfile: true })
 
       await expect(UserService.checkIfVerified())
         .resolves
@@ -85,7 +85,7 @@ describe("UserService", () => {
     })
 
     it("should return true for a verified user", async () => {
-      await AuthEmulator.createUserAndSetProfile({ verify: true })
+      await Emulator.createUser({ setProfile: true, verify: true, })
 
       await expect(UserService.checkIfVerified())
         .resolves
@@ -95,7 +95,7 @@ describe("UserService", () => {
 
   describe("findByEmailAndGetId", () => {
     afterAll(async () => {
-      await AuthEmulator.deleteCurrentUser()
+      await Emulator.deleteCurrentUser()
     })
 
     it("should throw error if email is not registered", async () => {
@@ -107,7 +107,7 @@ describe("UserService", () => {
     })
 
     it("should find user id if email is registered", async () => {
-      const { email, currentUser } = await AuthEmulator.createUserAndSetProfile()
+      const { email, currentUser } = await Emulator.createUser({ setProfile: true })
 
       await expect(UserService.findByEmailAndGetId(email))
         .resolves
