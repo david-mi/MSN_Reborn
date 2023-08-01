@@ -11,6 +11,7 @@ import {
   indexedDBLocalPersistence,
   signOut
 } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 
 export class AuthService {
   public static errorsMessages = {
@@ -77,6 +78,10 @@ export class AuthService {
   }
 
   static async disconnect() {
+    const currentUserRef = doc(firebase.firestore, "users", this.currentUser.uid)
+    await updateDoc(currentUserRef, {
+      displayedStatus: "offline"
+    })
     await signOut(firebase.auth)
   }
 }
