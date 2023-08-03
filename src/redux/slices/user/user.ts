@@ -1,4 +1,4 @@
-import { UserSlice, AuthenticationState } from "./types";
+import { UserSlice, AuthenticationState, DisplayedStatus } from "./types";
 import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
 import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
@@ -37,6 +37,9 @@ const userSlice = createSlice({
     },
     setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
       state.authState = payload
+    },
+    setStatus(state, { payload }: PayloadAction<DisplayedStatus>) {
+      state.displayedStatus = payload
     }
   },
   extraReducers: (builder) => {
@@ -139,5 +142,5 @@ export const editProfile = createAppAsyncThunk(
   }
 )
 
-export const { setVerified, setAuthenticationState } = userSlice.actions
+export const { setVerified, setAuthenticationState, setStatus } = userSlice.actions
 export const userReducer = userSlice.reducer
