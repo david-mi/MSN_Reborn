@@ -12,6 +12,7 @@ import {
   signOut
 } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
+import { UserService } from "..";
 
 export class AuthService {
   public static errorsMessages = {
@@ -47,7 +48,13 @@ export class AuthService {
       throw new Error("oobCode is missing")
     }
 
-    return applyActionCode(firebase.auth, oobCode)
+    await applyActionCode(firebase.auth, oobCode)
+
+    try {
+      await UserService.forceRefreshToken()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   /**

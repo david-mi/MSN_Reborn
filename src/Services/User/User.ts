@@ -24,6 +24,10 @@ export class UserService {
     })
   }
 
+  static async forceRefreshToken() {
+    return this.currentUser.getIdToken(true)
+  }
+
   static updateProfile(profileData: Partial<UserProfile>) {
     const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
