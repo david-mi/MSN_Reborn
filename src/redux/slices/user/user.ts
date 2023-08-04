@@ -143,7 +143,7 @@ export const getSavedStatus = createAppAsyncThunk(
 
 export const editProfile = createAppAsyncThunk(
   "user/editProfile",
-  async (profileData: Omit<UserProfile, "email">) => {
+  async (profileData: Omit<UserProfile, "email" | "id">) => {
     await UserService.updateProfile(profileData)
     return profileData
   }

@@ -1,4 +1,4 @@
-import type { UserProfile } from "firebase/auth"
+import type { UserProfile } from "@/redux/slices/user/types"
 
 const errorsMessages = {
   SAME_EMAIL_THAN_CURRENT_USER: "Vous ne pouvez pas ajouter votre email",

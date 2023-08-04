@@ -8,15 +8,18 @@ import { getSavedStatus } from "@/redux/slices/user/user";
 function VerifiedRoutes() {
   const dispatch = useAppDispatch()
   const isAccountVerified = useAppSelector(({ user }) => user.verified)
+  const userId = useAppSelector(({ user }) => user.id)
   const connectedListenerRef = useRef<Unsubscribe | null>(null)
+
+  /**
+   * Track user presence and reflect it on status
+   */
 
   useEffect(() => {
     if (connectedListenerRef.current) return
 
-    const currentUserId = firebase.auth.currentUser!.uid
-
     const connectedRef = ref(firebase.database, ".info/connected");
-    const userStatusEntriesRef = ref(firebase.database, `/status/${currentUserId}/entries`);
+    const userStatusEntriesRef = ref(firebase.database, `/status/${userId}/entries`);
     const userStatusNewEntryRef = push(userStatusEntriesRef, Date.now())
 
     connectedListenerRef.current = onValue(connectedRef, () => {
