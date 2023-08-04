@@ -15,7 +15,10 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebase.auth, async (currentUser) => {
       let userAuthenticationState: AuthenticationState
-      if (store.getState().register.request.status === "PENDING") return
+      if (
+        store.getState().register.request.status === "PENDING" ||
+        store.getState().login.request.status === "PENDING"
+      ) return
 
       if (currentUser) {
         try {

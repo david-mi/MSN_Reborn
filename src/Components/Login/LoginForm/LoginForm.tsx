@@ -5,6 +5,7 @@ import { EmailValidation, PasswordValidation } from "@/utils/Validation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { loginAndUpdateDisplayStatus } from "@/redux/slices/login/login";
 import type { LoginFormFields } from "./types";
+import { disconnect, getProfile, setAuthenticationState } from "@/redux/slices/user/user";
 import styles from "./loginForm.module.css"
 
 const passwordValidation = new PasswordValidation()
@@ -21,8 +22,20 @@ function LoginForm() {
   const { register, handleSubmit, setValue, formState: { errors } } = useFormRef
   const hasErrors = Object.keys(errors).length > 0
 
-  function onSubmit(formFields: LoginFormFields) {
-    dispatch(loginAndUpdateDisplayStatus(formFields))
+  async function onSubmit(formFields: LoginFormFields) {
+    try {
+      await dispatch(loginAndUpdateDisplayStatus(formFields)).unwrap()
+
+    } catch (error) {
+      return
+    }
+
+    try {
+      await dispatch(getProfile()).unwrap()
+      dispatch(setAuthenticationState("AUTHENTICATED"))
+    } catch (error) {
+      dispatch(disconnect())
+    }
   }
 
   function setRememberAuth({ target }: ChangeEvent<HTMLInputElement>) {

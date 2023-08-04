@@ -23,12 +23,18 @@ function PasswordForm() {
 
   async function onSubmit({ password }: PasswordFormFields) {
     dispatch(setPassword(password))
-    await dispatch(createUserAndSetProfile())
+
+    try {
+      await dispatch(createUserAndSetProfile()).unwrap()
+    } catch (error) {
+      return
+    }
+
     try {
       await dispatch(getProfile()).unwrap()
       dispatch(setAuthenticationState("AUTHENTICATED"))
     } catch (error) {
-      return await dispatch(disconnect())
+      dispatch(disconnect())
     }
   }
 
