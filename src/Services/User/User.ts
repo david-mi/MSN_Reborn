@@ -31,18 +31,20 @@ export class UserService {
     return this.currentUser.getIdToken(true)
   }
 
-  static async updateProfile(profileData: Omit<UserProfile, "email">) {
+  static async updateProfile(profileData: Partial<UserProfile>) {
     const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     await updateDoc(userProfileRef, profileData)
 
-    return this.setSavedStatus(profileData.displayedStatus)
+    if (profileData.displayedStatus) {
+      await this.setSavedStatus(profileData.displayedStatus)
+    }
   }
 
   private static async setSavedStatus(statusToSave: DisplayedStatus) {
-    const userDatabaseStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
+    const savedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
 
-    return set(userDatabaseStatusRef, statusToSave)
+    return set(savedStatusRef, statusToSave)
   }
 
   static async getProfile(): Promise<UserProfile> {
