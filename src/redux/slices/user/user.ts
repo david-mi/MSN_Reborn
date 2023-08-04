@@ -1,4 +1,4 @@
-import { UserSlice, AuthenticationState, DisplayedStatus } from "./types";
+import { UserSlice, AuthenticationState } from "./types";
 import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
 import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
@@ -37,9 +37,6 @@ const userSlice = createSlice({
     },
     setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
       state.authState = payload
-    },
-    setStatus(state, { payload }: PayloadAction<DisplayedStatus>) {
-      state.displayedStatus = payload
     }
   },
   extraReducers: (builder) => {
@@ -72,6 +69,9 @@ const userSlice = createSlice({
       state.displayedStatus = payload.displayedStatus
       state.personalMessage = payload.personalMessage
       state.verified = payload.verified
+    })
+    builder.addCase(getSavedStatus.fulfilled, (state, { payload }) => {
+      state.displayedStatus = payload
     })
     builder.addCase(editProfile.pending, (state) => {
       state.editProfileRequest.status = "PENDING"
@@ -134,6 +134,11 @@ export const getProfile = createAppAsyncThunk(
   }
 )
 
+export const getSavedStatus = createAppAsyncThunk(
+  "user/getSavedStatus",
+  () => UserService.getSavedStatus()
+)
+
 export const editProfile = createAppAsyncThunk(
   "user/editProfile",
   async (profileData: Omit<UserProfile, "email">) => {
@@ -142,5 +147,5 @@ export const editProfile = createAppAsyncThunk(
   }
 )
 
-export const { setVerified, setAuthenticationState, setStatus } = userSlice.actions
+export const { setVerified, setAuthenticationState } = userSlice.actions
 export const userReducer = userSlice.reducer

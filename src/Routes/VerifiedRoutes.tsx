@@ -1,49 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { doc, updateDoc } from "firebase/firestore"
-import { onDisconnect, ref, set, onValue } from "firebase/database"
+import { onDisconnect, ref, onValue, push, Unsubscribe } from "firebase/database"
 import { firebase } from "@/firebase/config";
-import { setStatus } from "@/redux/slices/user/user";
-import { DisplayedStatus } from "@/redux/slices/user/types";
+import { getSavedStatus } from "@/redux/slices/user/user";
 
 function VerifiedRoutes() {
   const dispatch = useAppDispatch()
   const isAccountVerified = useAppSelector(({ user }) => user.verified)
+  const connectedListenerRef = useRef<Unsubscribe | null>(null)
 
   useEffect(() => {
+    if (connectedListenerRef.current) return
+
     const currentUserId = firebase.auth.currentUser!.uid
-    const userStatusDatabaseRef = ref(firebase.database, `/status/${currentUserId}`);
-    console.log(isAccountVerified)
 
-    const isOnlineForFirestore = {
-      displayedStatus: "online",
-    };
-
-    const isOfflineForFirestore = {
-      displayedStatus: "offline",
-    };
-
-    const currentUserRef = doc(firebase.firestore, "users", currentUserId)
     const connectedRef = ref(firebase.database, ".info/connected");
+    const userStatusEntriesRef = ref(firebase.database, `/status/${currentUserId}/entries`);
+    const userStatusNewEntryRef = push(userStatusEntriesRef, Date.now())
 
-    const connectedListener = onValue(connectedRef, async (snapshot) => {
-      const isConnected = snapshot.val();
-
-      if (isConnected === false) {
-        return updateDoc(currentUserRef, isOfflineForFirestore)
-      }
-
-      onDisconnect(userStatusDatabaseRef)
-        .set(isOfflineForFirestore)
-        .then(() => {
-          set(userStatusDatabaseRef, isOnlineForFirestore);
-          updateDoc(currentUserRef, isOnlineForFirestore)
-          dispatch(setStatus(isOnlineForFirestore.displayedStatus as DisplayedStatus))
-        });
+    connectedListenerRef.current = onValue(connectedRef, () => {
+      onDisconnect(userStatusNewEntryRef)
+        .remove()
+        .then(() => dispatch(getSavedStatus()))
     });
 
-    return () => connectedListener();
+    return () => connectedListenerRef.current!();
   }, [])
 
 

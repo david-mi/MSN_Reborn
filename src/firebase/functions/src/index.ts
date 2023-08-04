@@ -1,17 +1,22 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions"
 admin.initializeApp();
 
-exports.syncPresence = functions.database.ref('/status/{uid}/displayedStatus')
-  .onUpdate((change: any, context: any) => {
+exports.onStatusEntriesWrite = functions.database.ref('/status/{uid}/entries')
+  .onCreate(async (change, context) => {
     const uid = context.params.uid;
-    const newStatus = change.after.val();
-    const isEmailVerifiedInToken = context.auth.token.email_verified;
 
-    console.log("IS EMAIL VERIFIED IN TOKEN : " + isEmailVerifiedInToken);
-    console.log("NEW STATUS " + newStatus)
+    const savedStatusRef = change.ref.parent!.child("saved")
+    const savedStatusRefSnapshot = await savedStatusRef.get()
+    const savedStatus = savedStatusRefSnapshot.val()
 
     const currentUserDocumentRef = admin.firestore().doc(`/users/${uid}`);
-    return currentUserDocumentRef.update({ displayedStatus: newStatus });
-  });
+    return currentUserDocumentRef.update({ displayedStatus: savedStatus });
+  })
+
+exports.onStatusEntriesDelete = functions.database.ref('/status/{uid}/entries')
+  .onDelete(async (_, context) => {
+    const uid = context.params.uid;
+    const currentUserDocumentRef = admin.firestore().doc(`/users/${uid}`);
+    return currentUserDocumentRef.update({ displayedStatus: "offline" });
+  })

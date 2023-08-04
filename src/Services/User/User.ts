@@ -1,7 +1,8 @@
 import { reload } from "firebase/auth";
 import { doc, setDoc, getDoc, deleteDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
-import { UserProfile } from "@/redux/slices/user/types";
+import { DisplayedStatus, UserProfile } from "@/redux/slices/user/types";
+import { set, ref, get } from "firebase/database";
 
 export class UserService {
 
@@ -14,24 +15,34 @@ export class UserService {
     return currentUser
   }
 
-  static setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username" | "email">) {
+  static async setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username" | "email">) {
     const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
-    return setDoc(profilesRef, {
+    await setDoc(profilesRef, {
       ...profileData,
-      displayedStatus: "offline",
+      displayedStatus: "online",
       personalMessage: ""
     })
+
+    return this.setSavedStatus("online")
   }
 
   static async forceRefreshToken() {
     return this.currentUser.getIdToken(true)
   }
 
-  static updateProfile(profileData: Partial<UserProfile>) {
+  static async updateProfile(profileData: Omit<UserProfile, "email">) {
     const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
-    return updateDoc(userProfileRef, profileData)
+    await updateDoc(userProfileRef, profileData)
+
+    return this.setSavedStatus(profileData.displayedStatus)
+  }
+
+  private static async setSavedStatus(statusToSave: DisplayedStatus) {
+    const userDatabaseStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
+
+    return set(userDatabaseStatusRef, statusToSave)
   }
 
   static async getProfile(): Promise<UserProfile> {
@@ -39,6 +50,12 @@ export class UserService {
 
     const userProfileDoc = await getDoc(userProfileRef)
     return userProfileDoc.data() as UserProfile
+  }
+
+  static async getSavedStatus(): Promise<DisplayedStatus> {
+    const savedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
+    const savedStatusSnapshot = await get(savedStatusRef)
+    return savedStatusSnapshot.val()
   }
 
   static async deleteAccount() {
