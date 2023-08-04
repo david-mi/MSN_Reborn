@@ -49,7 +49,10 @@ export class UserService {
     const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     const userProfileDoc = await getDoc(userProfileRef)
-    return userProfileDoc.data() as UserProfile
+    return {
+      ...userProfileDoc.data(),
+      id: userProfileDoc.id
+    } as UserProfile
   }
 
   static async getSavedStatus(): Promise<DisplayedStatus> {

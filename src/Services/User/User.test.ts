@@ -15,7 +15,7 @@ describe("UserService", () => {
       const { currentUser } = await Emulator.createUser({ setProfile: true })
 
       const userProfileRef = doc(firebase.firestore, "users", currentUser.uid)
-      const profileInfosToSet: UserProfile = {
+      const profileInfosToSet: Omit<UserProfile, "id"> = {
         avatarSrc: "avatar",
         username: "patrick",
         displayedStatus: "away",
@@ -27,7 +27,10 @@ describe("UserService", () => {
 
       expect(UserService.getProfile())
         .resolves
-        .toEqual(profileInfosToSet)
+        .toContain({
+          ...profileInfosToSet,
+          id: currentUser.uid
+        })
     })
   })
 
@@ -37,7 +40,7 @@ describe("UserService", () => {
     })
 
     it("Should update user profile with given arguments", async () => {
-      const { email } = await Emulator.createUser({ setProfile: true })
+      const { email, currentUser } = await Emulator.createUser({ setProfile: true })
 
       const profileInfosToUpdate: Pick<UserProfile, "avatarSrc" | "username" | "email"> = {
         avatarSrc: "picture",
@@ -50,7 +53,8 @@ describe("UserService", () => {
 
       expect(updatedProfile).toEqual({
         ...profileInfosToUpdate,
-        displayedStatus: "offline",
+        displayedStatus: "online",
+        id: currentUser.uid,
         personalMessage: ""
       })
     })

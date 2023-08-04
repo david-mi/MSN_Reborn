@@ -7,6 +7,7 @@ import { UserProfile } from "./types";
 export const disconnectAction = createAction("reset")
 
 export const initialUserState: UserSlice = {
+  id: "",
   avatarSrc: "",
   username: "",
   displayedStatus: "offline",
@@ -62,8 +63,9 @@ const userSlice = createSlice({
       state.getProfileRequest.status = "REJECTED"
       state.getProfileRequest.error = (error as FirebaseError).message
     })
-    builder.addCase(getProfile.fulfilled, (state, { payload }: PayloadAction<UserProfile & { verified: boolean }>) => {
+    builder.addCase(getProfile.fulfilled, (state, { payload }) => {
       state.getProfileRequest.status = "IDLE"
+      state.id = payload.id
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username
       state.displayedStatus = payload.displayedStatus

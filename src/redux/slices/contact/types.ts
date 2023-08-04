@@ -1,10 +1,10 @@
 import type { RequestStatus } from "../types"
-import { UserProfileWithId } from "@/Components/Home/FriendRequestAlert/types"
+import { UserProfile } from "@/redux/slices/user/types";
 
 export interface ContactSlice {
-  contactsList: UserProfileWithId[]
+  contactsList: UserProfile[]
   contactsIds: string[]
-  usersWhoSentFriendRequest: UserProfileWithId[]
+  usersWhoSentFriendRequest: UserProfile[]
   getFriendsRequest: {
     status: RequestStatus
     error: string | null

@@ -2,11 +2,11 @@ import { Avatar, ModaleLayout } from "@/Components/Shared";
 import { Button } from "@/Components/Shared";
 import styles from "./friendRequestAlert.module.css"
 import { acceptFriendRequest, denyFriendRequest } from "@/redux/slices/contact/contact";
-import { UserProfileWithId } from "./types";
+import { UserProfile } from "@/redux/slices/user/types";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 interface Props {
-  userWhoSentFriendRequest: UserProfileWithId
+  userWhoSentFriendRequest: UserProfile
 }
 
 function FriendRequestAlert({ userWhoSentFriendRequest }: Props) {

@@ -15,7 +15,7 @@ import {
   DocumentData
 } from "firebase/firestore";
 import { User } from "firebase/auth";
-import { UserProfileWithId } from "@/Components/Home/FriendRequestAlert/types";
+import type { UserProfile } from "@/redux/slices/user/types";
 
 describe("ContactService", () => {
   describe("getUserContactsIds", () => {
@@ -51,7 +51,7 @@ describe("ContactService", () => {
     const userToRetrieveContactsId = "2342432424242"
     const userToRetrieveContactsRef = doc(firebase.firestore, "contacts", userToRetrieveContactsId)
     let contact: User
-    let contactProfile: UserProfileWithId
+    let contactProfile: UserProfile
     let queryUserContactsSnapShot: QueryDocumentSnapshot<DocumentData>[]
 
     beforeAll(async () => {

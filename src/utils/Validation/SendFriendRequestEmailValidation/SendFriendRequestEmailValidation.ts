@@ -1,4 +1,4 @@
-import { UserProfileWithId } from "@/Components/Home/FriendRequestAlert/types"
+import type { UserProfile } from "firebase/auth"
 
 const errorsMessages = {
   SAME_EMAIL_THAN_CURRENT_USER: "Vous ne pouvez pas ajouter votre email",
@@ -8,7 +8,7 @@ const errorsMessages = {
 interface ValidateProps {
   emailInput: string,
   currentUserEmail: string
-  contactsList: UserProfileWithId[]
+  contactsList: UserProfile[]
 }
 
 export class SendFriendRequestEmailValidation {
@@ -24,7 +24,7 @@ export class SendFriendRequestEmailValidation {
     return this.validateFromContactListOrThrow(emailInput, contactsList)
   }
 
-  public static validateFromContactListOrThrow(emailInput: string, contactsList: UserProfileWithId[]) {
+  public static validateFromContactListOrThrow(emailInput: string, contactsList: UserProfile[]) {
     const isEmailInputPresentInContactsList = contactsList.find((contact) => contact.email === emailInput)
 
     return isEmailInputPresentInContactsList

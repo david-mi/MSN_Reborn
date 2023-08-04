@@ -1,7 +1,6 @@
 import { doc, setDoc, deleteField, updateDoc, getDoc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import type { UserProfile } from "@/redux/slices/user/types";
-import type { UserProfileWithId } from "@/Components/Home/FriendRequestAlert/types";
 
 export class ContactService {
   static get currentUser() {
@@ -13,7 +12,7 @@ export class ContactService {
     return currentUser
   }
 
-  public static async getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData: DocumentData | undefined): Promise<UserProfileWithId[]> {
+  public static async getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData: DocumentData | undefined): Promise<UserProfile[]> {
     if (!receveidFriendRequestsDocumentData) {
       return []
     }
@@ -57,7 +56,7 @@ export class ContactService {
         }
       })
 
-    return contactsProfile as UserProfileWithId[]
+    return contactsProfile as UserProfile[]
   }
 
   public static async sendFriendRequest(requestedUserId: string) {
