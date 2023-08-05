@@ -4,6 +4,7 @@ import { AppThunkDispatch, createAppAsyncThunk } from "@/redux/types";
 import { AuthService, UserService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { UserProfile } from "./types";
+
 export const disconnectAction = createAction("reset")
 
 export const initialUserState: UserSlice = {
@@ -38,6 +39,12 @@ const userSlice = createSlice({
     },
     setAuthenticationState(state, { payload }: PayloadAction<AuthenticationState>) {
       state.authState = payload
+    },
+    setProfile(state, { payload }: PayloadAction<UserProfile>) {
+      return {
+        ...state,
+        ...payload
+      }
     }
   },
   extraReducers: (builder) => {
@@ -125,12 +132,10 @@ export const disconnect = createAppAsyncThunk(
 
 export const getProfile = createAppAsyncThunk(
   "user/getProfile",
-  async () => {
-    const profileInfos = await UserService.getProfile()
+  async (userProfile: UserProfile) => {
     const isVerified = await UserService.checkIfVerified()
-
     return {
-      ...profileInfos,
+      ...userProfile,
       verified: isVerified
     }
   }
@@ -149,5 +154,5 @@ export const editProfile = createAppAsyncThunk(
   }
 )
 
-export const { setVerified, setAuthenticationState } = userSlice.actions
+export const { setVerified, setAuthenticationState, setProfile } = userSlice.actions
 export const userReducer = userSlice.reducer

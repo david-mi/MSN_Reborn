@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form"
 import { Button, FormLayout } from "@/Components/Shared"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { createUserAndSetProfile, setPassword } from "@/redux/slices/register/register"
-import { getProfile, disconnect } from "@/redux/slices/user/user"
 import type { PasswordFormFields } from "./types"
 import { PasswordValidation } from "@/utils/Validation"
 import { setAuthenticationState } from "@/redux/slices/user/user"
@@ -26,16 +25,8 @@ function PasswordForm() {
 
     try {
       await dispatch(createUserAndSetProfile()).unwrap()
-    } catch (error) {
-      return
-    }
-
-    try {
-      await dispatch(getProfile()).unwrap()
       dispatch(setAuthenticationState("AUTHENTICATED"))
-    } catch (error) {
-      dispatch(disconnect())
-    }
+    } catch (error) { }
   }
 
   return (

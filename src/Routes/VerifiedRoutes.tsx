@@ -1,17 +1,16 @@
 import { useEffect, useRef } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { onDisconnect, ref, onValue, push, Unsubscribe, onChildRemoved } from "firebase/database"
+import { useAppSelector } from "@/redux/hooks";
+import { onDisconnect, ref, onValue, push, Unsubscribe } from "firebase/database"
 import { firebase } from "@/firebase/config";
-import { disconnect, getSavedStatus } from "@/redux/slices/user/user";
 import { signOut } from "firebase/auth";
 
 function VerifiedRoutes() {
-  const dispatch = useAppDispatch()
   const isAccountVerified = useAppSelector(({ user }) => user.verified)
-  const userId = useAppSelector(({ user }) => user.id)
+  // const userId = useAppSelector(({ user }) => user.id)
   const connectedListenerRef = useRef<Unsubscribe | null>(null)
   const saveddListenerRef = useRef<Unsubscribe | null>(null)
+  const userId = firebase.auth.currentUser!.uid
 
   /**
    * Track user presence and reflect it on status
@@ -30,7 +29,6 @@ function VerifiedRoutes() {
       onDisconnect(userStatusNewEntryRef)
         .remove()
         .then(() => {
-          dispatch(getSavedStatus())
           saveddListenerRef.current = onValue(userStatusSavedRef, (snapshot) => {
             const shouldDisconnectUser = snapshot.exists() === false
 
