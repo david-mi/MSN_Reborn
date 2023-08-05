@@ -1,28 +1,23 @@
-import { useEffect, MouseEvent, useState } from "react";
-import { UserService } from "@/Services";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { setProfile } from "@/redux/slices/user/user";
+import { MouseEvent } from "react";
+import { useAppSelector } from "@/redux/hooks";
 import { Avatar } from "@/Components/Shared";
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 import type { EditProfileFormFields } from "../EditProfileForm/types";
-import { doc, onSnapshot } from "firebase/firestore";
-import { firebase } from "@/firebase/config";
 import styles from "./displayProfile.module.css";
-import { UserProfile } from "@/redux/slices/user/types";
 import { Loader } from "@/Components/Shared";
+import useProfile from "@/hooks/useProfile";
 
 interface Props {
   openEditProfileForm: (buttonTarget: keyof Omit<EditProfileFormFields, "avatarSrc">) => void
 }
 
 function DisplayProfile({ openEditProfileForm }: Props) {
-  const dispatch = useAppDispatch()
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
+  const { isLoadingForTheFirstTime } = useProfile()
   const avatarSrc = useAppSelector(({ user }) => user.avatarSrc)
   const username = useAppSelector(({ user }) => user.username)
   const displayedStatus = useAppSelector(({ user }) => user.displayedStatus)
   const personalMessage = useAppSelector(({ user }) => user.personalMessage)
-  const classNames = `${styles.displayProfile} ${isLoadingProfile ? styles.loading : ""}`
+  const classNames = `${styles.displayProfile} ${isLoadingForTheFirstTime ? styles.loading : ""}`
 
   function handleButtonClick({ currentTarget }: MouseEvent<HTMLButtonElement>) {
     const buttonTarget = currentTarget.dataset.target as keyof Omit<EditProfileFormFields, "avatarSrc">
@@ -30,21 +25,9 @@ function DisplayProfile({ openEditProfileForm }: Props) {
     openEditProfileForm(buttonTarget)
   }
 
-  useEffect(() => {
-    const userRef = doc(firebase.firestore, "users", UserService.currentUser.uid)
-
-    const unsubscribe = onSnapshot(userRef, async (snapshot) => {
-      const userProfile = snapshot.data() as UserProfile
-      dispatch(setProfile(userProfile))
-      setIsLoadingProfile(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
-
   return (
     <div className={classNames}>
-      {isLoadingProfile
+      {isLoadingForTheFirstTime
         ? <Loader size={"2rem"} className={styles.loader} />
         : (
           <>
