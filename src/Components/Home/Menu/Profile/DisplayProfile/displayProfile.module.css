@@ -19,6 +19,19 @@
       rgba(44, 98, 138, 0.58) 10%,
       rgba(44, 98, 138, 0.42) 40%,
       rgba(44, 98, 138, 0.26) 100%) 1;
+  max-height: 100px;
+  transition: max-height 300ms ease-in-out;
+  overflow: hidden;
+
+  &.loading {
+    grid-template-areas:
+      "loader";
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    max-height: 70px;
+    height: 100%;
+    place-items: center;
+  }
 
   &::before,
   &::after {
@@ -102,4 +115,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.loader {
+  grid-area: loader;
 }
