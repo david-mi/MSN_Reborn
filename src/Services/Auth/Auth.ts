@@ -9,10 +9,9 @@ import {
   setPersistence,
   browserSessionPersistence,
   indexedDBLocalPersistence,
-  signOut
 } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
 import { UserService } from "..";
+import { ref, remove } from "firebase/database";
 
 export class AuthService {
   public static errorsMessages = {
@@ -85,10 +84,7 @@ export class AuthService {
   }
 
   static async disconnect() {
-    const currentUserRef = doc(firebase.firestore, "users", this.currentUser.uid)
-    await updateDoc(currentUserRef, {
-      displayedStatus: "offline"
-    })
-    await signOut(firebase.auth)
+    const userDatabaseSavedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}`)
+    await remove(userDatabaseSavedStatusRef)
   }
 }
