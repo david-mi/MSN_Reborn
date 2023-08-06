@@ -16,7 +16,6 @@ button {
 
 #root {
   min-height: 100dvh;
-  padding: var(--padding-global);
   display: flex;
   flex-direction: column;
   font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
