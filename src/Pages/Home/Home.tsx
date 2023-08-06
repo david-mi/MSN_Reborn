@@ -1,7 +1,6 @@
-import Menu from "@/Components/Home/Menu/Menu";
-import styles from "./home.module.css"
-import FriendRequestAlert from "@/Components/Home/FriendRequestAlert/FriendRequestAlert";
 import useFriendRequest from "@/hooks/useFriendRequest";
+import { Menu, FriendRequestAlert, Chat } from "@/Components/Home";
+import styles from "./home.module.css"
 
 function Home() {
   const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
@@ -10,6 +9,7 @@ function Home() {
     <div className={styles.home} data-testid="home">
       {haveFriendRequest && <FriendRequestAlert userWhoSentFriendRequest={usersWhoSentFriendRequest[0]} />}
       <Menu />
+      <Chat />
     </div>
   );
 }
