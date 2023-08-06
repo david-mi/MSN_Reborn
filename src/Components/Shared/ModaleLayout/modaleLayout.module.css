@@ -25,7 +25,7 @@
   display: flex;
   gap: 15px;
   align-items: center;
-  background: url("./header-background.jpg");
+  background: url("/header-background.jpg");
   background-size: cover;
   height: 40px;
   height: clamp(40px, 55px - 2vw, 50px);
