@@ -30,7 +30,7 @@ function DisplayProfile({ openEditProfileForm }: Props) {
         {username}
       </button>
       <button onClick={handleButtonClick} data-target="displayedStatus">
-        ({statusesObject[displayedStatus].sentence})
+        ({statusesObject[displayedStatus]?.sentence})
       </button>
       <button title={personalMessage} onClick={handleButtonClick} data-target="personalMessage">
         {personalMessage !== ""

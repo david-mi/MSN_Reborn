@@ -12,6 +12,6 @@
     "displayMessages chatAvatars"
     "sendMessage chatAvatars";
   gap: var(--chat-gap);
-  padding-bottom: var(--chat-gap);
+  padding-bottom: calc(var(--chat-gap) * 3);
   background-color: #ecf3f6;
 }

@@ -1,4 +1,17 @@
 .chatAvatars {
   grid-area: chatAvatars;
-  background-color: orange;
+  display: flex;
+}
+
+.avatars {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.avatarContainer {
+  padding: var(--chat-gap);
+  padding-bottom: calc(var(--chat-gap) * 2);
+  border: solid 1px var(--separators-clr);
+  background-color: white;
 }
