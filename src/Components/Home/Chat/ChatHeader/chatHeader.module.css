@@ -1,0 +1,40 @@
+.chatHeader {
+  grid-area: chatHeader;
+  display: grid;
+  grid-template-columns: repeat(3, auto) 1fr;
+  grid-template-rows: repeat(2, auto);
+  column-gap: var(--chat-gap);
+  grid-template-areas:
+    "logo username status ."
+    "logo personalSentence personalSentence personalSentence";
+  margin-inline: calc(var(--chat-gap) * -1);
+  padding: var(--chat-gap);
+  background: url("/header-background.jpg");
+  background-size: cover;
+
+  & > :nth-child(1) {
+    grid-area: logo;
+  }
+
+  & > :nth-child(2) {
+    grid-area: username;
+    font-weight: 500;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & > :nth-child(3) {
+    grid-area: status;
+  }
+
+  & > :nth-child(4) {
+    grid-area: personalSentence;
+    font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,5 @@
+.chatSendMessage {
+  grid-area: sendMessage;
+  background-color: rgb(206, 87, 93);
+  min-height: 100px;
+}

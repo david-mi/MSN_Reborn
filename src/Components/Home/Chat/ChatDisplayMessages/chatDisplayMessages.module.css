@@ -1,0 +1,4 @@
+.chatDisplayMessages {
+  grid-area: displayMessages;
+  background-color: rgb(102, 102, 250);
+}

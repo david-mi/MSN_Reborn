@@ -1,0 +1,4 @@
+.chatAvatars {
+  grid-area: chatAvatars;
+  background-color: orange;
+}
