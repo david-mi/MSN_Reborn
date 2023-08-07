@@ -2,8 +2,11 @@ import { ImageLoadWrapper, Avatar } from "@/Components/Shared";
 import useContact from "@/hooks/useContact";
 import styles from "./contactsList.module.css"
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
+import { useAppDispatch } from "@/redux/hooks";
+import { setcurrentDisplayedRoom } from "@/redux/slices/chat/chat";
 
 function ContactsList() {
+  const dispatch = useAppDispatch()
   const { contacts, contactsError } = useContact()
 
   if (contactsError) {
@@ -14,7 +17,14 @@ function ContactsList() {
     <ul className={styles.container}>
       {contacts.map(({ email, username, displayedStatus, avatarSrc, personalMessage }) => {
         return (
-          <li className={styles.contactsList} key={email}>
+          <li className={styles.contactsList} key={email} onClick={
+            () => {
+              dispatch(setcurrentDisplayedRoom({
+                id: "fakeid",
+                users: [],
+                messages: [],
+              }))
+            }}>
             <div className={styles.avatarContainer}>
               <Avatar src={avatarSrc} size="small" />
               <ImageLoadWrapper
