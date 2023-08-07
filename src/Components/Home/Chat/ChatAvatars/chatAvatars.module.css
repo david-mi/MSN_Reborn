@@ -15,3 +15,9 @@
   border: solid 1px var(--separators-clr);
   background-color: white;
 }
+
+@media (width < 700px) {
+  .chatAvatars {
+    display: none;
+  }
+}

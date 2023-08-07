@@ -15,3 +15,15 @@
   padding-bottom: calc(var(--chat-gap) * 3);
   background-color: #ecf3f6;
 }
+
+@media (width < 700px) {
+  .chat {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      "chatHeader"
+      "chatOptions"
+      "displayMessages"
+      "sendMessage";
+  }
+}

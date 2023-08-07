@@ -6,4 +6,13 @@
   gap: var(--menu-vertical-gap);
   display: flex;
   flex-direction: column;
+  margin-inline: auto;
+}
+
+@media (width < 700px) {
+  .menu {
+    &.closedInMobile {
+      display: none;
+    }
+  }
 }
