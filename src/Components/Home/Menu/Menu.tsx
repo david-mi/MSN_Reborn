@@ -2,13 +2,18 @@ import { Header, Profile, Contacts } from ".";
 import { GradientLayout } from "@/Components/Shared";
 import styles from "./menu.module.css"
 
-function Menu() {
+interface Props {
+  isChatDisplayed: boolean
+}
+
+function Menu({ isChatDisplayed }: Props) {
+  const classNames = `${styles.menu} ${isChatDisplayed ? styles.closedInMobile : ""}`
+
   return (
-    <GradientLayout className={styles.menu} data-testid="menu">
+    <GradientLayout className={classNames} data-testid="menu">
       <Header />
       <Profile />
       <Contacts />
-
     </GradientLayout>
   );
 }

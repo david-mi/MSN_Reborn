@@ -1,11 +1,11 @@
 .chatHeader {
   grid-area: chatHeader;
   display: grid;
-  grid-template-columns: repeat(3, auto) 1fr;
+  grid-template-columns: repeat(2, auto) 1fr auto;
   grid-template-rows: repeat(2, auto);
   column-gap: var(--chat-gap);
   grid-template-areas:
-    "logo username status ."
+    "logo username status closeButton"
     "logo personalSentence personalSentence personalSentence";
   margin-inline: calc(var(--chat-gap) * -1);
   padding: var(--chat-gap);
@@ -36,5 +36,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  & > :nth-child(5) {
+    grid-area: closeButton;
   }
 }
