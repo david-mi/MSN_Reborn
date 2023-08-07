@@ -1,5 +1,27 @@
 .chatSendMessage {
   grid-area: sendMessage;
-  background-color: rgb(206, 87, 93);
+  display: flex;
+  gap: 5px;
+  background-color: white;
   min-height: 100px;
+  border: solid 1px var(--separators-clr);
+  padding: var(--chat-gap);
+
+  & textarea {
+    flex: 1;
+    padding: var(--chat-gap);
+    resize: none;
+    border: none;
+    font-size: clamp(1rem, 1.1rem - 0.2vw, 1.1rem);
+    font-weight: 500;
+
+    &:focus {
+
+      outline-color: var(--separators-clr);
+    }
+  }
+
+  .submitButton {
+    align-self: center;
+  }
 }
