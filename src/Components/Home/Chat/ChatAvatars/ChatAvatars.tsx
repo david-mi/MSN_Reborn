@@ -11,10 +11,10 @@ function ChatAvatars() {
       {displayAvatars && (
         <div className={styles.avatars}>
           <div className={styles.avatarContainer}>
-            <Avatar size="medium" />
+            <Avatar size="dynamic" />
           </div>
           <div className={styles.avatarContainer}>
-            <Avatar size="medium" />
+            <Avatar size="dynamic" />
           </div>
         </div>
       )}
