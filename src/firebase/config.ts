@@ -24,8 +24,20 @@ export const firebase = {
 }
 
 if (import.meta.env.MODE === "development" || process.env.NODE_ENV === "test") {
-  connectAuthEmulator(firebase.auth, "http://127.0.0.1:9099", { disableWarnings: true })
-  connectStorageEmulator(firebase.storage, "127.0.0.1", 9199)
-  connectFirestoreEmulator(firebase.firestore, "127.0.0.1", 8080)
-  connectFunctionsEmulator(firebase.functions, "127.0.0.1", 5001)
+  connectAuthEmulator(firebase.auth,
+    `http://${import.meta.env.VITE_HOTSPOT_HOST || "127.0.0.1"}:9099`,
+    { disableWarnings: true }
+  )
+  connectStorageEmulator(
+    firebase.storage,
+    import.meta.env.VITE_HOTSPOT_HOST || "127.0.0.1", 9199
+  )
+  connectFirestoreEmulator(
+    firebase.firestore,
+    import.meta.env.VITE_HOTSPOT_HOST || "127.0.0.1", 8080
+  )
+  connectFunctionsEmulator(
+    firebase.functions,
+    import.meta.env.VITE_HOTSPOT_HOST || "127.0.0.1", 5001
+  )
 }
