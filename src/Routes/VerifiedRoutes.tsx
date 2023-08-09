@@ -3,47 +3,38 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
 import { onDisconnect, ref, onValue, push, Unsubscribe } from "firebase/database"
 import { firebase } from "@/firebase/config";
-import { signOut } from "firebase/auth";
+import { AuthService } from "@/Services";
 
 function VerifiedRoutes() {
   const isAccountVerified = useAppSelector(({ user }) => user.verified)
-  // const userId = useAppSelector(({ user }) => user.id)
   const connectedListenerRef = useRef<Unsubscribe | null>(null)
-  const saveddListenerRef = useRef<Unsubscribe | null>(null)
-  const userId = firebase.auth.currentUser!.uid
+  const firstEffectCall = useRef(true)
+  const currentUser = firebase.auth.currentUser!
 
   /**
    * Track user presence and reflect it on status
-   */
+  */
 
   useEffect(() => {
-    if (connectedListenerRef.current) return
+    if (firstEffectCall.current === false) return
 
+    (async function () {
+      const userAuthTimeToNumber = await AuthService.getUserAuthTimeToNumber()
+      const connectedRef = ref(firebase.database, ".info/connected");
+      const userStatusEntriesRef = ref(firebase.database, `/status/${currentUser.uid}/entries/${userAuthTimeToNumber}`);
+      const userStatusNewEntryRef = push(userStatusEntriesRef, true)
 
-    const connectedRef = ref(firebase.database, ".info/connected");
-    const userStatusEntriesRef = ref(firebase.database, `/status/${userId}/entries`);
-    const userStatusNewEntryRef = push(userStatusEntriesRef, Date.now())
-    const userStatusSavedRef = ref(firebase.database, `/status/${userId}/saved`);
-
-    connectedListenerRef.current = onValue(connectedRef, () => {
-      onDisconnect(userStatusNewEntryRef)
-        .remove()
-        .then(() => {
-          saveddListenerRef.current = onValue(userStatusSavedRef, (snapshot) => {
-            const shouldDisconnectUser = snapshot.exists() === false
-
-            if (shouldDisconnectUser) {
-              signOut(firebase.auth)
-            }
-          })
-        })
-    });
+      connectedListenerRef.current = onValue(connectedRef, async () => {
+        onDisconnect(userStatusNewEntryRef)
+          .remove()
+      });
+    })()
 
     return () => {
-      connectedListenerRef.current!()
+      firstEffectCall.current = false
 
-      if (saveddListenerRef.current) {
-        saveddListenerRef.current!()
+      if (connectedListenerRef.current) {
+        connectedListenerRef.current!()
       }
     }
   }, [])
