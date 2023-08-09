@@ -34,6 +34,12 @@ function App() {
     })
   }, [])
 
+  useEffect(() => {
+    document.title = import.meta.env.MODE === "development"
+      ? "(DEV) MSN Reborn"
+      : "MSN Reborn"
+  }, [])
+
   return authState === "PENDING"
     ? <Loader size={"8rem"} />
     : <Outlet />
