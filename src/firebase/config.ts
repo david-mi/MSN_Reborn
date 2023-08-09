@@ -22,7 +22,7 @@ export const firebase = {
   storage: getStorage(fireBaseApp),
   firestore: getFirestore(fireBaseApp),
   functions: getFunctions(fireBaseApp),
-  database: getDatabase(fireBaseApp)
+  database: getDatabase(fireBaseApp, import.meta.env.VITE_FIREBASE_DATABASE_URL)
 }
 
 if (import.meta.env.MODE === "development" || process.env.NODE_ENV === "test") {

@@ -39,6 +39,9 @@
   "include": [
     "src"
   ],
+  "exclude": [
+    "src/firebase/**"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"
