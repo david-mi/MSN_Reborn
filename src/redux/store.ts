@@ -3,14 +3,14 @@ import { registerReducer } from "./slices/register/register";
 import { userReducer } from "./slices/user/user";
 import { loginReducer } from "./slices/login/login";
 import { contactReducer } from "./slices/contact/contact";
-import { chatReducer } from "./slices/chat/chat";
+import { roomReducer } from "./slices/room/room";
 
 const rootReducer = combineReducers({
   register: registerReducer,
   login: loginReducer,
   user: userReducer,
   contact: contactReducer,
-  chat: chatReducer
+  room: roomReducer
 })
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {

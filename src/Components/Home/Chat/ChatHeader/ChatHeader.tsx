@@ -2,7 +2,7 @@ import chatLogo from "./chat-logo.png"
 import { ImageLoadWrapper } from "@/Components/Shared";
 import { CloseButton } from "@/Components/Shared";
 import { useAppDispatch } from "@/redux/hooks";
-import { setcurrentDisplayedRoom } from "@/redux/slices/chat/chat";
+import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 import styles from "./chatHeader.module.css";
 
 function ChatHeader() {

@@ -10,9 +10,14 @@ export interface Message {
   message: string
 }
 
-export interface RoomSlice {
+export interface Room {
   id: string
   type: RoomType
   users: UserId[]
   messages: Message[]
+}
+
+export interface RoomSlice {
+  current: Room | null
+  roomsList: Room[]
 }

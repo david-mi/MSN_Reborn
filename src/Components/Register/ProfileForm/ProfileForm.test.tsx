@@ -7,7 +7,7 @@ import type { Store } from "@/redux/types";
 import { initialUserState } from "@/redux/slices/user/user";
 import { initialLoginState } from "@/redux/slices/login/login";
 import { initialContactState } from "@/redux/slices/contact/contact";
-import { initialChatState } from "@/redux/slices/chat/chat";
+import { initialChatState } from "@/redux/slices/room/room";
 
 const { body } = document
 
@@ -49,7 +49,7 @@ describe("ProfileForm", () => {
       contact: {
         ...initialContactState
       },
-      chat: {
+      room: {
         ...initialChatState
       }
     };

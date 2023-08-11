@@ -18,7 +18,7 @@ import { User } from "firebase/auth";
 import type { UserProfile } from "@/redux/slices/user/types";
 
 describe("ContactService", () => {
-  describe("getUserContactsIds", () => {
+  describe("getUserContactsIdsAndRoomId", () => {
     const userToRetrieveContactsId = "2342432424242"
     let contactId: string
     let userToRetrieveContactsRef: DocumentReference
@@ -28,9 +28,8 @@ describe("ContactService", () => {
     userToRetrieveContactsRef = doc(firebase.firestore, "contacts", userToRetrieveContactsId)
 
     beforeAll(async () => {
-      const userToAddRef = doc(firebase.firestore, "users", contactId)
       await setDoc(userToRetrieveContactsRef, {
-        [contactId]: userToAddRef
+        [contactId]: "roomID242424"
       }, { merge: true })
 
       contactsDocumentData = (await getDoc(userToRetrieveContactsRef)).data()
@@ -41,9 +40,9 @@ describe("ContactService", () => {
     })
 
     it("should retrieve user contacts ids", async () => {
-      const retrievedContactsIds = await ContactService.getUserContactsIds(contactsDocumentData)
+      const retrievedContactsIds = await ContactService.getUserContactsIdsAndRoomId(contactsDocumentData)
 
-      expect(retrievedContactsIds).toEqual([contactId])
+      expect(retrievedContactsIds.contactsId).toEqual([contactId])
     })
   })
 
@@ -61,17 +60,16 @@ describe("ContactService", () => {
         id: contact.uid
       }
 
-      const userToAddRef = doc(firebase.firestore, "users", contact.uid)
       await setDoc(userToRetrieveContactsRef, {
-        [contact.uid]: userToAddRef
+        [contact.uid]: "2424242442"
       }, { merge: true })
 
       const contactsDocumentData = (await getDoc(userToRetrieveContactsRef)).data()
-      const retrievedContactsIds = await ContactService.getUserContactsIds(contactsDocumentData)
+      const retrievedContacts = await ContactService.getUserContactsIdsAndRoomId(contactsDocumentData)
 
       const queryUserContacts = query(
         collection(firebase.firestore, "users"),
-        where(documentId(), "in", retrievedContactsIds)
+        where(documentId(), "in", retrievedContacts.contactsId)
       )
       queryUserContactsSnapShot = (await getDocs(queryUserContacts)).docs
     })
@@ -176,14 +174,14 @@ describe("ContactService", () => {
       await ContactService.acceptFriendRequest(requestingUser.uid)
 
       const requestedUserContactsData = (await getDoc(requestedUserContactsRef)).data()
-      const requestedUserContacts = await ContactService.getUserContactsIds(requestedUserContactsData)
+      const requestedUserContacts = await ContactService.getUserContactsIdsAndRoomId(requestedUserContactsData)
 
-      expect(requestedUserContacts[0]).toEqual(requestingUser.uid)
+      expect(requestedUserContacts.contactsId[0]).toEqual(requestingUser.uid)
 
       const requestingUserContactsData = (await getDoc(requestingUserContactsRef)).data()
-      const requestingUserContacts = await ContactService.getUserContactsIds(requestingUserContactsData)
+      const requestingUserContacts = await ContactService.getUserContactsIdsAndRoomId(requestingUserContactsData)
 
-      expect(requestingUserContacts[0]).toEqual(requestedUser.uid)
+      expect(requestingUserContacts.contactsId[0]).toEqual(requestedUser.uid)
 
       const requestedUserReceivedFriendRequestsData = (await getDoc(requestedUserReceivedFriendRequestsRef)).data()
       const requestedUserReceivedFriendRequests = await ContactService.getUsersWhoSentFriendRequest(requestedUserReceivedFriendRequestsData)
@@ -224,14 +222,14 @@ describe("ContactService", () => {
       await ContactService.denyFriendRequest(requestingUser.uid)
 
       const requestedUserContactsData = (await getDoc(requestedUserContactsRef)).data()
-      const requestedUserContacts = await ContactService.getUserContactsIds(requestedUserContactsData)
+      const requestedUserContacts = await ContactService.getUserContactsIdsAndRoomId(requestedUserContactsData)
 
-      expect(requestedUserContacts).toHaveLength(0)
+      expect(requestedUserContacts.contactsId).toHaveLength(0)
 
       const requestingUserContactsData = (await getDoc(requestingUserContactsRef)).data()
-      const requestingUserContacts = await ContactService.getUserContactsIds(requestingUserContactsData)
+      const requestingUserContacts = await ContactService.getUserContactsIdsAndRoomId(requestingUserContactsData)
 
-      expect(requestingUserContacts).toHaveLength(0)
+      expect(requestingUserContacts.contactsId).toHaveLength(0)
 
       const requestedUserReceivedFriendRequestsData = (await getDoc(requestedUserReceivedFriendRequestsRef)).data()
       const requestedUserReceivedFriendRequests = await ContactService.getUsersWhoSentFriendRequest(requestedUserReceivedFriendRequestsData)

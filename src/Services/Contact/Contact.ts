@@ -2,6 +2,7 @@ import { doc, setDoc, deleteField, updateDoc, getDoc, DocumentData, QueryDocumen
 import { firebase } from "@/firebase/config";
 import type { UserProfile } from "@/redux/slices/user/types";
 import { RoomService } from "..";
+import { Contact } from "@/redux/slices/contact/types";
 
 export class ContactService {
   static get currentUser() {
@@ -32,18 +33,21 @@ export class ContactService {
     })
   }
 
-  public static async getUserContactsIds(contactsDocumentData: DocumentData | undefined) {
-    if (!contactsDocumentData) {
-      return []
+  public static async getUserContactsIdsAndRoomId(contactsDocumentData: DocumentData | undefined) {
+    const contactsList: Pick<Contact, "roomId" | "id">[] = []
+    const contactsId: string[] = []
+
+    if (contactsDocumentData) {
+      for (let contactId in contactsDocumentData) {
+        contactsList.push({
+          id: contactId,
+          roomId: contactsDocumentData[contactId],
+        })
+        contactsId.push(contactId)
+      }
     }
 
-    const userWhoSentFriendRequestSnapshot = await Promise.all(
-      Object
-        .keys(contactsDocumentData)
-        .map((userId) => getDoc<UserProfile>(contactsDocumentData[userId]))
-    )
-
-    return userWhoSentFriendRequestSnapshot.map((docSnap) => docSnap.id)
+    return { contactsList, contactsId }
   }
 
   public static async getContactsProfile(contactsProfileSnapshot: QueryDocumentSnapshot<DocumentData>[]) {
@@ -70,12 +74,12 @@ export class ContactService {
   }
 
   public static async acceptFriendRequest(userWhoSentFriendRequestId: string) {
-    await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid)
-    await this.addUserToContacts(this.currentUser.uid, userWhoSentFriendRequestId)
-
     const roomId = await RoomService.createRoom("oneToOne", [this.currentUser.uid, userWhoSentFriendRequestId])
     await RoomService.addRoomIdToUserRoomsList(roomId, this.currentUser.uid)
     await RoomService.addRoomIdToUserRoomsList(roomId, userWhoSentFriendRequestId)
+
+    await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid, roomId)
+    await this.addUserToContacts(this.currentUser.uid, userWhoSentFriendRequestId, roomId)
 
     return this.removeUserFromReceivedRequests(userWhoSentFriendRequestId)
   }
@@ -84,12 +88,11 @@ export class ContactService {
     return this.removeUserFromReceivedRequests(userWhoSentFriendRequestId)
   }
 
-  private static async addUserToContacts(userIdToAdd: string, userIdToAccept: string) {
+  private static async addUserToContacts(userIdToAdd: string, userIdToAccept: string, roomId: string) {
     const userToAcceptContactsRef = doc(firebase.firestore, "contacts", userIdToAccept)
-    const userToAddRef = doc(firebase.firestore, "users", userIdToAdd)
 
     await setDoc(userToAcceptContactsRef, {
-      [userIdToAdd]: userToAddRef
+      [userIdToAdd]: roomId,
     }, { merge: true })
   }
 

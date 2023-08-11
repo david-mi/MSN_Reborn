@@ -3,7 +3,7 @@ import useContact from "@/hooks/useContact";
 import styles from "./contactsList.module.css"
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 import { useAppDispatch } from "@/redux/hooks";
-import { setcurrentDisplayedRoom } from "@/redux/slices/chat/chat";
+import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 
 function ContactsList() {
   const dispatch = useAppDispatch()
@@ -20,6 +20,7 @@ function ContactsList() {
           <li className={styles.contactsList} key={email} onClick={
             () => {
               dispatch(setcurrentDisplayedRoom({
+                type: "oneToOne",
                 id: "fakeid",
                 users: [],
                 messages: [],

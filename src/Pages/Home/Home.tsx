@@ -5,7 +5,7 @@ import { useAppSelector } from "@/redux/hooks";
 
 function Home() {
   const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
-  const currentDisplayedRoom = useAppSelector(({ chat }) => chat.currentDisplayedRoom)
+  const currentDisplayedRoom = useAppSelector(({ room }) => room.current)
   const isChatDisplayed = currentDisplayedRoom !== null
 
   return (
