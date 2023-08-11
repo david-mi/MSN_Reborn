@@ -1,6 +1,7 @@
 import { doc, setDoc, deleteField, updateDoc, getDoc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import type { UserProfile } from "@/redux/slices/user/types";
+import { RoomService } from "..";
 
 export class ContactService {
   static get currentUser() {
@@ -71,6 +72,11 @@ export class ContactService {
   public static async acceptFriendRequest(userWhoSentFriendRequestId: string) {
     await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid)
     await this.addUserToContacts(this.currentUser.uid, userWhoSentFriendRequestId)
+
+    const roomId = await RoomService.createRoom("oneToOne", [this.currentUser.uid, userWhoSentFriendRequestId])
+    await RoomService.addRoomIdToUserRoomsList(roomId, this.currentUser.uid)
+    await RoomService.addRoomIdToUserRoomsList(roomId, userWhoSentFriendRequestId)
+
     return this.removeUserFromReceivedRequests(userWhoSentFriendRequestId)
   }
 
