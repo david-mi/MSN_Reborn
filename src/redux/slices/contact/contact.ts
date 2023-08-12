@@ -28,21 +28,29 @@ const contactSlice = createSlice({
   name: "contact",
   initialState: initialContactState,
   reducers: {
-    initializeContactsList(state, { payload }: PayloadAction<Pick<Contact, "roomId" | "id">[]>) {
-      state.contactsList = payload.map(({ id, roomId }) => {
-        return {
-          id,
-          roomId,
-          avatarSrc: "",
-          displayedStatus: "offline",
-          email: "",
-          personalMessage: "",
-          username: ""
+    initializeContactsList(state, { payload }: PayloadAction<{ [id: string]: string } | undefined>) {
+      const contactsList: Contact[] = []
+
+      if (payload !== undefined) {
+        for (const contactId in payload) {
+          contactsList.push({
+            id: contactId,
+            roomId: payload[contactId],
+            avatarSrc: "",
+            displayedStatus: "offline",
+            email: "",
+            personalMessage: "",
+            username: ""
+          })
         }
-      })
+      }
+
+      state.contactsList = contactsList
     },
-    setContactsIds(state, { payload }: PayloadAction<string[]>) {
-      state.contactsIds = payload
+    setContactsIds(state, { payload }: PayloadAction<{ [id: string]: string } | undefined>) {
+      state.contactsIds = payload !== undefined
+        ? Object.keys(payload)
+        : []
     },
   },
   extraReducers: (builder) => {
@@ -68,17 +76,6 @@ const contactSlice = createSlice({
     builder.addCase(getUsersWhoSentFriendRequest.fulfilled, (state, { payload }) => {
       state.getFriendsRequest.status = "IDLE"
       state.usersWhoSentFriendRequest = payload
-    })
-    builder.addCase(getUserContactsIdsAndRoomId.pending, (state) => {
-      state.getContactsRequest.status = "PENDING"
-      state.getContactsRequest.error = null
-    })
-    builder.addCase(getUserContactsIdsAndRoomId.rejected, (state, { error }) => {
-      state.getContactsRequest.status = "REJECTED"
-      state.getContactsRequest.error = (error as FirebaseError).message
-    })
-    builder.addCase(getUserContactsIdsAndRoomId.fulfilled, (state) => {
-      state.getContactsRequest.status = "IDLE"
     })
     builder.addCase(getContactsProfile.pending, (state) => {
       state.getContactsRequest.status = "PENDING"
@@ -132,15 +129,6 @@ export const getUsersWhoSentFriendRequest = createAppAsyncThunk(
   "contact/getUsersWhoSentFriendRequest",
   async (receveidFriendRequestsDocumentData: DocumentData | undefined) => {
     return ContactService.getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData)
-  })
-
-export const getUserContactsIdsAndRoomId = createAppAsyncThunk(
-  "contact/getUserContactsIdsAndRoomId",
-  async (contactsDocumentData: DocumentData | undefined, { dispatch }) => {
-    const { contactsList, contactsId } = await ContactService.getUserContactsIdsAndRoomId(contactsDocumentData)
-
-    dispatch(setContactsIds(contactsId))
-    dispatch(initializeContactsList(contactsList))
   })
 
 export const getContactsProfile = createAppAsyncThunk(

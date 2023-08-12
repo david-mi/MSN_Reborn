@@ -2,7 +2,6 @@ import { doc, setDoc, deleteField, updateDoc, getDoc, DocumentData, QueryDocumen
 import { firebase } from "@/firebase/config";
 import type { UserProfile } from "@/redux/slices/user/types";
 import { RoomService } from "..";
-import { Contact } from "@/redux/slices/contact/types";
 
 export class ContactService {
   static get currentUser() {
@@ -31,23 +30,6 @@ export class ContactService {
         id: docSnap.id
       }
     })
-  }
-
-  public static async getUserContactsIdsAndRoomId(contactsDocumentData: DocumentData | undefined) {
-    const contactsList: Pick<Contact, "roomId" | "id">[] = []
-    const contactsId: string[] = []
-
-    if (contactsDocumentData) {
-      for (let contactId in contactsDocumentData) {
-        contactsList.push({
-          id: contactId,
-          roomId: contactsDocumentData[contactId],
-        })
-        contactsId.push(contactId)
-      }
-    }
-
-    return { contactsList, contactsId }
   }
 
   public static async getContactsProfile(contactsProfileSnapshot: QueryDocumentSnapshot<DocumentData>[]) {
