@@ -1,6 +1,5 @@
 import { firebase } from "@/firebase/config"
-import { Message } from "@/redux/slices/room/types"
-import { addDoc, collection } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp } from "firebase/firestore"
 
 export class MessageService {
   static get currentUser() {
@@ -12,8 +11,14 @@ export class MessageService {
     return currentUser
   }
 
-  public static async add(message: Omit<Message, "id">, roomId: string) {
+  public static async add(content: string, roomId: string) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
+    const message = {
+      userId: this.currentUser.uid,
+      message: content,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }
 
     await addDoc(messagesCollectionRef, message)
   }

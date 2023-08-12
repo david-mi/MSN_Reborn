@@ -27,4 +27,8 @@ export interface RoomSlice {
     status: RequestStatus,
     error: string | null
   }
+  sendMessageRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
 }
