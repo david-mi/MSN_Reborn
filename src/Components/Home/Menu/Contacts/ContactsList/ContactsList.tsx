@@ -4,10 +4,12 @@ import styles from "./contactsList.module.css"
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
 import { useAppDispatch } from "@/redux/hooks";
 import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
+import useRoom from "@/hooks/useRoom";
 
 function ContactsList() {
   const dispatch = useAppDispatch()
   const { contacts, contactsError } = useContact()
+  useRoom()
 
   if (contactsError) {
     return <small>Une erreur est survenue lors de la récupération des contacts</small>

@@ -26,7 +26,7 @@ export class RoomService {
   }
 
   public static async addRoomIdToUserRoomsList(roomId: string, userId: string) {
-    const userRoomsListRef = doc(firebase.firestore, "roomsList", userId)
+    const userRoomsListRef = doc(firebase.firestore, "roomsIds", userId)
 
     await setDoc(userRoomsListRef, {
       list: arrayUnion(roomId)

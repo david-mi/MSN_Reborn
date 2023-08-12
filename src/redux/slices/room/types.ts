@@ -20,4 +20,5 @@ export interface Room {
 export interface RoomSlice {
   current: Room | null
   roomsList: Room[]
+  roomsIds: string[]
 }
