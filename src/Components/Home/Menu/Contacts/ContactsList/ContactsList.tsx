@@ -17,17 +17,13 @@ function ContactsList() {
 
   return (
     <ul className={styles.container}>
-      {contacts.map(({ email, username, displayedStatus, avatarSrc, personalMessage }) => {
+      {contacts.map(({ email, username, displayedStatus, avatarSrc, personalMessage, roomId }) => {
         return (
-          <li className={styles.contactsList} key={email} onClick={
-            () => {
-              dispatch(setcurrentDisplayedRoom({
-                type: "oneToOne",
-                id: "fakeid",
-                users: [],
-                messages: [],
-              }))
-            }}>
+          <li
+            className={styles.contactsList}
+            key={email}
+            onClick={() => dispatch(setcurrentDisplayedRoom(roomId))}
+          >
             <div className={styles.avatarContainer}>
               <Avatar src={avatarSrc} size="small" />
               <ImageLoadWrapper

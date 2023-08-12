@@ -1,3 +1,5 @@
+import { RequestStatus } from "../types"
+
 export type RoomType = "oneToOne" | "manyToMany"
 export type UserId = string
 
@@ -21,4 +23,8 @@ export interface RoomSlice {
   current: Room | null
   roomsList: Room[]
   roomsIds: string[]
+  getRoomsRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
 }

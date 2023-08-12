@@ -5,14 +5,14 @@ import { useAppSelector } from "@/redux/hooks";
 
 function Home() {
   const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
-  const currentDisplayedRoom = useAppSelector(({ room }) => room.current)
-  const isChatDisplayed = currentDisplayedRoom !== null
+  const currentRoom = useAppSelector(({ room }) => room.current)
+  const isChatDisplayed = currentRoom !== null
 
   return (
     <div className={styles.home} data-testid="home">
       {haveFriendRequest && <FriendRequestAlert userWhoSentFriendRequest={usersWhoSentFriendRequest[0]} />}
       <Menu isChatDisplayed={isChatDisplayed} />
-      {isChatDisplayed && <Chat />}
+      {isChatDisplayed && <Chat currentRoom={currentRoom} />}
     </div>
   );
 }
