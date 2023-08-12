@@ -1,6 +1,7 @@
-.chatSendMessage {
+.chatForm {
   grid-area: sendMessage;
   display: flex;
+  flex-wrap: wrap;
   gap: 5px;
   background-color: white;
   min-height: 100px;
@@ -23,5 +24,10 @@
 
   .submitButton {
     align-self: center;
+  }
+
+  & small {
+    width: 100%;
+    color: red;
   }
 }
