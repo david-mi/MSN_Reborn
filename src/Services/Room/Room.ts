@@ -6,9 +6,8 @@ import {
   arrayUnion,
   addDoc,
   collection,
-  QueryDocumentSnapshot,
   DocumentData,
-  getDoc
+  QuerySnapshot
 }
   from "firebase/firestore"
 
@@ -22,10 +21,8 @@ export class RoomService {
     return currentUser
   }
 
-  public static async getRooms(contactsProfileSnapshot: QueryDocumentSnapshot<DocumentData>[]) {
-    const roomsRefsPromise = contactsProfileSnapshot.map(snap => getDoc(snap.ref))
-
-    const contactsProfile = (await Promise.all(roomsRefsPromise))
+  public static getRooms(contactsProfileSnapshot: QuerySnapshot<DocumentData>) {
+    const contactsProfile = contactsProfileSnapshot.docs
       .map((roomSnapshot) => {
         return {
           ...roomSnapshot.data()!,

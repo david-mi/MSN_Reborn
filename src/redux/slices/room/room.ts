@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { RoomSlice } from "./types";
-import { MessageService, RoomService } from "@/Services";
-import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import { Message, Room, RoomSlice } from "./types";
+import { MessageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 
 export const initialChatState: RoomSlice = {
-  current: null,
+  currentRoomId: null,
   roomsList: [],
   roomsIds: [],
   getRoomsRequest: {
@@ -29,25 +28,22 @@ const roomSlice = createSlice({
         : []
     },
     setcurrentDisplayedRoom(state, { payload }: PayloadAction<string>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload)
-      state.current = foundRoom
-        ? foundRoom
-        : null
+      state.currentRoomId = payload
+    },
+    setRooms(state, { payload }: PayloadAction<Omit<Room, "messages">[]>) {
+      state.roomsList = payload.map((room) => {
+        return {
+          ...room,
+          messages: []
+        }
+      })
+    },
+    setRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
+      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      foundRoom.messages = payload.messages
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(getRooms.pending, (state) => {
-      state.getRoomsRequest.status = "PENDING"
-      state.getRoomsRequest.error = null
-    })
-    builder.addCase(getRooms.fulfilled, (state, { payload }) => {
-      state.getRoomsRequest.status = "IDLE"
-      state.roomsList = payload
-    })
-    builder.addCase(getRooms.rejected, (state, { error }) => {
-      state.getRoomsRequest.status = "REJECTED"
-      state.getRoomsRequest.error = (error as FirebaseError).message
-    })
     builder.addCase(sendMessage.pending, (state) => {
       state.sendMessageRequest.status = "PENDING"
       state.sendMessageRequest.error = null
@@ -62,17 +58,11 @@ const roomSlice = createSlice({
   }
 })
 
-export const getRooms = createAppAsyncThunk(
-  "rooms/getRooms",
-  async (roomsQuerySnapshot: QueryDocumentSnapshot<DocumentData>[]) => {
-    return RoomService.getRooms(roomsQuerySnapshot)
-  })
-
 export const sendMessage = createAppAsyncThunk(
   "rooms/sendMessage",
   async ({ content, roomId }: { content: string, roomId: string }) => {
     return MessageService.add(content, roomId)
   })
 
-export const { setcurrentDisplayedRoom, setRoomsIds } = roomSlice.actions
+export const { setcurrentDisplayedRoom, setRoomsIds, setRoomMessages, setRooms } = roomSlice.actions
 export const roomReducer = roomSlice.reducer

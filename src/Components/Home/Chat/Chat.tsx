@@ -1,4 +1,3 @@
-import { Room } from "@/redux/slices/room/types";
 import {
   ChatHeader,
   ChatOptions,
@@ -7,18 +6,19 @@ import {
   ChatSendMessage
 } from ".";
 import styles from "./chat.module.css";
+import { useAppSelector } from "@/redux/hooks";
 
-interface Props {
-  currentRoom: Room
-}
+function Chat() {
+  const currentRoom = useAppSelector(({ room }) => {
+    return room.roomsList.find((roomToFind) => roomToFind.id === room.currentRoomId)!
+  })
 
-function Chat({ currentRoom }: Props) {
   return (
     <div className={styles.chat}>
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      <ChatDisplayMessages />
+      <ChatDisplayMessages messages={currentRoom.messages} />
       <ChatSendMessage roomId={currentRoom.id} />
     </div>
   );

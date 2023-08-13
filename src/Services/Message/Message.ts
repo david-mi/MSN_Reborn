@@ -1,5 +1,6 @@
 import { firebase } from "@/firebase/config"
-import { addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp, DocumentData, QuerySnapshot, Timestamp } from "firebase/firestore"
+import type { Message } from "@/redux/slices/room/types"
 
 export class MessageService {
   static get currentUser() {
@@ -9,6 +10,29 @@ export class MessageService {
     }
 
     return currentUser
+  }
+
+  public static getMessagesFromSnapshot(messagesSnapshot: QuerySnapshot<DocumentData>) {
+    const messages: Message[] = []
+    messagesSnapshot.docs.forEach((doc) => {
+      if (doc.metadata.hasPendingWrites) return
+
+      type RetrievedMessage = Omit<Message, "createdAt" | "updatedAt"> & {
+        createdAt: Timestamp,
+        updatedAt: Timestamp
+      }
+
+      const message = doc.data() as RetrievedMessage
+
+      messages.push({
+        ...message,
+        id: doc.id,
+        createdAt: message.createdAt.toDate().toDateString(),
+        updatedAt: message.updatedAt.toDate().toDateString()
+      })
+    })
+
+    return messages
   }
 
   public static async add(content: string, roomId: string) {

@@ -2,12 +2,13 @@ import { RequestStatus } from "../types"
 
 export type RoomType = "oneToOne" | "manyToMany"
 export type UserId = string
+type RoomId = string
 
 export interface Message {
   id: string,
   userId: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   readBy: UserId[]
   message: string
 }
@@ -20,7 +21,7 @@ export interface Room {
 }
 
 export interface RoomSlice {
-  current: Room | null
+  currentRoomId: RoomId | null
   roomsList: Room[]
   roomsIds: string[]
   getRoomsRequest: {
