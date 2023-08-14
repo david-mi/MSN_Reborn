@@ -27,8 +27,8 @@ export class MessageService {
       messages.push({
         ...message,
         id: doc.id,
-        createdAt: message.createdAt.toDate().toDateString(),
-        updatedAt: message.updatedAt.toDate().toDateString()
+        createdAt: message.createdAt.toMillis(),
+        updatedAt: message.updatedAt.toMillis()
       })
     })
 

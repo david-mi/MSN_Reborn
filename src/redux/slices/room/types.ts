@@ -11,8 +11,8 @@ export type RoomUsersProfile = {
 export interface Message {
   id: string,
   userId: string
-  createdAt: string
-  updatedAt: string
+  createdAt: number
+  updatedAt: number
   readBy: UserId[]
   message: string
 }
