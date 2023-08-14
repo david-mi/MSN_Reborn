@@ -4,7 +4,7 @@ import type { ComponentProps } from "react"
 import styles from "./avatar.module.css"
 
 interface Props {
-  size: "medium" | "small" | "dynamic"
+  size: "medium" | "small" | "mini" | "dynamic"
   className?: string
   src?: string
 }
