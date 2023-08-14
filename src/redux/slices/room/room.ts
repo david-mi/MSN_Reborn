@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { Message, Room, RoomSlice } from "./types";
+import { DatabaseRoom, Message, RoomSlice, RoomUsersProfile } from "./types";
 import { MessageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 
@@ -30,17 +30,22 @@ const roomSlice = createSlice({
     setcurrentDisplayedRoom(state, { payload }: PayloadAction<string>) {
       state.currentRoomId = payload
     },
-    setRooms(state, { payload }: PayloadAction<Omit<Room, "messages">[]>) {
+    setRooms(state, { payload }: PayloadAction<Omit<DatabaseRoom, "messages">[]>) {
       state.roomsList = payload.map((room) => {
         return {
           ...room,
-          messages: []
+          messages: [],
+          usersProfile: {}
         }
       })
     },
     setRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
       foundRoom.messages = payload.messages
+    },
+    setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
+      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      foundRoom.usersProfile = payload.usersProfile
     }
   },
   extraReducers: (builder) => {
@@ -64,5 +69,5 @@ export const sendMessage = createAppAsyncThunk(
     return MessageService.add(content, roomId)
   })
 
-export const { setcurrentDisplayedRoom, setRoomsIds, setRoomMessages, setRooms } = roomSlice.actions
+export const { setcurrentDisplayedRoom, setRoomsIds, setRoomMessages, setRooms, setRoomUsersProfile } = roomSlice.actions
 export const roomReducer = roomSlice.reducer

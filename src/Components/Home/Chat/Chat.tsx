@@ -1,3 +1,4 @@
+import useRoomUsers from "@/hooks/useRoomUsers";
 import {
   ChatHeader,
   ChatOptions,
@@ -9,17 +10,21 @@ import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
 
 function Chat() {
-  const currentRoom = useAppSelector(({ room }) => {
+  const { id, usersProfile, messages } = useAppSelector(({ room }) => {
     return room.roomsList.find((roomToFind) => roomToFind.id === room.currentRoomId)!
   })
+  useRoomUsers(id)
 
   return (
     <div className={styles.chat}>
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      <ChatDisplayMessages messages={currentRoom.messages} />
-      <ChatSendMessage roomId={currentRoom.id} />
+      <ChatDisplayMessages
+        messages={messages}
+        usersProfile={usersProfile}
+      />
+      <ChatSendMessage roomId={id} />
     </div>
   );
 }
