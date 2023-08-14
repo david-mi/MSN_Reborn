@@ -1,0 +1,51 @@
+.chatMessage {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  grid-template-rows: auto auto;
+  padding-right: var(--chat-gap);
+  column-gap: var(--chat-gap);
+  grid-template-areas:
+    "avatar username personalMessage createdAt"
+    "avatar message message message"
+  ;
+
+  &:not(:first-child) {
+    margin-top: var(--chat-gap);
+  }
+
+  & > :nth-child(1) {
+    grid-area: avatar;
+  }
+
+  & > :nth-child(2) {
+    grid-area: username;
+    font-weight: bold;
+  }
+
+  & > :nth-child(3) {
+    grid-area: personalMessage;
+  }
+
+  & > :nth-child(4) {
+    grid-area: message;
+  }
+
+  & > :nth-child(5) {
+    grid-area: createdAt;
+    justify-self: right;
+  }
+}
+
+.simpleChatMessage {
+  padding-inline: var(--chat-gap);
+  display: flex;
+
+  &:hover > .date {
+    opacity: 1;
+  }
+
+  & > .date {
+    opacity: 0;
+    width: 40px;
+  }
+}

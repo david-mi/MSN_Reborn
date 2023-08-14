@@ -1,4 +1,7 @@
 .chatDisplayMessages {
   grid-area: displayMessages;
-  background-color: rgb(102, 102, 250);
+  display: flex;
+  flex-direction: column;
+  column-gap: 10px;
+  overflow-y: auto;
 }
