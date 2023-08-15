@@ -20,14 +20,23 @@
   & > :nth-child(2) {
     grid-area: username;
     font-weight: bold;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & > :nth-child(3) {
     grid-area: personalMessage;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & > :nth-child(4) {
     grid-area: message;
+    flex: 1;
   }
 
   & > :nth-child(5) {
@@ -39,6 +48,10 @@
 .simpleChatMessage {
   padding-inline: var(--chat-gap);
   display: flex;
+
+  & p {
+    flex: 1;
+  }
 
   &:hover > .date {
     opacity: 1;

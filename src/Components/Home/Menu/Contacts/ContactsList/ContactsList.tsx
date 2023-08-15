@@ -17,11 +17,11 @@ function ContactsList() {
 
   return (
     <ul className={styles.container}>
-      {contacts.map(({ username, displayedStatus, avatarSrc, personalMessage, roomId }) => {
+      {contacts.map(({ username, displayedStatus, avatarSrc, personalMessage, roomId, id }) => {
         return (
           <li
             className={styles.contactsList}
-            key={roomId}
+            key={id}
             onClick={() => dispatch(setcurrentDisplayedRoom(roomId))}
           >
             <div className={styles.avatarContainer}>
