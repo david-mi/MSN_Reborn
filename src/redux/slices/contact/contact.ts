@@ -45,7 +45,7 @@ const contactSlice = createSlice({
         }
       }
 
-      state.contactsList = contactsList
+      state.contactsList = [...contactsList, ...state.contactsList]
     },
     setContactsIds(state, { payload }: PayloadAction<{ [id: string]: string } | undefined>) {
       state.contactsIds = payload !== undefined
