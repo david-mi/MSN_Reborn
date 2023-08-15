@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { sendMessage } from "@/redux/slices/room/room";
 import { ChatFormFields } from "./type";
 import { MessageValidation } from "@/utils/Validation";
-import styles from "./chatform.module.css";
+import styles from "./chatForm.module.css";
 
 interface Props {
   roomId: string
