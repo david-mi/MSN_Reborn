@@ -1,5 +1,5 @@
 export { default as ChatHeader } from "./ChatHeader/ChatHeader"
 export { default as ChatOptions } from "./ChatOptions/ChatOptions"
 export { default as ChatAvatars } from "./ChatAvatars/ChatAvatars"
-export { default as ChatDisplayMessages } from "./ChatDisplayMessages/ChatDisplayMessages"
-export { default as ChatSendMessage } from "./ChatForm/ChatForm"
+export { default as ChatMessages } from "./ChatMessages/ChatMessages"
+export { default as ChatForm } from "./ChatForm/ChatForm"

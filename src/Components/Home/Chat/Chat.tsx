@@ -3,8 +3,8 @@ import {
   ChatHeader,
   ChatOptions,
   ChatAvatars,
-  ChatDisplayMessages,
-  ChatSendMessage
+  ChatMessages,
+  ChatForm
 } from ".";
 import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
@@ -20,11 +20,8 @@ function Chat() {
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      <ChatDisplayMessages
-        messages={messages}
-        usersProfile={usersProfile}
-      />
-      <ChatSendMessage roomId={id} />
+      <ChatMessages messages={messages} usersProfile={usersProfile} />
+      <ChatForm roomId={id} />
     </div>
   );
 }
