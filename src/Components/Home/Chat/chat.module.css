@@ -10,7 +10,7 @@
     "chatHeader chatHeader"
     "chatOptions chatOptions"
     "displayMessages chatAvatars"
-    "sendMessage chatAvatars";
+    "sendMessage sendMessage";
   gap: var(--chat-gap);
   padding-bottom: calc(var(--chat-gap) * 3);
   background-color: #ecf3f6;

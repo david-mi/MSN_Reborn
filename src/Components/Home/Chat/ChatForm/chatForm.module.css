@@ -2,11 +2,8 @@
   grid-area: sendMessage;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
   background-color: white;
-  min-height: 100px;
   border: solid 1px var(--separators-clr);
-  padding: var(--chat-gap);
 
   & textarea {
     flex: 1;
@@ -18,7 +15,7 @@
 
     &:focus {
 
-      outline-color: var(--separators-clr);
+      outline: none;
     }
   }
 
@@ -29,5 +26,6 @@
   & small {
     width: 100%;
     color: red;
+    height: 20px;
   }
 }
