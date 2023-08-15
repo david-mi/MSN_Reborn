@@ -1,10 +1,10 @@
-import { Button } from "@/Components/Shared";
-import styles from "./chatform.module.css";
+import { KeyboardEvent } from "react"
+import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { sendMessage } from "@/redux/slices/room/room";
-import { useForm } from "react-hook-form";
 import { ChatFormFields } from "./type";
 import { MessageValidation } from "@/utils/Validation";
+import styles from "./chatform.module.css";
 
 interface Props {
   roomId: string
@@ -12,31 +12,34 @@ interface Props {
 
 function ChatForm({ roomId }: Props) {
   const dispatch = useAppDispatch()
-  const { register, handleSubmit, formState: { errors }, setError } = useForm<ChatFormFields>()
+  const { register, handleSubmit, formState: { errors }, setError, reset } = useForm<ChatFormFields>()
   const sendMessageRequest = useAppSelector(({ room }) => room.sendMessageRequest)
-  const hasErrors = Object.keys(errors).length > 0
-  const preventFormSubmit = hasErrors || sendMessageRequest.status === "PENDING"
 
   async function onSubmit({ content }: ChatFormFields) {
     try {
       await dispatch(sendMessage({ roomId, content })).unwrap()
+      reset()
     } catch (error) {
       setError("content", { message: error as string })
     }
   }
 
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Enter" && event.shiftKey === false) {
+      handleSubmit(onSubmit)()
+      event.preventDefault()
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.chatForm}>
-      <textarea {...register("content", { validate: MessageValidation.validateFromInput })}></textarea>
-      <Button
-        className={styles.submitButton}
-        theme="gradient"
-        title="Envoyer"
-        wait={sendMessageRequest.status === "PENDING"}
-        disabled={preventFormSubmit}
+      <textarea
+        {...register("content", { validate: MessageValidation.validateFromInput })}
+        onKeyDown={handleKeyDown}
+        disabled={sendMessageRequest.status === "PENDING"}
       />
       <small>{errors.content?.message}</small>
-    </form>
+    </form >
   );
 }
 
