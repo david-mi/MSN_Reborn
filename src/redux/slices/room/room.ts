@@ -27,7 +27,7 @@ const roomSlice = createSlice({
         ? payload.list
         : []
     },
-    setcurrentDisplayedRoom(state, { payload }: PayloadAction<string>) {
+    setcurrentDisplayedRoom(state, { payload }: PayloadAction<string | null>) {
       state.currentRoomId = payload
     },
     setRooms(state, { payload }: PayloadAction<Omit<DatabaseRoom, "messages">[]>) {
