@@ -36,7 +36,7 @@ export interface RoomSlice {
   currentRoomId: RoomId | null
   roomsList: Room[]
   roomsIds: string[]
-  getRoomsRequest: {
+  getRoomUsersProfileRequest: {
     status: RequestStatus,
     error: string | null
   }

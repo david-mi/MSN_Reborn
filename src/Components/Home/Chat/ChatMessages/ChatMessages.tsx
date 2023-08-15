@@ -2,6 +2,7 @@ import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
 import styles from "./chatMessages.module.css";
 import { Loader } from "@/Components/Shared";
 import ChatMessage from "./ChatMessage/ChatMessage";
+import { useAppSelector } from "@/redux/hooks";
 
 interface Props {
   messages: Message[],
@@ -9,9 +10,9 @@ interface Props {
 }
 
 function ChatMessages({ messages, usersProfile }: Props) {
-  const hasRetrievedRoomsUsersProfile = Object.keys(usersProfile).length !== 0
+  const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
 
-  if (hasRetrievedRoomsUsersProfile == false) {
+  if (getRoomUsersProfileRequest.status == "PENDING") {
     return <Loader size="50%" />
   }
 

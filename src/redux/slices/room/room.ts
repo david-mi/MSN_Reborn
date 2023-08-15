@@ -8,7 +8,7 @@ export const initialChatState: RoomSlice = {
   currentRoomId: null,
   roomsList: [],
   roomsIds: [],
-  getRoomsRequest: {
+  getRoomUsersProfileRequest: {
     status: "PENDING",
     error: null
   },
@@ -28,6 +28,7 @@ const roomSlice = createSlice({
         : []
     },
     setcurrentDisplayedRoom(state, { payload }: PayloadAction<string | null>) {
+      state.getRoomUsersProfileRequest.status = "PENDING"
       state.currentRoomId = payload
     },
     setRooms(state, { payload }: PayloadAction<Omit<DatabaseRoom, "messages">[]>) {
@@ -46,6 +47,7 @@ const roomSlice = createSlice({
     setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
       foundRoom.usersProfile = payload.usersProfile
+      state.getRoomUsersProfileRequest.status = "IDLE"
     }
   },
   extraReducers: (builder) => {
@@ -69,5 +71,11 @@ export const sendMessage = createAppAsyncThunk(
     return MessageService.add(content, roomId)
   })
 
-export const { setcurrentDisplayedRoom, setRoomsIds, setRoomMessages, setRooms, setRoomUsersProfile } = roomSlice.actions
+export const {
+  setcurrentDisplayedRoom,
+  setRoomsIds,
+  setRoomMessages,
+  setRooms,
+  setRoomUsersProfile
+} = roomSlice.actions
 export const roomReducer = roomSlice.reducer
