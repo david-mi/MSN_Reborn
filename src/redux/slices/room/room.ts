@@ -33,7 +33,9 @@ const roomSlice = createSlice({
     },
     setRooms(state, { payload }: PayloadAction<Omit<DatabaseRoom, "messages">[]>) {
       state.roomsList = payload.map((room) => {
-        return {
+        const sameExistingRoom = state.roomsList.find((roomToFind) => roomToFind.id === room.id)
+
+        return sameExistingRoom ?? {
           ...room,
           messages: [],
           usersProfile: {}

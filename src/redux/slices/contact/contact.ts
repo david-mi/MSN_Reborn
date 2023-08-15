@@ -1,4 +1,4 @@
-import { Contact, ContactSlice } from "./types";
+import { ContactSlice } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { FirebaseError } from "firebase/app";
@@ -29,11 +29,11 @@ const contactSlice = createSlice({
   initialState: initialContactState,
   reducers: {
     initializeContactsList(state, { payload }: PayloadAction<{ [id: string]: string } | undefined>) {
-      const contactsList: Contact[] = []
+      if (!payload) return
 
-      if (payload !== undefined) {
-        for (const contactId in payload) {
-          contactsList.push({
+      for (const contactId in payload) {
+        if (state.contactsList.findIndex((contact) => contact.id === contactId) === -1) {
+          state.contactsList.push({
             id: contactId,
             roomId: payload[contactId],
             avatarSrc: "",
@@ -44,8 +44,6 @@ const contactSlice = createSlice({
           })
         }
       }
-
-      state.contactsList = [...contactsList, ...state.contactsList]
     },
     setContactsIds(state, { payload }: PayloadAction<{ [id: string]: string } | undefined>) {
       state.contactsIds = payload !== undefined
@@ -87,11 +85,11 @@ const contactSlice = createSlice({
     })
     builder.addCase(getContactsProfile.fulfilled, (state, { payload }) => {
       state.getContactsRequest.status = "IDLE"
-      state.contactsList = payload.map((contact) => {
-        const foundContact = state.contactsList.find((contactsToFind) => contactsToFind.id === contact.id)!
+      state.contactsList = state.contactsList.map((contact) => {
+        const foundContact = payload.find((contactsToFind) => contactsToFind.id === contact.id)!
         return {
-          ...foundContact,
-          ...contact
+          ...contact,
+          ...foundContact
         }
       })
     })
