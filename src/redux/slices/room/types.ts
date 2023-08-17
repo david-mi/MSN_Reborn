@@ -3,7 +3,7 @@ import { UserProfile } from "../user/types"
 
 export type RoomType = "oneToOne" | "manyToMany"
 export type UserId = string
-type RoomId = string
+export type RoomId = string
 export type RoomUsersProfile = {
   [id: string]: UserProfile
 }
@@ -29,13 +29,11 @@ export type DatabaseRoom = {
   id: string
   type: RoomType
   users: UserId[]
-  messages: Message[]
 }
 
 export interface RoomSlice {
   currentRoomId: RoomId | null
   roomsList: Room[]
-  roomsIds: string[]
   getRoomUsersProfileRequest: {
     status: RequestStatus,
     error: string | null

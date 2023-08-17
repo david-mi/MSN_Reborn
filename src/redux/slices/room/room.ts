@@ -7,7 +7,6 @@ import { FirebaseError } from "firebase/app";
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
   roomsList: [],
-  roomsIds: [],
   getRoomUsersProfileRequest: {
     status: "PENDING",
     error: null
@@ -22,24 +21,15 @@ const roomSlice = createSlice({
   name: "room",
   initialState: initialChatState,
   reducers: {
-    setRoomsIds(state, { payload }: PayloadAction<{ list: string[] } | undefined>) {
-      state.roomsIds = payload !== undefined
-        ? payload.list
-        : []
-    },
     setcurrentDisplayedRoom(state, { payload }: PayloadAction<string | null>) {
       state.getRoomUsersProfileRequest.status = "PENDING"
       state.currentRoomId = payload
     },
-    setRooms(state, { payload }: PayloadAction<Omit<DatabaseRoom, "messages">[]>) {
-      state.roomsList = payload.map((room) => {
-        const sameExistingRoom = state.roomsList.find((roomToFind) => roomToFind.id === room.id)
-
-        return sameExistingRoom ?? {
-          ...room,
-          messages: [],
-          usersProfile: {}
-        }
+    initializeRoom(state, { payload }: PayloadAction<DatabaseRoom>) {
+      state.roomsList.push({
+        ...payload,
+        messages: [],
+        usersProfile: {}
       })
     },
     setRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
@@ -75,9 +65,8 @@ export const sendMessage = createAppAsyncThunk(
 
 export const {
   setcurrentDisplayedRoom,
-  setRoomsIds,
   setRoomMessages,
-  setRooms,
+  initializeRoom,
   setRoomUsersProfile
 } = roomSlice.actions
 export const roomReducer = roomSlice.reducer
