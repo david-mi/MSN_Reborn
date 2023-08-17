@@ -1,8 +1,10 @@
+import { useEffect } from "react"
 import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
 import styles from "./chatMessages.module.css";
 import { Loader } from "@/Components/Shared";
 import ChatMessage from "./ChatMessage/ChatMessage";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { markRoomMessagesAsRead } from "@/redux/slices/room/room";
 
 interface Props {
   messages: Message[],
@@ -10,11 +12,9 @@ interface Props {
 }
 
 function ChatMessages({ messages, usersProfile }: Props) {
+  const dispatch = useAppDispatch()
   const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
-
-  if (getRoomUsersProfileRequest.status == "PENDING") {
-    return <Loader size="50%" />
-  }
+  const roomId = useAppSelector(({ room }) => room.currentRoomId) as string
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -33,6 +33,16 @@ function ChatMessages({ messages, usersProfile }: Props) {
     )
 
     return areMessagesPostedAtDifferentHours
+  }
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      dispatch(markRoomMessagesAsRead(roomId))
+    }
+  }, [messages])
+
+  if (getRoomUsersProfileRequest.status == "PENDING") {
+    return <Loader size="50%" />
   }
 
   return (

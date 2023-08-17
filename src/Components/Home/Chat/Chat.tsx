@@ -10,7 +10,7 @@ import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
 
 function Chat() {
-  const { id, usersProfile, messages } = useAppSelector(({ room }) => {
+  const { id, usersProfile, messages, users } = useAppSelector(({ room }) => {
     return room.roomsList.find((roomToFind) => roomToFind.id === room.currentRoomId)!
   })
   useRoomUsers(id)
@@ -21,7 +21,7 @@ function Chat() {
       <ChatOptions />
       <ChatAvatars />
       <ChatMessages messages={messages} usersProfile={usersProfile} />
-      <ChatForm roomId={id} />
+      <ChatForm roomId={id} users={users} />
     </div>
   );
 }

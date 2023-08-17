@@ -8,16 +8,17 @@ import styles from "./chatForm.module.css";
 
 interface Props {
   roomId: string
+  users: string[]
 }
 
-function ChatForm({ roomId }: Props) {
+function ChatForm({ roomId, users }: Props) {
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors }, setError, reset, setFocus } = useForm<ChatFormFields>()
   const sendMessageRequest = useAppSelector(({ room }) => room.sendMessageRequest)
 
   async function onSubmit({ content }: ChatFormFields) {
     try {
-      await dispatch(sendMessage({ roomId, content })).unwrap()
+      await dispatch(sendMessage({ roomId, users, content })).unwrap()
       setFocus("content")
       reset()
     } catch (error) {
