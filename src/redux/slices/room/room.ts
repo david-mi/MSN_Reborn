@@ -3,6 +3,7 @@ import { createAppAsyncThunk } from "@/redux/types";
 import { DatabaseRoom, Message, RoomSlice, RoomUsersProfile } from "./types";
 import { MessageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
+import { disconnectAction } from "../user/user";
 
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
@@ -54,6 +55,7 @@ const roomSlice = createSlice({
       state.sendMessageRequest.status = "REJECTED"
       state.sendMessageRequest.error = (error as FirebaseError).message
     })
+    builder.addCase(disconnectAction, () => initialChatState)
   }
 })
 
