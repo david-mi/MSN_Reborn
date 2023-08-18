@@ -4,7 +4,7 @@ import {
   collection,
   serverTimestamp,
   DocumentData,
-  QuerySnapshot,
+  QueryDocumentSnapshot,
   Timestamp,
   query,
   where,
@@ -23,27 +23,20 @@ export class MessageService {
     return currentUser
   }
 
-  public static getMessagesFromSnapshot(messagesSnapshot: QuerySnapshot<DocumentData>) {
-    const messages: Message[] = []
-    messagesSnapshot.docs.forEach((doc) => {
-      if (doc.metadata.hasPendingWrites) return
+  public static getMessageFromSnapshot(messageSnapshot: QueryDocumentSnapshot<DocumentData>) {
+    type RetrievedMessage = Omit<Message, "createdAt" | "updatedAt"> & {
+      createdAt: Timestamp,
+      updatedAt: Timestamp
+    }
 
-      type RetrievedMessage = Omit<Message, "createdAt" | "updatedAt"> & {
-        createdAt: Timestamp,
-        updatedAt: Timestamp
-      }
+    const message = messageSnapshot.data() as RetrievedMessage
 
-      const message = doc.data() as RetrievedMessage
-
-      messages.push({
-        ...message,
-        id: doc.id,
-        createdAt: message.createdAt.toMillis(),
-        updatedAt: message.updatedAt.toMillis()
-      })
-    })
-
-    return messages
+    return {
+      ...message,
+      id: messageSnapshot.id,
+      createdAt: message.createdAt.toMillis(),
+      updatedAt: message.updatedAt.toMillis()
+    }
   }
 
   public static async add(content: string, roomId: RoomId, users: string[]) {
@@ -57,7 +50,7 @@ export class MessageService {
       readBy: users.reduce((readBy, userId) => {
         return {
           ...readBy,
-          [userId]: userId === this.currentUser.uid,
+          [userId]: false,
         };
       }, {})
     }

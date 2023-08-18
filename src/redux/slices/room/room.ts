@@ -33,9 +33,9 @@ const roomSlice = createSlice({
         usersProfile: {}
       })
     },
-    setRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
+    setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
-      foundRoom.messages = payload.messages
+      foundRoom.messages.push(payload.message)
     },
     setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
@@ -73,7 +73,7 @@ export const markRoomMessagesAsRead = createAppAsyncThunk(
 
 export const {
   setcurrentDisplayedRoom,
-  setRoomMessages,
+  setRoomMessage,
   initializeRoom,
   setRoomUsersProfile
 } = roomSlice.actions

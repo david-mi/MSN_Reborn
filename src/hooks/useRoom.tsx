@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react"
-import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
+import { onSnapshot, collection, query, orderBy, where } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch } from "@/redux/hooks";
-import { initializeRoom, setRoomMessages } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage } from "@/redux/slices/room/room";
 import { MessageService, UserService } from "@/Services";
 import { doc, Unsubscribe } from "firebase/firestore";
 import type { DatabaseRoom, RoomId } from "@/redux/slices/room/types";
@@ -30,17 +30,22 @@ function useRoom() {
             dispatch(initializeRoom(roomData))
             roomsUnsubscribeCallback.current.set(retrievedRoomId, unSubscribeRoom)
 
-            const roomToObserveMessagesQuery = query(
+            const unReadMessagesQuery = query(
               collection(firebase.firestore, "rooms", roomSnapshot.id, "messages"),
+              where(`readBy.${firebase.auth.currentUser!.uid}`, "==", false),
               orderBy("createdAt", "asc")
             )
 
-            const unSubscribeRoomMessages = onSnapshot(roomToObserveMessagesQuery, (roomMessagesSnapshot) => {
-              const messages = MessageService.getMessagesFromSnapshot(roomMessagesSnapshot)
-              if (roomMessagesSnapshot.metadata.hasPendingWrites === false) {
-                dispatch(setRoomMessages({ messages, roomId: roomSnapshot.id }))
+            const unSubscribeRoomMessages = onSnapshot(unReadMessagesQuery, (roomMessagesSnapshot) => {
+              if (roomMessagesSnapshot.metadata.hasPendingWrites) return
+
+              roomMessagesSnapshot.docChanges().forEach(change => {
+                if (change.type !== "added") return
+
+                const message = MessageService.getMessageFromSnapshot(change.doc)
+                dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
                 roomsMessagesUnsubscribeCallback.current.set(retrievedRoomId, unSubscribeRoomMessages)
-              }
+              })
             })
           })
         }
