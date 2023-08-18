@@ -14,7 +14,11 @@ function useProfile() {
     const userRef = doc(firebase.firestore, "users", UserService.currentUser.uid)
 
     const unsubscribe = onSnapshot(userRef, async (snapshot) => {
-      const userProfile = snapshot.data() as UserProfile
+      const userProfile = {
+        ...snapshot.data(),
+        id: snapshot.id
+      } as UserProfile
+
       dispatch(setProfile(userProfile))
       setisLoadingForTheFirstTime(false)
     })
