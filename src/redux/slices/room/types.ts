@@ -23,6 +23,7 @@ export interface Room {
   users: UserId[]
   usersProfile: RoomUsersProfile
   messages: Message[]
+  unreadMessagesCount: number
 }
 
 export type DatabaseRoom = {

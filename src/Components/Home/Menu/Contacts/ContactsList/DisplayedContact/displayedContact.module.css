@@ -38,13 +38,12 @@
     margin-right: 10px;
     position: relative;
 
-    & > :nth-child(2) {
+    & > :is(:nth-child(2), :nth-child(3)) {
       position: absolute;
-      top: -10px;
-      right: -10px;
+
 
       background-color: white;
-      padding: 3px;
+
       border-radius: 50%;
       border-top: solid 1px #D8D9D9;
       border-right: solid 1px #D8D9D9;
@@ -53,6 +52,25 @@
         height: 16px;
         width: 16px;
       }
+    }
+
+    & > :nth-child(2) {
+      top: -10px;
+      right: -10px;
+      padding: 3px;
+    }
+
+    & > :nth-child(3) {
+      top: -10px;
+      left: -10px;
+      display: grid;
+      place-items: center;
+      height: 23px;
+      width: 23px;
+      background-color: red;
+      color: white;
+      font-weight: 500;
+      font-size: 0.8rem;
     }
   }
 

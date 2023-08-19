@@ -44,6 +44,7 @@ function useRoom() {
 
                 const message = MessageService.getMessageFromSnapshot(change.doc)
                 dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
+                dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
                 roomsMessagesUnsubscribeCallback.current.set(retrievedRoomId, unSubscribeRoomMessages)
               })
             })

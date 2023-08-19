@@ -30,7 +30,8 @@ const roomSlice = createSlice({
       state.roomsList.push({
         ...payload,
         messages: [],
-        usersProfile: {}
+        usersProfile: {},
+        unreadMessagesCount: 0
       })
     },
     setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
@@ -39,8 +40,17 @@ const roomSlice = createSlice({
     },
     setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+
       foundRoom.usersProfile = payload.usersProfile
       state.getRoomUsersProfileRequest.status = "IDLE"
+    },
+    setUnreadMessageCount(state, { payload }: PayloadAction<{ count: number | "reset", roomId: string }>) {
+      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      if (payload.count === "reset") {
+        foundRoom.unreadMessagesCount = 0
+      } else {
+        foundRoom.unreadMessagesCount += payload.count
+      }
     }
   },
   extraReducers: (builder) => {
@@ -67,14 +77,16 @@ export const sendMessage = createAppAsyncThunk(
 
 export const markRoomMessagesAsRead = createAppAsyncThunk(
   "rooms/markRoomMessagesAsRead",
-  async (roomId: string) => {
-    return MessageService.markRoomMessagesAsRead(roomId)
+  async (roomId: string, { dispatch }) => {
+    await MessageService.markRoomMessagesAsRead(roomId)
+    dispatch(setUnreadMessageCount({ roomId, count: "reset" }))
   })
 
 export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
   initializeRoom,
-  setRoomUsersProfile
+  setRoomUsersProfile,
+  setUnreadMessageCount
 } = roomSlice.actions
 export const roomReducer = roomSlice.reducer
