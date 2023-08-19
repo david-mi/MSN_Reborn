@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { onSnapshot, collection, query, orderBy, where } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount } from "@/redux/slices/room/room";
 import { MessageService, UserService } from "@/Services";
 import { doc, Unsubscribe } from "firebase/firestore";
 import type { DatabaseRoom, RoomId } from "@/redux/slices/room/types";
@@ -75,9 +75,13 @@ function useRoom() {
         unSubscribeRoom()
       }
 
+      roomsUnsubscribeCallback.current = new Map()
+
       for (const unSubscribeRoomMessages of roomsMessagesUnsubscribeCallback.current.values()) {
         unSubscribeRoomMessages()
       }
+
+      roomsMessagesUnsubscribeCallback.current = new Map()
     }
   }, [])
 }
