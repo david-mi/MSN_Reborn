@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore"
 import { RequestStatus } from "../types"
 import { UserProfile } from "../user/types"
 
@@ -13,7 +14,19 @@ export interface Message {
   userId: string
   createdAt: number
   updatedAt: number
-  readBy: UserId[]
+  readBy: {
+    [userId: string]: string
+  }
+  message: string
+}
+
+export interface DatabaseMessage {
+  userId: string
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  readBy: {
+    [userId: string]: string
+  }
   message: string
 }
 
@@ -29,7 +42,9 @@ export interface Room {
 export type DatabaseRoom = {
   id: string
   type: RoomType
-  users: UserId[]
+  users: {
+    [userId: string]: true
+  }
 }
 
 export interface RoomSlice {

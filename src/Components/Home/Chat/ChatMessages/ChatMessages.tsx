@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
 import styles from "./chatMessages.module.css";
 import { Loader } from "@/Components/Shared";
@@ -15,6 +15,7 @@ function ChatMessages({ messages, usersProfile }: Props) {
   const dispatch = useAppDispatch()
   const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
   const roomId = useAppSelector(({ room }) => room.currentRoomId) as string
+  const messagesAmountRef = useRef(messages.length)
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -36,8 +37,9 @@ function ChatMessages({ messages, usersProfile }: Props) {
   }
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > messagesAmountRef.current) {
       dispatch(markRoomMessagesAsRead(roomId))
+      messagesAmountRef.current = messages.length
     }
   }, [messages])
 

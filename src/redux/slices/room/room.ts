@@ -29,6 +29,7 @@ const roomSlice = createSlice({
     initializeRoom(state, { payload }: PayloadAction<DatabaseRoom>) {
       state.roomsList.push({
         ...payload,
+        users: Object.keys(payload.users),
         messages: [],
         usersProfile: {},
         unreadMessagesCount: 0
@@ -46,11 +47,18 @@ const roomSlice = createSlice({
     },
     setUnreadMessageCount(state, { payload }: PayloadAction<{ count: number | "reset", roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+
       if (payload.count === "reset") {
         foundRoom.unreadMessagesCount = 0
       } else {
         foundRoom.unreadMessagesCount += payload.count
       }
+    },
+    editRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
+      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      const foundMessageIndex = foundRoom.messages.findIndex((message) => message.id === payload.message.id)!
+
+      foundRoom.messages[foundMessageIndex] = payload.message
     }
   },
   extraReducers: (builder) => {
@@ -87,6 +95,7 @@ export const {
   setRoomMessage,
   initializeRoom,
   setRoomUsersProfile,
-  setUnreadMessageCount
+  setUnreadMessageCount,
+  editRoomMessage
 } = roomSlice.actions
 export const roomReducer = roomSlice.reducer

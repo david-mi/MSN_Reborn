@@ -4,14 +4,14 @@ import {
   collection,
   serverTimestamp,
   DocumentData,
-  QueryDocumentSnapshot,
-  Timestamp,
+  DocumentSnapshot,
   query,
   where,
   writeBatch,
-  getDocs
+  getDocs,
+  orderBy
 } from "firebase/firestore"
-import type { Message, RoomId } from "@/redux/slices/room/types"
+import type { DatabaseMessage, Message, RoomId } from "@/redux/slices/room/types"
 
 export class MessageService {
   static get currentUser() {
@@ -23,20 +23,15 @@ export class MessageService {
     return currentUser
   }
 
-  public static getMessageFromSnapshot(messageSnapshot: QueryDocumentSnapshot<DocumentData>) {
-    type RetrievedMessage = Omit<Message, "createdAt" | "updatedAt"> & {
-      createdAt: Timestamp,
-      updatedAt: Timestamp
-    }
-
-    const message = messageSnapshot.data() as RetrievedMessage
+  public static getMessageFromSnapshot(messageSnapshot: DocumentSnapshot<DocumentData>) {
+    const message = messageSnapshot.data({ serverTimestamps: "estimate" }) as DatabaseMessage
 
     return {
       ...message,
       id: messageSnapshot.id,
       createdAt: message.createdAt.toMillis(),
       updatedAt: message.updatedAt.toMillis()
-    }
+    } as Message
   }
 
   public static async add(content: string, roomId: RoomId, users: string[]) {
@@ -50,7 +45,7 @@ export class MessageService {
       readBy: users.reduce((readBy, userId) => {
         return {
           ...readBy,
-          [userId]: false,
+          [userId]: userId === this.currentUser.uid,
         };
       }, {})
     }
@@ -74,5 +69,18 @@ export class MessageService {
     })
 
     return batch.commit()
+  }
+
+  public static async getOldestUnreadRoomMessageDate(roomId: string) {
+    const unReadMessagesQuery = query(
+      collection(firebase.firestore, "rooms", roomId, "messages"),
+      where(`readBy.${this.currentUser.uid}`, "==", false),
+      orderBy("createdAt", "asc")
+    )
+
+    const unreadRoomMessagesSnapshot = await getDocs(unReadMessagesQuery)
+    return unreadRoomMessagesSnapshot.empty
+      ? null
+      : (unreadRoomMessagesSnapshot.docs[0].data() as DatabaseMessage).createdAt.toDate()
   }
 }

@@ -1,87 +1,64 @@
 import { useEffect, useRef } from "react"
-import { onSnapshot, collection, query, orderBy, where } from "firebase/firestore";
+import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount } from "@/redux/slices/room/room";
-import { MessageService, UserService } from "@/Services";
-import { doc, Unsubscribe } from "firebase/firestore";
-import type { DatabaseRoom, RoomId } from "@/redux/slices/room/types";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage } from "@/redux/slices/room/room";
+import { MessageService } from "@/Services";
+import { Unsubscribe } from "firebase/firestore";
+import type { DatabaseRoom } from "@/redux/slices/room/types";
 
 function useRoom() {
   const dispatch = useAppDispatch()
-  const roomsUnsubscribeCallback = useRef<Map<RoomId, Unsubscribe>>(new Map())
-  const roomsMessagesUnsubscribeCallback = useRef<Map<RoomId, Unsubscribe>>(new Map())
+  const unSubscribeRoomMessagesRef = useRef<Unsubscribe>()
 
   useEffect(() => {
-    const roomsIdsRef = doc(firebase.firestore, "roomsIds", UserService.currentUser.uid)
+    const userSubscribedRoomsQuery = query(
+      collection(firebase.firestore, "rooms"),
+      where(`users.${firebase.auth.currentUser!.uid}`, "==", true),
+    )
 
-    const unSubscribeRoomsIds = onSnapshot(roomsIdsRef, async (roomsIdsSnapshot) => {
-      const retrievedRoomsIds: RoomId[] = roomsIdsSnapshot.data()?.list ?? []
+    const unSubscribeRooms = onSnapshot(userSubscribedRoomsQuery, async (roomQuerySnapshot) => {
+      for (const change of roomQuerySnapshot.docChanges()) {
+        const roomSnapshot = change.doc
+        const roomData = { id: roomSnapshot.id, ...roomSnapshot.data() } as DatabaseRoom
 
-      retrievedRoomsIds.forEach((retrievedRoomId) => {
-        const hasAddedRoomId = roomsUnsubscribeCallback.current.has(retrievedRoomId) === false
+        dispatch(initializeRoom(roomData))
 
-        if (hasAddedRoomId) {
-          const roomToObserveRef = doc(firebase.firestore, "rooms", retrievedRoomId)
+        const oldestUnreadRoomMessageDate = await MessageService.getOldestUnreadRoomMessageDate(roomData.id)
 
-          const unSubscribeRoom = onSnapshot(roomToObserveRef, (roomSnapshot) => {
-            const roomData = { id: roomSnapshot.id, ...roomSnapshot.data() } as DatabaseRoom
+        const observerQuery = query(
+          collection(firebase.firestore, "rooms", roomData.id, "messages"),
+          orderBy("createdAt"),
+          startAt(oldestUnreadRoomMessageDate || new Date())
+        )
 
-            dispatch(initializeRoom(roomData))
-            roomsUnsubscribeCallback.current.set(retrievedRoomId, unSubscribeRoom)
+        unSubscribeRoomMessagesRef.current = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
+          // if (roomMessagesSnapshot.metadata.hasPendingWrites) return
 
-            const unReadMessagesQuery = query(
-              collection(firebase.firestore, "rooms", roomSnapshot.id, "messages"),
-              where(`readBy.${firebase.auth.currentUser!.uid}`, "==", false),
-              orderBy("createdAt", "asc")
-            )
+          roomMessagesSnapshot.docChanges().forEach(change => {
+            const message = MessageService.getMessageFromSnapshot(change.doc)
 
-            const unSubscribeRoomMessages = onSnapshot(unReadMessagesQuery, (roomMessagesSnapshot) => {
-              if (roomMessagesSnapshot.metadata.hasPendingWrites) return
-
-              roomMessagesSnapshot.docChanges().forEach(change => {
-                if (change.type !== "added") return
-
-                const message = MessageService.getMessageFromSnapshot(change.doc)
-                dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
+            switch (change.type) {
+              case "added": {
                 dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
-                roomsMessagesUnsubscribeCallback.current.set(retrievedRoomId, unSubscribeRoomMessages)
-              })
-            })
+                dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
+                break
+              }
+              case "modified": {
+                dispatch(editRoomMessage({ message, roomId: roomSnapshot.id }))
+              }
+            }
           })
-        }
-      })
-
-      for (const [savedRoomId, unSubscribeRoom] of roomsUnsubscribeCallback.current) {
-        const hasDeletedRoomId = retrievedRoomsIds.includes(savedRoomId) === false
-
-        if (hasDeletedRoomId) {
-          unSubscribeRoom()
-          const unSubscribeRoomMessages = roomsMessagesUnsubscribeCallback.current.get(savedRoomId)
-
-          if (unSubscribeRoomMessages) {
-            unSubscribeRoomMessages()
-          }
-
-          roomsUnsubscribeCallback.current.delete(savedRoomId)
-        }
+        })
       }
     })
 
     return () => {
-      unSubscribeRoomsIds()
+      unSubscribeRooms()
 
-      for (const unSubscribeRoom of roomsUnsubscribeCallback.current.values()) {
-        unSubscribeRoom()
+      if (unSubscribeRoomMessagesRef.current) {
+        unSubscribeRoomMessagesRef.current()
       }
-
-      roomsUnsubscribeCallback.current = new Map()
-
-      for (const unSubscribeRoomMessages of roomsMessagesUnsubscribeCallback.current.values()) {
-        unSubscribeRoomMessages()
-      }
-
-      roomsMessagesUnsubscribeCallback.current = new Map()
     }
   }, [])
 }

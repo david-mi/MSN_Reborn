@@ -1,9 +1,6 @@
 import { firebase } from "@/firebase/config"
 import { Room, RoomType } from "@/redux/slices/room/types"
 import {
-  doc,
-  setDoc,
-  arrayUnion,
   addDoc,
   collection,
   DocumentData,
@@ -33,24 +30,16 @@ export class RoomService {
     return contactsProfile as Room[]
   }
 
-  public static async createRoom(roomType: RoomType, usersId: string[]): Promise<string> {
+  public static async createRoom(roomType: RoomType, users: { [userId: string]: true }): Promise<string> {
     const roomRef = collection(firebase.firestore, "rooms")
 
     const roomData = {
       type: roomType,
-      users: usersId
+      users
     }
 
     const createdRoom = await addDoc(roomRef, roomData)
 
     return createdRoom.id
-  }
-
-  public static async addRoomIdToUserRoomsList(roomId: string, userId: string) {
-    const userRoomsListRef = doc(firebase.firestore, "roomsIds", userId)
-
-    await setDoc(userRoomsListRef, {
-      list: arrayUnion(roomId)
-    }, { merge: true })
   }
 }

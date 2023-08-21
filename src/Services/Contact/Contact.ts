@@ -56,9 +56,10 @@ export class ContactService {
   }
 
   public static async acceptFriendRequest(userWhoSentFriendRequestId: string) {
-    const roomId = await RoomService.createRoom("oneToOne", [this.currentUser.uid, userWhoSentFriendRequestId])
-    await RoomService.addRoomIdToUserRoomsList(roomId, this.currentUser.uid)
-    await RoomService.addRoomIdToUserRoomsList(roomId, userWhoSentFriendRequestId)
+    const roomId = await RoomService.createRoom("oneToOne", {
+      [this.currentUser.uid]: true,
+      [userWhoSentFriendRequestId]: true
+    })
 
     await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid, roomId)
     await this.addUserToContacts(this.currentUser.uid, userWhoSentFriendRequestId, roomId)

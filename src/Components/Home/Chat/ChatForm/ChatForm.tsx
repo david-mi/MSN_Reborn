@@ -13,7 +13,15 @@ interface Props {
 
 function ChatForm({ roomId, users }: Props) {
   const dispatch = useAppDispatch()
-  const { register, handleSubmit, formState: { errors }, setError, reset, setFocus } = useForm<ChatFormFields>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    reset,
+    setFocus,
+    clearErrors
+  } = useForm<ChatFormFields>({ reValidateMode: "onSubmit" })
   const sendMessageRequest = useAppSelector(({ room }) => room.sendMessageRequest)
 
   async function onSubmit({ content }: ChatFormFields) {
@@ -36,7 +44,7 @@ function ChatForm({ roomId, users }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.chatForm}>
       <textarea
-        {...register("content", { validate: MessageValidation.validateFromInput })}
+        {...register("content", { validate: MessageValidation.validateFromInput, onChange: () => clearErrors() })}
         onKeyDown={handleKeyDown}
         disabled={sendMessageRequest.status === "PENDING"}
       />

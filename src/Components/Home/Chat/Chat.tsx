@@ -20,7 +20,10 @@ function Chat() {
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      <ChatMessages messages={messages} usersProfile={usersProfile} />
+      <ChatMessages
+        messages={messages}
+        usersProfile={usersProfile}
+      />
       <ChatForm roomId={id} users={users} />
     </div>
   );
