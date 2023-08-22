@@ -25,14 +25,15 @@ function useRoom() {
         dispatch(initializeRoom(roomData))
 
         const oldestUnreadRoomMessageDate = await MessageService.getOldestUnreadRoomMessageDate(roomData.id)
+        const dateToStartObservingMessages = await MessageService.getStartingDateToObserveMessages(roomData.id, 10, oldestUnreadRoomMessageDate)
 
         const observerQuery = query(
           collection(firebase.firestore, "rooms", roomData.id, "messages"),
           orderBy("createdAt"),
-          startAt(oldestUnreadRoomMessageDate || new Date())
+          startAt(dateToStartObservingMessages)
         )
 
-        unSubscribeRoomMessagesRef.current = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
+        const unSubscribeRoomMessages = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
           // if (roomMessagesSnapshot.metadata.hasPendingWrites) return
 
           roomMessagesSnapshot.docChanges().forEach(change => {

@@ -7,9 +7,12 @@ import {
   DocumentSnapshot,
   query,
   where,
-  writeBatch,
   getDocs,
-  orderBy
+  orderBy,
+  endBefore,
+  limit,
+  doc,
+  updateDoc
 } from "firebase/firestore"
 import type { DatabaseMessage, Message, RoomId } from "@/redux/slices/room/types"
 
@@ -80,7 +83,22 @@ export class MessageService {
 
     const unreadRoomMessagesSnapshot = await getDocs(unReadMessagesQuery)
     return unreadRoomMessagesSnapshot.empty
-      ? null
+      ? new Date()
       : (unreadRoomMessagesSnapshot.docs[0].data() as DatabaseMessage).createdAt.toDate()
+  }
+
+  public static async getStartingDateToObserveMessages(roomId: string, limitAmount: number, dateToStart: Date) {
+    const readMessagesQuery = query(
+      collection(firebase.firestore, "rooms", roomId, "messages"),
+      orderBy("createdAt"),
+      endBefore(dateToStart),
+      limit(limitAmount)
+    )
+
+    const readRoomMessagesSnapshot = await getDocs(readMessagesQuery)
+
+    return readRoomMessagesSnapshot.empty
+      ? new Date()
+      : (readRoomMessagesSnapshot.docs[0].data() as DatabaseMessage).createdAt.toDate()
   }
 }
