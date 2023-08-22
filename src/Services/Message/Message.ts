@@ -64,23 +64,39 @@ export class MessageService {
   }
 
   public static async getOldestUnreadRoomMessageDate(roomId: string) {
+    const unreadMessages: Message[] = []
+
     const unReadMessagesQuery = query(
       collection(firebase.firestore, "rooms", roomId, "messages"),
       where(`readBy.${this.currentUser.uid}`, "==", false),
-      orderBy("createdAt", "asc")
     )
 
-    const unreadRoomMessagesSnapshot = await getDocs(unReadMessagesQuery)
-    return unreadRoomMessagesSnapshot.empty
-      ? new Date()
-      : (unreadRoomMessagesSnapshot.docs[0].data() as DatabaseMessage).createdAt.toDate()
+    const unreadRoomMessagesQuerySnapshot = await getDocs(unReadMessagesQuery)
+
+    unreadRoomMessagesQuerySnapshot.docs.forEach((unreadRoomMessageSnapshot) => {
+      const message = unreadRoomMessageSnapshot.data() as DatabaseMessage
+      unreadMessages.push({
+        ...message,
+        id: unreadRoomMessageSnapshot.id,
+        createdAt: message.createdAt.toMillis(),
+        updatedAt: message.updatedAt.toMillis()
+      })
+    })
+
+    unreadMessages.sort((nextUnreadMessage, previousUnreadMessage) => {
+      return previousUnreadMessage.createdAt - nextUnreadMessage.createdAt
+    })
+
+    return unreadMessages.length > 0
+      ? new Date(unreadMessages[0].createdAt)
+      : new Date()
   }
 
-  public static async getStartingDateToObserveMessages(roomId: string, limitAmount: number, dateToStart: Date) {
+  public static async getStartingDateToObserveMessages(roomId: string, limitAmount: number, oldestUnreadRoomMessageDate: Date) {
     const readMessagesQuery = query(
       collection(firebase.firestore, "rooms", roomId, "messages"),
       orderBy("createdAt"),
-      endBefore(dateToStart),
+      endBefore(oldestUnreadRoomMessageDate),
       limit(limitAmount)
     )
 

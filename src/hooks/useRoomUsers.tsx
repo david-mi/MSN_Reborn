@@ -12,8 +12,14 @@ function useRoomUsers(roomId: string) {
     const currentRoomId = room.currentRoomId
     return room.roomsList[currentRoomId as string].users
   })
+  const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
 
   useEffect(() => {
+    const nonContactRoomUsersId = currentRoomUsersId.filter((currentRoomUserId) => {
+      return contactsIds.indexOf(currentRoomUserId) !== -1
+    })
+    console.log(nonContactRoomUsersId)
+
     const nonContactRoomUsersQuery = query(
       collection(firebase.firestore, "users"),
       where(documentId(), "in", currentRoomUsersId)
@@ -33,7 +39,7 @@ function useRoomUsers(roomId: string) {
     })
 
     return () => unsubscribe()
-  }, [currentRoomUsersId])
+  }, [currentRoomUsersId, contactsIds])
 }
 
 export default useRoomUsers
