@@ -1,14 +1,18 @@
 import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
 import styles from "./chatMessages.module.css";
 import ChatMessage from "./ChatMessage/ChatMessage";
+import { MutableRefObject, useEffect, useRef } from "react";
 
 interface Props {
   messages: Message[],
   usersProfile: RoomUsersProfile
   roomId: string
+  shouldScrollToBottomRef: MutableRefObject<boolean>
 }
 
-function ChatMessages({ messages, usersProfile, roomId }: Props) {
+function ChatMessages({ messages, usersProfile, roomId, shouldScrollToBottomRef }: Props) {
+  const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
+  const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -29,8 +33,25 @@ function ChatMessages({ messages, usersProfile, roomId }: Props) {
     return areMessagesPostedAtDifferentHours
   }
 
+  function handleScroll() {
+    const { clientHeight, scrollHeight, scrollTop } = chatMessagesContainerRef!.current
+    const hasReachedBottom = clientHeight + Math.ceil(scrollTop) === scrollHeight
+
+    shouldScrollToBottomRef.current = hasReachedBottom
+  }
+
+  useEffect(() => {
+    if (shouldScrollToBottomRef.current === true) {
+      chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages])
+
   return (
-    <div className={styles.chatDisplayMessages}>
+    <div
+      onScroll={handleScroll}
+      ref={chatMessagesContainerRef}
+      className={styles.chatMessages}
+    >
       {messages.map((message, index) => {
         return (
           <ChatMessage
@@ -38,9 +59,11 @@ function ChatMessages({ messages, usersProfile, roomId }: Props) {
             key={message.id}
             roomId={roomId}
             message={message}
-            user={usersProfile[message.userId]} />
+            user={usersProfile[message.userId]}
+          />
         )
       })}
+      <div ref={chatMessagesBottomRef}></div>
     </div>
   );
 }

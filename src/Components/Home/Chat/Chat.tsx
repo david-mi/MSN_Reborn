@@ -9,6 +9,7 @@ import {
 import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
 import { Loader } from "@/Components/Shared";
+import { useRef } from "react"
 
 function Chat() {
   const { id, usersProfile, messages, users } = useAppSelector(({ room }) => {
@@ -17,6 +18,7 @@ function Chat() {
   })
   const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
   useRoomUsers(id)
+  const shouldScrollToBottomRef = useRef<boolean>(true)
 
   return (
     <div className={styles.chat}>
@@ -27,13 +29,18 @@ function Chat() {
         ? <Loader size="2rem" />
         : (
           <ChatMessages
+            shouldScrollToBottomRef={shouldScrollToBottomRef}
             roomId={id}
             messages={messages}
             usersProfile={usersProfile}
           />
         )
       }
-      <ChatForm roomId={id} users={users} />
+      <ChatForm
+        shouldScrollToBottomRef={shouldScrollToBottomRef}
+        roomId={id}
+        users={users}
+      />
     </div>
   );
 }

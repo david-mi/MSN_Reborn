@@ -1,4 +1,4 @@
-.chatDisplayMessages {
+.chatMessages {
   grid-area: displayMessages;
   display: flex;
   flex-direction: column;

@@ -1,4 +1,4 @@
-import { KeyboardEvent } from "react"
+import { KeyboardEvent, MutableRefObject } from "react"
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { sendMessage } from "@/redux/slices/room/room";
@@ -9,9 +9,10 @@ import styles from "./chatForm.module.css";
 interface Props {
   roomId: string
   users: string[]
+  shouldScrollToBottomRef: MutableRefObject<boolean>
 }
 
-function ChatForm({ roomId, users }: Props) {
+function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
   const dispatch = useAppDispatch()
   const {
     register,
@@ -37,6 +38,7 @@ function ChatForm({ roomId, users }: Props) {
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && event.shiftKey === false) {
       handleSubmit(onSubmit)()
+      shouldScrollToBottomRef.current = true
       event.preventDefault()
     }
   }
