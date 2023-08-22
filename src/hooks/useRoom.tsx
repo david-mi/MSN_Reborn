@@ -9,7 +9,7 @@ import type { DatabaseRoom } from "@/redux/slices/room/types";
 
 function useRoom() {
   const dispatch = useAppDispatch()
-  const unSubscribeRoomMessagesRef = useRef<Unsubscribe>()
+  const unSubscribeRoomMessagesMapRef = useRef<Map<string, Unsubscribe>>(new Map())
 
   useEffect(() => {
     const userSubscribedRoomsQuery = query(
@@ -49,6 +49,8 @@ function useRoom() {
               }
             }
           })
+
+          unSubscribeRoomMessagesMapRef.current.set(firebase.auth.currentUser!.uid, unSubscribeRoomMessages)
         })
       }
     })
@@ -56,8 +58,10 @@ function useRoom() {
     return () => {
       unSubscribeRooms()
 
-      if (unSubscribeRoomMessagesRef.current) {
-        unSubscribeRoomMessagesRef.current()
+      if (unSubscribeRoomMessagesMapRef.current) {
+        for (const unSubscribeRoomMessages of unSubscribeRoomMessagesMapRef.current.values()) {
+          unSubscribeRoomMessages()
+        }
       }
     }
   }, [])
