@@ -54,6 +54,11 @@ const roomSlice = createSlice({
         foundRoom.unreadMessagesCount += payload.count
       }
     },
+    setReadRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
+      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+
+      foundRoom.messages.unshift(...payload.messages)
+    },
     editRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
       const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
       const foundMessageIndex = foundRoom.messages.findIndex((message) => message.id === payload.message.id)!
@@ -73,6 +78,10 @@ const roomSlice = createSlice({
       state.sendMessageRequest.status = "REJECTED"
       state.sendMessageRequest.error = (error as FirebaseError).message
     })
+    builder.addCase(markRoomMessageAsRead.fulfilled, (state, { payload }: PayloadAction<string>) => {
+      const foundRoom = state.roomsList.find((room) => room.id === payload)!
+      foundRoom.unreadMessagesCount--
+    })
     builder.addCase(disconnectAction, () => initialChatState)
   }
 })
@@ -83,11 +92,11 @@ export const sendMessage = createAppAsyncThunk(
     return MessageService.add(content, roomId, users)
   })
 
-export const markRoomMessagesAsRead = createAppAsyncThunk(
-  "rooms/markRoomMessagesAsRead",
-  async (roomId: string, { dispatch }) => {
-    await MessageService.markRoomMessagesAsRead(roomId)
-    dispatch(setUnreadMessageCount({ roomId, count: "reset" }))
+export const markRoomMessageAsRead = createAppAsyncThunk(
+  "rooms/markRoomMessageAsRead",
+  async ({ roomId, messageId }: { roomId: string, messageId: string }) => {
+    await MessageService.markRoomMessageAsRead(roomId, messageId)
+    return roomId
   })
 
 export const {

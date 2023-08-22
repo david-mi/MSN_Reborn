@@ -41,8 +41,12 @@ function useRoom() {
 
             switch (change.type) {
               case "added": {
-                dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
                 dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
+
+                if (message.readBy[firebase.auth.currentUser!.uid] === false) {
+                  dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
+                }
+
                 break
               }
               case "modified": {

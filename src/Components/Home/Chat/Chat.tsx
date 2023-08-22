@@ -8,11 +8,13 @@ import {
 } from ".";
 import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
+import { Loader } from "@/Components/Shared";
 
 function Chat() {
   const { id, usersProfile, messages, users } = useAppSelector(({ room }) => {
     return room.roomsList.find((roomToFind) => roomToFind.id === room.currentRoomId)!
   })
+  const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
   useRoomUsers(id)
 
   return (
@@ -20,10 +22,16 @@ function Chat() {
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      <ChatMessages
-        messages={messages}
-        usersProfile={usersProfile}
-      />
+      {getRoomUsersProfileRequest.status === "PENDING"
+        ? <Loader size="2rem" />
+        : (
+          <ChatMessages
+            roomId={id}
+            messages={messages}
+            usersProfile={usersProfile}
+          />
+        )
+      }
       <ChatForm roomId={id} users={users} />
     </div>
   );

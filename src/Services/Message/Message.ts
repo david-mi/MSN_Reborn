@@ -56,22 +56,11 @@ export class MessageService {
     await addDoc(messagesCollectionRef, message)
   }
 
-  public static async markRoomMessagesAsRead(roomId: string) {
-    const batch = writeBatch(firebase.firestore)
-
-    const unReadMessagesQuery = query(
-      collection(firebase.firestore, "rooms", roomId, "messages"),
-      where(`readBy.${this.currentUser.uid}`, "==", false)
-    )
-
-    const unReadMessagesQuerySnapshot = await getDocs(unReadMessagesQuery)
-    unReadMessagesQuerySnapshot.docs.forEach((doc) => {
-      batch.update(doc.ref, {
-        [`readBy.${this.currentUser.uid}`]: true
-      })
+  public static async markRoomMessageAsRead(roomId: string, messageId: string) {
+    const messageToMarkAsReadRef = doc(firebase.firestore, "rooms", roomId, "messages", messageId)
+    return updateDoc(messageToMarkAsReadRef, {
+      [`readBy.${this.currentUser.uid}`]: true
     })
-
-    return batch.commit()
   }
 
   public static async getOldestUnreadRoomMessageDate(roomId: string) {

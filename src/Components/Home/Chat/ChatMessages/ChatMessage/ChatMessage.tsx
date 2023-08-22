@@ -1,19 +1,24 @@
+import { useCallback, useEffect } from "react";
 import { Message } from "@/redux/slices/room/types";
 import styles from "./chatMessage.module.css";
 import { UserProfile } from "@/redux/slices/user/types";
 import { Avatar } from "@/Components/Shared";
-import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { markRoomMessageAsRead } from "@/redux/slices/room/room";
 
 interface Props {
   message: Message,
+  roomId: string
   user: UserProfile
   displayAllInfos: boolean
 }
 
-function ChatMessage({ message, user, displayAllInfos }: Props) {
+function ChatMessage({ message, user, displayAllInfos, roomId }: Props) {
   const { avatarSrc, personalMessage, username } = user;
   const { message: text, createdAt } = message
 
+  const currentUserId = useAppSelector(({ user }) => user.id)
+  const dispatch = useAppDispatch()
   const parseTimestamp = useCallback((createdAt: number, onlyHours: boolean) => {
     return new Date(createdAt).toLocaleString(undefined, {
       month: onlyHours ? undefined : "numeric",
@@ -22,6 +27,15 @@ function ChatMessage({ message, user, displayAllInfos }: Props) {
       minute: "numeric",
     })
   }, [createdAt])
+
+  useEffect(() => {
+    const isMessageUnread = !message.readBy[currentUserId]
+
+    if (isMessageUnread) {
+      const markRoomMessageAsReadDispatch = dispatch(markRoomMessageAsRead({ roomId, messageId: message.id }))
+      return markRoomMessageAsReadDispatch.abort
+    }
+  }, [dispatch])
 
   return (
     displayAllInfos
