@@ -49,7 +49,9 @@ export type DatabaseRoom = {
 
 export interface RoomSlice {
   currentRoomId: RoomId | null
-  roomsList: Room[]
+  roomsList: {
+    [roomId: RoomId]: Room
+  }
   getRoomUsersProfileRequest: {
     status: RequestStatus,
     error: string | null

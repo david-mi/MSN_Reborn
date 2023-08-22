@@ -7,7 +7,7 @@ import { disconnectAction } from "../user/user";
 
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
-  roomsList: [],
+  roomsList: {},
   getRoomUsersProfileRequest: {
     status: "PENDING",
     error: null
@@ -27,43 +27,44 @@ const roomSlice = createSlice({
       state.currentRoomId = payload
     },
     initializeRoom(state, { payload }: PayloadAction<DatabaseRoom>) {
-      state.roomsList.push({
+      const roomId = payload.id
+
+      state.roomsList[roomId] = {
         ...payload,
         users: Object.keys(payload.users),
         messages: [],
         usersProfile: {},
         unreadMessagesCount: 0
-      })
+      }
     },
     setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
-      foundRoom.messages.push(payload.message)
+      const targetRoom = state.roomsList[payload.roomId]
+      targetRoom.messages.push(payload.message)
     },
     setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
-
-      foundRoom.usersProfile = payload.usersProfile
+      const targetRoom = state.roomsList[payload.roomId]
+      targetRoom.usersProfile = payload.usersProfile
       state.getRoomUsersProfileRequest.status = "IDLE"
     },
     setUnreadMessageCount(state, { payload }: PayloadAction<{ count: number | "reset", roomId: string }>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      const targetRoom = state.roomsList[payload.roomId]
 
       if (payload.count === "reset") {
-        foundRoom.unreadMessagesCount = 0
+        targetRoom.unreadMessagesCount = 0
       } else {
-        foundRoom.unreadMessagesCount += payload.count
+        targetRoom.unreadMessagesCount += payload.count
       }
     },
     setReadRoomMessages(state, { payload }: PayloadAction<{ messages: Message[], roomId: string }>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
+      const targetRoom = state.roomsList[payload.roomId]
 
-      foundRoom.messages.unshift(...payload.messages)
+      targetRoom.messages.unshift(...payload.messages)
     },
     editRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
-      const foundRoom = state.roomsList.find((room) => room.id === payload.roomId)!
-      const foundMessageIndex = foundRoom.messages.findIndex((message) => message.id === payload.message.id)!
+      const targetRoom = state.roomsList[payload.roomId]
+      const foundMessageIndex = targetRoom.messages.findIndex((message) => message.id === payload.message.id)!
 
-      foundRoom.messages[foundMessageIndex] = payload.message
+      targetRoom.messages[foundMessageIndex] = payload.message
     }
   },
   extraReducers: (builder) => {
@@ -78,9 +79,9 @@ const roomSlice = createSlice({
       state.sendMessageRequest.status = "REJECTED"
       state.sendMessageRequest.error = (error as FirebaseError).message
     })
-    builder.addCase(markRoomMessageAsRead.fulfilled, (state, { payload }: PayloadAction<string>) => {
-      const foundRoom = state.roomsList.find((room) => room.id === payload)!
-      foundRoom.unreadMessagesCount--
+    builder.addCase(markRoomMessageAsRead.fulfilled, (state, { payload: roomId }: PayloadAction<string>) => {
+      const targetRoom = state.roomsList[roomId]
+      targetRoom.unreadMessagesCount--
     })
     builder.addCase(disconnectAction, () => initialChatState)
   }

@@ -9,8 +9,8 @@ import { UserProfile } from "@/redux/slices/user/types";
 function useRoomUsers(roomId: string) {
   const dispatch = useAppDispatch()
   const currentRoomUsersId = useAppSelector(({ room }) => {
-    const currentRoom = room.roomsList.find((roomToFind) => roomToFind.id === roomId)!
-    return currentRoom.users
+    const currentRoomId = room.currentRoomId
+    return room.roomsList[currentRoomId as string].users
   })
 
   useEffect(() => {

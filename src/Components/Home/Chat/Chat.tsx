@@ -12,7 +12,8 @@ import { Loader } from "@/Components/Shared";
 
 function Chat() {
   const { id, usersProfile, messages, users } = useAppSelector(({ room }) => {
-    return room.roomsList.find((roomToFind) => roomToFind.id === room.currentRoomId)!
+    const currentRoomId = room.currentRoomId
+    return room.roomsList[currentRoomId as string]
   })
   const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
   useRoomUsers(id)

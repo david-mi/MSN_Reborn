@@ -14,8 +14,7 @@ function DisplayedContact({ contact }: Props) {
   const dispatch = useAppDispatch()
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
   const unreadMessagesCount = useAppSelector(({ room }) => {
-    const contactRoom = room.roomsList.find((room) => room.id === contact.roomId)!
-    return contactRoom?.unreadMessagesCount
+    return room.roomsList[contact.roomId]?.unreadMessagesCount
   })
 
   function handleContactClick(roomId: string) {
