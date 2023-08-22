@@ -15,7 +15,7 @@ export interface Message {
   createdAt: number
   updatedAt: number
   readBy: {
-    [userId: string]: string
+    [userId: string]: boolean
   }
   message: string
 }
@@ -25,7 +25,7 @@ export interface DatabaseMessage {
   createdAt: Timestamp
   updatedAt: Timestamp
   readBy: {
-    [userId: string]: string
+    [userId: string]: boolean
   }
   message: string
 }
