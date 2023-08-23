@@ -1,27 +1,31 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { onSnapshot, query, collection, where, documentId } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { getContactsProfile, setContactsIds, initializeContactsList } from "@/redux/slices/contact/contact";
+import { setContactsIds, setContactProfile, initializeContactsList, setContactsError } from "@/redux/slices/contact/contact";
 import { UserService } from "@/Services";
 import { doc } from "firebase/firestore";
+import { Contact } from "@/redux/slices/contact/types";
 
-function useContact() {
+function useContact(isLoadingRoomsForTheFirstTime: boolean) {
   const dispatch = useAppDispatch()
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const contacts = useAppSelector(({ contact }) => contact.contactsList)
-  const getContactsRequest = useAppSelector(({ contact }) => contact.getContactsRequest)
+  const contactsError = useAppSelector(({ contact }) => contact.getContactsRequest.error)
+  const [isFirstLoadingContacts, setIsFirstLoadingContacts] = useState(true)
 
   useEffect(() => {
+    if (isLoadingRoomsForTheFirstTime) return
+
     const contactsRef = doc(firebase.firestore, "contacts", UserService.currentUser.uid)
 
-    const unsubscribe = onSnapshot(contactsRef, async (snapshot) => {
+    const unsubscribeContactsId = onSnapshot(contactsRef, async (snapshot) => {
       dispatch(setContactsIds(snapshot.data()))
       dispatch(initializeContactsList(snapshot.data()))
     })
 
-    return () => unsubscribe()
-  }, [])
+    return unsubscribeContactsId
+  }, [isLoadingRoomsForTheFirstTime])
 
   useEffect(() => {
     if (contactsIds.length === 0) return
@@ -31,17 +35,34 @@ function useContact() {
       where(documentId(), "in", contactsIds)
     )
 
-    const unsubscribe = onSnapshot(queryUserContacts, async (snapshot) => {
-      dispatch(getContactsProfile(snapshot.docs))
+    const unsubscribeContactsProfile = onSnapshot(queryUserContacts, async (contactsSnapshot) => {
+      contactsSnapshot.docChanges().forEach((change) => {
+        const contactProfile = {
+          ...change.doc.data(),
+          id: change.doc.id
+        } as Contact
+
+        console.log(contactProfile)
+        switch (change.type) {
+          case "added":
+          case "modified": {
+            dispatch(setContactProfile(contactProfile))
+          }
+        }
+
+        setIsFirstLoadingContacts(false)
+      })
+    }, (error) => {
+      dispatch(setContactsError(error))
     })
 
-    return () => unsubscribe()
+    return unsubscribeContactsProfile
   }, [contactsIds])
 
   return {
     contacts,
-    isLoadingContacts: getContactsRequest.status === "PENDING",
-    contactsError: getContactsRequest.error
+    isFirstLoadingContacts,
+    contactsError
   }
 }
 

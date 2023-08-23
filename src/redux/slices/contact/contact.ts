@@ -1,10 +1,10 @@
-import { ContactSlice } from "./types";
+import { Contact, ContactSlice } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { UserService, ContactService } from "@/Services";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 
 export const initialContactState: ContactSlice = {
   contactsList: [],
@@ -50,6 +50,21 @@ const contactSlice = createSlice({
         ? Object.keys(payload)
         : []
     },
+    setContactProfile(state, { payload }: PayloadAction<Contact>) {
+      const foundContactIndex = state.contactsList.findIndex((contact) => payload.id === contact.id)
+
+      if (foundContactIndex !== -1) {
+        state.contactsList[foundContactIndex] = {
+          ...state.contactsList[foundContactIndex],
+          ...payload
+        }
+      } else {
+        state.contactsList.push(payload)
+      }
+    },
+    setContactsError(state, { payload }: PayloadAction<FirebaseError>) {
+      state.getContactsRequest.error = payload.message
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(sendFriendRequest.pending, (state) => {
@@ -74,24 +89,6 @@ const contactSlice = createSlice({
     builder.addCase(getUsersWhoSentFriendRequest.fulfilled, (state, { payload }) => {
       state.getFriendsRequest.status = "IDLE"
       state.usersWhoSentFriendRequest = payload
-    })
-    builder.addCase(getContactsProfile.pending, (state) => {
-      state.getContactsRequest.status = "PENDING"
-      state.getContactsRequest.error = null
-    })
-    builder.addCase(getContactsProfile.rejected, (state, { error }) => {
-      state.getContactsRequest.status = "REJECTED"
-      state.getContactsRequest.error = (error as FirebaseError).message
-    })
-    builder.addCase(getContactsProfile.fulfilled, (state, { payload }) => {
-      state.getContactsRequest.status = "IDLE"
-      state.contactsList = state.contactsList.map((contact) => {
-        const foundContact = payload.find((contactsToFind) => contactsToFind.id === contact.id)!
-        return {
-          ...contact,
-          ...foundContact
-        }
-      })
     })
     builder.addCase(disconnectAction, () => initialContactState)
   }
@@ -129,11 +126,5 @@ export const getUsersWhoSentFriendRequest = createAppAsyncThunk(
     return ContactService.getUsersWhoSentFriendRequest(receveidFriendRequestsDocumentData)
   })
 
-export const getContactsProfile = createAppAsyncThunk(
-  "contact/getContactsProfile",
-  async (contactsProfileDocumentData: QueryDocumentSnapshot<DocumentData>[]) => {
-    return ContactService.getContactsProfile(contactsProfileDocumentData)
-  })
-
 export const contactReducer = contactSlice.reducer
-export const { initializeContactsList, setContactsIds } = contactSlice.actions
+export const { setContactsIds, setContactProfile, setContactsError, initializeContactsList } = contactSlice.actions

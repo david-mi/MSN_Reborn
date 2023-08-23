@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch } from "@/redux/hooks";
@@ -10,6 +10,7 @@ import type { DatabaseRoom } from "@/redux/slices/room/types";
 function useRoom() {
   const dispatch = useAppDispatch()
   const unSubscribeRoomMessagesMapRef = useRef<Map<string, Unsubscribe>>(new Map())
+  const [isLoadingRoomsForTheFirstTime, setisLoadingRoomsForTheFirstTime] = useState(true)
 
   useEffect(() => {
     const userSubscribedRoomsQuery = query(
@@ -58,6 +59,8 @@ function useRoom() {
           unSubscribeRoomMessagesMapRef.current.set(firebase.auth.currentUser!.uid, unSubscribeRoomMessages)
         })
       }
+
+      setisLoadingRoomsForTheFirstTime(false)
     })
 
     return () => {
@@ -70,6 +73,8 @@ function useRoom() {
       }
     }
   }, [])
+
+  return { isLoadingRoomsForTheFirstTime }
 }
 
 export default useRoom
