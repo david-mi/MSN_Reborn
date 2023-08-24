@@ -52,7 +52,11 @@ export interface RoomSlice {
   roomsList: {
     [roomId: RoomId]: Room
   }
-  getRoomUsersProfileRequest: {
+  getRoomNonFriendProfilesRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
+  getRoomsRequest: {
     status: RequestStatus,
     error: string | null
   }

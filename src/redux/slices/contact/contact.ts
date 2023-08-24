@@ -1,10 +1,11 @@
-import { Contact, ContactSlice } from "./types";
+import { ContactSlice } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { UserService, ContactService } from "@/Services";
 import { DocumentData } from "firebase/firestore";
+import { UserProfile } from "../user/types";
 
 export const initialContactState: ContactSlice = {
   contactsList: [],
@@ -14,7 +15,7 @@ export const initialContactState: ContactSlice = {
     status: "PENDING",
     error: null
   },
-  getContactsRequest: {
+  getContactsProfile: {
     status: "PENDING",
     error: null
   },
@@ -50,20 +51,20 @@ const contactSlice = createSlice({
         ? Object.keys(payload)
         : []
     },
-    setContactProfile(state, { payload }: PayloadAction<Contact>) {
-      const foundContactIndex = state.contactsList.findIndex((contact) => payload.id === contact.id)
+    setContactProfile(state, { payload }: PayloadAction<UserProfile>) {
+      const foundContactIndex = state.contactsList.findIndex((contact) => payload.id === contact.id)!
 
-      if (foundContactIndex !== -1) {
-        state.contactsList[foundContactIndex] = {
-          ...state.contactsList[foundContactIndex],
-          ...payload
-        }
-      } else {
-        state.contactsList.push(payload)
+      state.contactsList[foundContactIndex] = {
+        ...state.contactsList[foundContactIndex],
+        ...payload
       }
     },
     setContactsError(state, { payload }: PayloadAction<FirebaseError>) {
-      state.getContactsRequest.error = payload.message
+      state.getContactsProfile.error = payload.message
+    },
+    setContactsLoaded(state) {
+      state.getContactsProfile.error = null
+      state.getContactsProfile.status = "IDLE"
     }
   },
   extraReducers: (builder) => {
@@ -127,4 +128,10 @@ export const getUsersWhoSentFriendRequest = createAppAsyncThunk(
   })
 
 export const contactReducer = contactSlice.reducer
-export const { setContactsIds, setContactProfile, setContactsError, initializeContactsList } = contactSlice.actions
+export const {
+  setContactsIds,
+  setContactProfile,
+  setContactsError,
+  initializeContactsList,
+  setContactsLoaded
+} = contactSlice.actions

@@ -2,6 +2,7 @@ import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
 import styles from "./chatMessages.module.css";
 import ChatMessage from "./ChatMessage/ChatMessage";
 import { MutableRefObject, useEffect, useRef } from "react";
+import { useAppSelector } from "@/redux/hooks";
 
 interface Props {
   messages: Message[],
@@ -13,6 +14,7 @@ interface Props {
 function ChatMessages({ messages, usersProfile, roomId, shouldScrollToBottomRef }: Props) {
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
+  const currentUser = useAppSelector(({ user }) => user)
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -59,7 +61,7 @@ function ChatMessages({ messages, usersProfile, roomId, shouldScrollToBottomRef 
             key={message.id}
             roomId={roomId}
             message={message}
-            user={usersProfile[message.userId]}
+            user={usersProfile[message.userId] || currentUser}
           />
         )
       })}

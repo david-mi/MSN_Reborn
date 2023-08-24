@@ -11,7 +11,7 @@ export interface ContactSlice {
     status: RequestStatus
     error: string | null
   }
-  getContactsRequest: {
+  getContactsProfile: {
     status: RequestStatus
     error: string | null
   }

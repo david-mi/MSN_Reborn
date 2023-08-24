@@ -4,8 +4,8 @@ import useRoom from "@/hooks/useRoom";
 import Contact from "./DisplayedContact/DisplayedContact";
 
 function ContactsList() {
-  const { isLoadingRoomsForTheFirstTime } = useRoom()
-  const { contacts, contactsError } = useContact(isLoadingRoomsForTheFirstTime)
+  useRoom()
+  const { contacts, contactsError } = useContact()
 
   if (contactsError) {
     return <small>Une erreur est survenue lors de la récupération des contacts</small>

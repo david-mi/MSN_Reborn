@@ -2,20 +2,28 @@ import { useEffect, useState } from "react"
 import { onSnapshot, query, collection, where, documentId } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setContactsIds, setContactProfile, initializeContactsList, setContactsError } from "@/redux/slices/contact/contact";
+import {
+  setContactsIds,
+  setContactProfile,
+  initializeContactsList,
+  setContactsError,
+  setContactsLoaded
+} from "@/redux/slices/contact/contact";
+import { setRoomUserProfile } from "@/redux/slices/room/room";
 import { UserService } from "@/Services";
 import { doc } from "firebase/firestore";
-import { Contact } from "@/redux/slices/contact/types";
+import { UserProfile } from "@/redux/slices/user/types";
 
-function useContact(isLoadingRoomsForTheFirstTime: boolean) {
+function useContact() {
   const dispatch = useAppDispatch()
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const contacts = useAppSelector(({ contact }) => contact.contactsList)
-  const contactsError = useAppSelector(({ contact }) => contact.getContactsRequest.error)
+  const contactsError = useAppSelector(({ contact }) => contact.getContactsProfile.error)
   const [isFirstLoadingContacts, setIsFirstLoadingContacts] = useState(true)
+  const retrieveRoomsStatus = useAppSelector(({ room }) => room.getRoomsRequest.status)
 
   useEffect(() => {
-    if (isLoadingRoomsForTheFirstTime) return
+    if (retrieveRoomsStatus === "PENDING") return
 
     const contactsRef = doc(firebase.firestore, "contacts", UserService.currentUser.uid)
 
@@ -25,7 +33,7 @@ function useContact(isLoadingRoomsForTheFirstTime: boolean) {
     })
 
     return unsubscribeContactsId
-  }, [isLoadingRoomsForTheFirstTime])
+  }, [retrieveRoomsStatus])
 
   useEffect(() => {
     if (contactsIds.length === 0) return
@@ -40,18 +48,20 @@ function useContact(isLoadingRoomsForTheFirstTime: boolean) {
         const contactProfile = {
           ...change.doc.data(),
           id: change.doc.id
-        } as Contact
+        } as UserProfile
 
-        console.log(contactProfile)
         switch (change.type) {
           case "added":
           case "modified": {
             dispatch(setContactProfile(contactProfile))
+            dispatch(setRoomUserProfile(contactProfile))
           }
         }
 
         setIsFirstLoadingContacts(false)
       })
+
+      dispatch(setContactsLoaded())
     }, (error) => {
       dispatch(setContactsError(error))
     })

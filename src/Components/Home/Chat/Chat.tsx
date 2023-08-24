@@ -1,4 +1,4 @@
-import useRoomUsers from "@/hooks/useRoomUsers";
+import useRoomNonFriendUsers from "@/hooks/useRoomNonFriendUsers";
 import {
   ChatHeader,
   ChatOptions,
@@ -8,34 +8,39 @@ import {
 } from ".";
 import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
+import { useRef } from "react"
 import { Loader } from "@/Components/Shared";
 import { useRef } from "react"
+// import { getRoomUsersAndCurrentUserProfile } from "@/redux/slices/room/room";
 
 function Chat() {
-  const { id, usersProfile, messages, users } = useAppSelector(({ room }) => {
+  const { id, usersProfile, messages, users, type } = useAppSelector(({ room }) => {
     const currentRoomId = room.currentRoomId
     return room.roomsList[currentRoomId as string]
   })
-  const getRoomUsersProfileRequest = useAppSelector(({ room }) => room.getRoomUsersProfileRequest)
-  useRoomUsers(id)
+  const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
+  const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
+  const { getRoomNonFriendProfilesRequest } = useRoomNonFriendUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
+  if (
+    getCurrentUserProfileStatus === "PENDING" ||
+    getContactsProfileStatus === "PENDING"
+  ) {
+    return <Loader size={"3rem"} />
+  }
 
   return (
     <div className={styles.chat}>
       <ChatHeader />
       <ChatOptions />
       <ChatAvatars />
-      {getRoomUsersProfileRequest.status === "PENDING"
-        ? <Loader size="2rem" />
-        : (
           <ChatMessages
+        getRoomNonFriendProfilesRequest={getRoomNonFriendProfilesRequest}
             shouldScrollToBottomRef={shouldScrollToBottomRef}
             roomId={id}
             messages={messages}
             usersProfile={usersProfile}
           />
-        )
-      }
       <ChatForm
         shouldScrollToBottomRef={shouldScrollToBottomRef}
         roomId={id}

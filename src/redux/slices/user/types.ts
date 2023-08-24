@@ -19,7 +19,7 @@ export interface UserSlice extends UserProfile {
     status: RequestStatus
     error: null | string
   }
-  getProfileRequest: {
+  getProfile: {
     status: RequestStatus
     error: null | string
   }

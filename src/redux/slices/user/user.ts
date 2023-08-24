@@ -20,8 +20,8 @@ export const initialUserState: UserSlice = {
     status: "PENDING",
     error: null
   },
-  getProfileRequest: {
-    status: "IDLE",
+  getProfile: {
+    status: "PENDING",
     error: null
   },
   editProfileRequest: {
@@ -43,6 +43,10 @@ const userSlice = createSlice({
     setProfile(state, { payload }: PayloadAction<UserProfile>) {
       return {
         ...state,
+        getProfile: {
+          status: "IDLE",
+          error: null
+        },
         ...payload
       }
     }
@@ -63,15 +67,15 @@ const userSlice = createSlice({
       state.verified = true
     })
     builder.addCase(getProfile.pending, (state) => {
-      state.getProfileRequest.status = "PENDING"
-      state.getProfileRequest.error = null
+      state.getProfile.status = "PENDING"
+      state.getProfile.error = null
     })
     builder.addCase(getProfile.rejected, (state, { error }) => {
-      state.getProfileRequest.status = "REJECTED"
-      state.getProfileRequest.error = (error as FirebaseError).message
+      state.getProfile.status = "REJECTED"
+      state.getProfile.error = (error as FirebaseError).message
     })
     builder.addCase(getProfile.fulfilled, (state, { payload }) => {
-      state.getProfileRequest.status = "IDLE"
+      state.getProfile.status = "IDLE"
       state.id = payload.id
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username

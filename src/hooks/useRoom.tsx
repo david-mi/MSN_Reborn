@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import type { DatabaseRoom } from "@/redux/slices/room/types";
@@ -10,7 +10,6 @@ import type { DatabaseRoom } from "@/redux/slices/room/types";
 function useRoom() {
   const dispatch = useAppDispatch()
   const unSubscribeRoomMessagesMapRef = useRef<Map<string, Unsubscribe>>(new Map())
-  const [isLoadingRoomsForTheFirstTime, setisLoadingRoomsForTheFirstTime] = useState(true)
 
   useEffect(() => {
     const userSubscribedRoomsQuery = query(
@@ -60,7 +59,7 @@ function useRoom() {
         })
       }
 
-      setisLoadingRoomsForTheFirstTime(false)
+      dispatch(setRoomsLoaded())
     })
 
     return () => {
@@ -73,8 +72,6 @@ function useRoom() {
       }
     }
   }, [])
-
-  return { isLoadingRoomsForTheFirstTime }
 }
 
 export default useRoom

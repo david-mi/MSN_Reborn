@@ -3,14 +3,16 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { UserProfile } from "@/redux/slices/user/types";
 import { UserService } from "@/Services";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setProfile } from "@/redux/slices/user/user";
 
 function useProfile() {
   const dispatch = useAppDispatch()
   const [isLoadingForTheFirstTime, setisLoadingForTheFirstTime] = useState(true)
+  const retrieveRoomsStatus = useAppSelector(({ room }) => room.getRoomsRequest.status)
 
   useEffect(() => {
+    if (retrieveRoomsStatus === "PENDING") return
     const userRef = doc(firebase.firestore, "users", UserService.currentUser.uid)
 
     const unsubscribe = onSnapshot(userRef, async (snapshot) => {
@@ -24,7 +26,7 @@ function useProfile() {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [retrieveRoomsStatus])
 
   return {
     isLoadingForTheFirstTime

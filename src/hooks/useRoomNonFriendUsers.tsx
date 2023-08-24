@@ -3,43 +3,54 @@ import { onSnapshot, query, where, documentId, collection } from "firebase/fires
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ContactService } from "@/Services";
-import { setRoomUsersProfile } from "@/redux/slices/room/room";
+import { setRoomNonContactUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
+import { RoomType } from "@/redux/slices/room/types";
 
-function useRoomUsers(roomId: string) {
+function useRoomNonFriendUsers(roomId: string, roomType: RoomType) {
   const dispatch = useAppDispatch()
+  const currentUserId = useAppSelector(({ user }) => user.id)
   const currentRoomUsersId = useAppSelector(({ room }) => {
     const currentRoomId = room.currentRoomId
     return room.roomsList[currentRoomId as string].users
   })
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
+  const getRoomNonFriendProfilesRequest = useAppSelector(({ room }) => room.getRoomNonFriendProfilesRequest)
 
   useEffect(() => {
-    const nonContactRoomUsersId = currentRoomUsersId.filter((currentRoomUserId) => {
-      return contactsIds.indexOf(currentRoomUserId) !== -1
+    if (roomType === "oneToOne") return
+
+    const roomUsersIdWithoutContactsAndCurrentUser = currentRoomUsersId.filter((currentRoomUserId) => {
+      return (
+        contactsIds.indexOf(currentRoomUserId) === -1 &&
+        currentRoomUserId !== currentUserId
+      )
     })
-    console.log(nonContactRoomUsersId)
 
     const nonContactRoomUsersQuery = query(
       collection(firebase.firestore, "users"),
-      where(documentId(), "in", currentRoomUsersId)
+      where(documentId(), "in", roomUsersIdWithoutContactsAndCurrentUser)
     )
 
     const unsubscribe = onSnapshot(nonContactRoomUsersQuery, async (snapshot) => {
       const roomUsersProfile = await ContactService.getContactsProfile(snapshot.docs)
-      const usersProfileIndexes: {
+      const usersProfile: {
         [id: string]: UserProfile
       } = {}
 
       for (const userProfile of roomUsersProfile) {
-        usersProfileIndexes[userProfile.id] = userProfile
+        usersProfile[userProfile.id] = userProfile
       }
 
-      dispatch(setRoomUsersProfile({ roomId, usersProfile: usersProfileIndexes }))
+      dispatch(setRoomNonContactUsersProfile({ roomId, usersProfile: usersProfile }))
     })
 
     return () => unsubscribe()
   }, [currentRoomUsersId, contactsIds])
+
+  return {
+    getRoomNonFriendProfilesRequest
+  }
 }
 
-export default useRoomUsers
+export default useRoomNonFriendUsers

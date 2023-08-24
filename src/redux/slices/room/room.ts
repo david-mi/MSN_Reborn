@@ -4,11 +4,16 @@ import { DatabaseRoom, Message, RoomSlice, RoomUsersProfile } from "./types";
 import { MessageService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
+import { UserProfile } from "../user/types";
 
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
   roomsList: {},
-  getRoomUsersProfileRequest: {
+  getRoomNonFriendProfilesRequest: {
+    status: "IDLE",
+    error: null
+  },
+  getRoomsRequest: {
     status: "PENDING",
     error: null
   },
@@ -23,7 +28,7 @@ const roomSlice = createSlice({
   initialState: initialChatState,
   reducers: {
     setcurrentDisplayedRoom(state, { payload }: PayloadAction<string | null>) {
-      state.getRoomUsersProfileRequest.status = "PENDING"
+      // mettre getRoomNonFriendProfilesRequest en pending UNIQUEMENT si c'est une room multiple
       state.currentRoomId = payload
     },
     initializeRoom(state, { payload }: PayloadAction<DatabaseRoom>) {
@@ -41,10 +46,13 @@ const roomSlice = createSlice({
       const targetRoom = state.roomsList[payload.roomId]
       targetRoom.messages.push(payload.message)
     },
-    setRoomUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
+    setRoomNonContactUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
-      targetRoom.usersProfile = payload.usersProfile
-      state.getRoomUsersProfileRequest.status = "IDLE"
+      targetRoom.usersProfile = {
+        ...targetRoom.usersProfile,
+        ...payload.usersProfile
+      }
+      state.getRoomNonFriendProfilesRequest.status = "IDLE"
     },
     setUnreadMessageCount(state, { payload }: PayloadAction<{ count: number | "reset", roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
@@ -65,6 +73,18 @@ const roomSlice = createSlice({
       const foundMessageIndex = targetRoom.messages.findIndex((message) => message.id === payload.message.id)!
 
       targetRoom.messages[foundMessageIndex] = payload.message
+    },
+    setRoomUserProfile(state, { payload: userProfile }: PayloadAction<UserProfile>) {
+      for (const roomList in state.roomsList) {
+        const room = state.roomsList[roomList]
+        if (room.users.includes(userProfile.id)) {
+          room.usersProfile[userProfile.id] = userProfile
+        }
+      }
+    },
+    setRoomsLoaded(state) {
+      state.getRoomsRequest.error = null
+      state.getRoomsRequest.status = "IDLE"
     }
   },
   extraReducers: (builder) => {
@@ -104,8 +124,12 @@ export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
   initializeRoom,
-  setRoomUsersProfile,
+  setRoomNonContactUsersProfile,
   setUnreadMessageCount,
-  editRoomMessage
+  editRoomMessage,
+  setRoomUserProfile,
+  setRoomsLoaded
 } = roomSlice.actions
+
+
 export const roomReducer = roomSlice.reducer
