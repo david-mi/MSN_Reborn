@@ -5,7 +5,7 @@ type Props = React.ComponentProps<"button"> & {
   src: string
 }
 
-function buttonWithImage({ src, className, ...props }: Props) {
+function ButtonWithImage({ src, className, ...props }: Props) {
   const classNames = `${styles.buttonWithImage} ${className ? className : ""}`
 
   return (
@@ -18,4 +18,4 @@ function buttonWithImage({ src, className, ...props }: Props) {
   );
 }
 
-export default buttonWithImage;
+export default ButtonWithImage;
