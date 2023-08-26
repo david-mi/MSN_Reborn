@@ -1,17 +1,24 @@
 import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
-import styles from "./chatMessages.module.css";
 import ChatMessage from "./ChatMessage/ChatMessage";
 import { MutableRefObject, useEffect, useRef } from "react";
 import { useAppSelector } from "@/redux/hooks";
+import { RequestStatus } from "@/redux/slices/types";
+import { Loader } from "@/Components/Shared";
+import styles from "./chatMessages.module.css";
 
 interface Props {
   messages: Message[],
   usersProfile: RoomUsersProfile
   roomId: string
   shouldScrollToBottomRef: MutableRefObject<boolean>
+  getRoomNonFriendProfilesRequest: {
+    status: RequestStatus
+    error: string | null
+  }
 }
 
-function ChatMessages({ messages, usersProfile, roomId, shouldScrollToBottomRef }: Props) {
+function ChatMessages(props: Props) {
+  const { messages, usersProfile, roomId, shouldScrollToBottomRef, getRoomNonFriendProfilesRequest } = props
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentUser = useAppSelector(({ user }) => user)
@@ -47,6 +54,10 @@ function ChatMessages({ messages, usersProfile, roomId, shouldScrollToBottomRef 
       chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages])
+
+  if (getRoomNonFriendProfilesRequest.status === "PENDING") {
+    return <Loader size="2rem" />
+  }
 
   return (
     <div
