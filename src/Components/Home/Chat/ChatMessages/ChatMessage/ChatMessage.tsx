@@ -14,7 +14,7 @@ interface Props {
 }
 
 function ChatMessage({ message, user, displayAllInfos, roomId }: Props) {
-  const { avatarSrc, personalMessage, username } = user;
+  const { avatarSrc, username } = user;
   const { message: text, createdAt } = message
 
   const currentUserId = useAppSelector(({ user }) => user.id)
@@ -43,7 +43,6 @@ function ChatMessage({ message, user, displayAllInfos, roomId }: Props) {
         <div className={styles.chatMessage}>
           <Avatar size="mini" src={avatarSrc} />
           <p>{username}</p>
-          <p>{personalMessage !== "" ? `(${personalMessage})` : ""}</p>
           <p>{text}</p>
           <small>{parseTimestamp(createdAt, false)}</small>
         </div>

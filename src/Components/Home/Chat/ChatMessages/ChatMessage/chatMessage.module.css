@@ -1,12 +1,11 @@
 .chatMessage {
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto;
-  padding-right: var(--chat-gap);
   column-gap: var(--chat-gap);
   grid-template-areas:
-    "avatar username personalMessage createdAt"
-    "avatar message message message"
+    "avatar username createdAt"
+    "avatar message message"
   ;
 
   &:not(:first-child) {
@@ -26,20 +25,13 @@
     text-overflow: ellipsis;
   }
 
-  & > :nth-child(3) {
-    grid-area: personalMessage;
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  & > :nth-child(4) {
+  & > :nth-child(3) {
     grid-area: message;
     flex: 1;
   }
 
-  & > :nth-child(5) {
+  & > :nth-child(4) {
     grid-area: createdAt;
     justify-self: right;
   }
