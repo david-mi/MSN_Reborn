@@ -4,17 +4,30 @@
   flex: 1;
   max-width: none;
   display: grid;
-  grid-template-columns: 1fr auto;
   grid-template-rows: auto auto 1fr auto;
-  grid-template-areas:
-    "chatHeader chatHeader"
-    "chatOptions chatOptions"
-    "displayMessages chatAvatars"
-    "sendMessage sendMessage";
-  gap: var(--chat-gap);
+  row-gap: var(--chat-gap);
   padding-bottom: calc(var(--chat-gap) * 3);
   background-color: #ecf3f6;
   max-height: 100dvh;
+
+  &.oneToOne {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "chatHeader chatHeader"
+      "chatOptions chatOptions"
+      "displayMessages displayMessages"
+      "sendMessage sendMessage";
+  }
+
+  &.manyToMany {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "chatHeader chatHeader"
+      "chatOptions chatOptions"
+      "displayMessages chatAvatars"
+      "sendMessage sendMessage";
+    column-gap: var(--chat-gap);
+  }
 }
 
 @media (width < 700px) {
