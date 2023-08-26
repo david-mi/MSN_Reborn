@@ -1,5 +1,7 @@
 .chatOptions {
   grid-area: chatOptions;
+  display: flex;
+  align-items: center;
   background-color: yellow;
   margin: calc(var(--chat-gap) * -1);
   margin-bottom: auto;

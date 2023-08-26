@@ -32,7 +32,7 @@ function Chat() {
   return (
     <div className={classNames}>
       <ChatHeader roomType={type} usersProfile={usersProfile} />
-      <ChatOptions />
+      <ChatOptions roomType={type} />
       {type === "manyToMany" && <ChatAvatars />}
       <ChatMessages
         getRoomNonFriendProfilesRequest={getRoomNonFriendProfilesRequest}
