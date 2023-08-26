@@ -1,0 +1,13 @@
+.submitContainer {
+  margin-top: auto;
+}
+
+.selectEmail {
+  display: flex;
+  flex-direction: column;
+
+  & select {
+    padding: 5px;
+    flex: 1;
+  }
+}
