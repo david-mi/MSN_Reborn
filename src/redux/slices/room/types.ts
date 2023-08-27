@@ -64,4 +64,8 @@ export interface RoomSlice {
     status: RequestStatus,
     error: string | null
   }
+  sendNewRoomInvitationRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
 }

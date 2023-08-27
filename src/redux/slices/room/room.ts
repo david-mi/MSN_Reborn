@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { DatabaseRoom, Message, RoomSlice, RoomUsersProfile } from "./types";
-import { MessageService } from "@/Services";
+import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { UserProfile } from "../user/types";
@@ -18,6 +18,10 @@ export const initialChatState: RoomSlice = {
     error: null
   },
   sendMessageRequest: {
+    status: "IDLE",
+    error: null
+  },
+  sendNewRoomInvitationRequest: {
     status: "IDLE",
     error: null
   }
@@ -103,6 +107,13 @@ const roomSlice = createSlice({
       const targetRoom = state.roomsList[roomId]
       targetRoom.unreadMessagesCount--
     })
+    builder.addCase(sendNewRoomInvitation.pending, (state) => {
+      state.sendNewRoomInvitationRequest.status = "PENDING"
+      state.sendNewRoomInvitationRequest.error = null
+    })
+    builder.addCase(sendNewRoomInvitation.fulfilled, (state) => {
+      state.sendNewRoomInvitationRequest.status = "IDLE"
+    })
     builder.addCase(disconnectAction, () => initialChatState)
   }
 })
@@ -118,6 +129,18 @@ export const markRoomMessageAsRead = createAppAsyncThunk(
   async ({ roomId, messageId }: { roomId: string, messageId: string }) => {
     await MessageService.markRoomMessageAsRead(roomId, messageId)
     return roomId
+  })
+
+interface SendRoomInvitation {
+  requestedUserId: string,
+  roomName: string,
+  roomInvitationOriginId: string
+}
+
+export const sendNewRoomInvitation = createAppAsyncThunk(
+  "contact/sendNewRoomInvitation",
+  async ({ requestedUserId, roomName, roomInvitationOriginId }: SendRoomInvitation) => {
+    return RoomService.sendNewRoomInvitation(requestedUserId, roomName, roomInvitationOriginId)
   })
 
 export const {

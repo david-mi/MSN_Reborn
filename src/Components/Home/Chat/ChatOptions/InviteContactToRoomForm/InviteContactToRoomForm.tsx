@@ -5,15 +5,18 @@ import type { InviteContactToRoomFormField } from "./types"
 import styles from "./inviteContactToRoomForm.module.css"
 import { Contact } from "@/redux/slices/contact/types"
 import { InviteContactToRoomValidation } from "@/utils/Validation/InviteContactToRoomValidation/InviteContactToRoomValidation"
+import { sendNewRoomInvitation } from "@/redux/slices/room/room"
+import { FirebaseError } from "firebase/app"
 
 interface Props {
   toggleInviteContactToRoomForm: () => void
   contactsOutsideCurrentRoom: Contact[]
+  roomId: string
 }
 
-function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsideCurrentRoom }: Props) {
+function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, roomId }: Props) {
   const dispatch = useAppDispatch()
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<InviteContactToRoomFormField>()
+  const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
   const hasErrors = Object.keys(errors).length > 0
   const selectedEmail = watch("email")
@@ -21,10 +24,15 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
 
   async function onSubmit({ email, roomName }: InviteContactToRoomFormField) {
     try {
-      // await dispatch().unwrap()
-      console.log(email, roomName)
+      await dispatch(sendNewRoomInvitation({
+        requestedUserId: contactsOutsideCurrentRoom.find((contact) => contact.email === email)!.id,
+        roomInvitationOriginId: roomId,
+        roomName
+      })).unwrap()
       toggleInviteContactToRoomForm()
-    } catch { }
+    } catch (error) {
+      setError("root.submitError", { message: (error as FirebaseError).message })
+    }
   }
 
   return (
@@ -71,7 +79,7 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
             wait={request.status === "PENDING"}
             disabled={preventFormSubmit}
           />
-          <small>{request.error}</small>
+          <small>{errors.root?.submitError.message}</small>
         </div>
       </FormLayout>
     </ModaleLayout>

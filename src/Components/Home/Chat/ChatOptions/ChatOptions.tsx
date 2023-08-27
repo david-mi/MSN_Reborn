@@ -9,9 +9,10 @@ import styles from "./chatOptions.module.css";
 interface Props {
   roomType: RoomType
   usersProfile: RoomUsersProfile
+  roomId: string
 }
 
-function ChatOptions({ roomType, usersProfile }: Props) {
+function ChatOptions({ roomType, usersProfile, roomId }: Props) {
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsList = useAppSelector(({ contact }) => contact.contactsList)
   const contactsOutsideCurrentRoom = useMemo(() => {
@@ -53,6 +54,7 @@ function ChatOptions({ roomType, usersProfile }: Props) {
         <InviteContactToRoomForm
           toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
           contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
+          roomId={roomId}
         />
       )}
       {optionsContent}

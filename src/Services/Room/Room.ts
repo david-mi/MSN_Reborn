@@ -4,7 +4,9 @@ import {
   addDoc,
   collection,
   DocumentData,
-  QuerySnapshot
+  QuerySnapshot,
+  doc,
+  setDoc
 }
   from "firebase/firestore"
 
@@ -41,5 +43,17 @@ export class RoomService {
     const createdRoom = await addDoc(roomRef, roomData)
 
     return createdRoom.id
+  }
+
+  public static async sendNewRoomInvitation(requestedUserId: string, roomName: string, roomInvitationOriginId: string) {
+    const receivedRoomRequestsDocumentRef = doc(firebase.firestore, "receivedRoomRequests", requestedUserId)
+    const roomInvitationOriginIdRef = doc(firebase.firestore, "rooms", roomInvitationOriginId)
+
+    await setDoc(receivedRoomRequestsDocumentRef, {
+      [this.currentUser.uid]: {
+        roomName,
+        roomInvitationOriginIdRef
+      }
+    }, { merge: true })
   }
 }
