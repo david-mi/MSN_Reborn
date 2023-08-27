@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, RoomSlice, RoomUsersProfile } from "./types";
+import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsersProfile } from "./types";
 import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
@@ -9,6 +9,7 @@ import { UserProfile } from "../user/types";
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
   roomsList: {},
+  pendingRoomsInvitation: [],
   getRoomNonFriendProfilesRequest: {
     status: "IDLE",
     error: null
@@ -89,7 +90,10 @@ const roomSlice = createSlice({
     setRoomsLoaded(state) {
       state.getRoomsRequest.error = null
       state.getRoomsRequest.status = "IDLE"
-    }
+    },
+    setPendingRoomsInvitation(state, { payload }: PayloadAction<PendingRoomInvitation[]>) {
+      state.pendingRoomsInvitation = payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(sendMessage.pending, (state) => {
@@ -151,7 +155,8 @@ export const {
   setUnreadMessageCount,
   editRoomMessage,
   setRoomUserProfile,
-  setRoomsLoaded
+  setRoomsLoaded,
+  setPendingRoomsInvitation
 } = roomSlice.actions
 
 

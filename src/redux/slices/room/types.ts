@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp, DocumentReference, DocumentData } from "firebase/firestore"
 import { RequestStatus } from "../types"
 import { UserProfile } from "../user/types"
 
@@ -47,11 +47,25 @@ export type DatabaseRoom = {
   }
 }
 
+export interface PendingRoomInvitation {
+  id: string
+  roomName: string,
+  roomUsersProfile: UserProfile[]
+}
+
+export type DataBasePendingRoomInvitation = {
+  [userId: string]: {
+    roomName: string,
+    roomInvitationOriginRef: DocumentReference<DocumentData>
+  }
+}
+
 export interface RoomSlice {
   currentRoomId: RoomId | null
   roomsList: {
     [roomId: RoomId]: Room
   }
+  pendingRoomsInvitation: PendingRoomInvitation[]
   getRoomNonFriendProfilesRequest: {
     status: RequestStatus,
     error: string | null

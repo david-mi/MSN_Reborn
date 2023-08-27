@@ -2,9 +2,11 @@ import useFriendRequest from "@/hooks/useFriendRequest";
 import { Menu, FriendRequestAlert, Chat } from "@/Components/Home";
 import styles from "./home.module.css"
 import { useAppSelector } from "@/redux/hooks";
+import useRoomInvitation from "@/hooks/useRoomInvitation";
 
 function Home() {
   const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
+  const { havePendingRoomInvitation, pendingRoomsInvitation } = useRoomInvitation()
   const currentRoom = useAppSelector(({ room }) => room.currentRoomId)
   const isChatDisplayed = currentRoom !== null
 
