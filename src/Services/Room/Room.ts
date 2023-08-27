@@ -47,12 +47,12 @@ export class RoomService {
 
   public static async sendNewRoomInvitation(requestedUserId: string, roomName: string, roomInvitationOriginId: string) {
     const receivedRoomRequestsDocumentRef = doc(firebase.firestore, "receivedRoomRequests", requestedUserId)
-    const roomInvitationOriginIdRef = doc(firebase.firestore, "rooms", roomInvitationOriginId)
+    const roomInvitationOriginRef = doc(firebase.firestore, "rooms", roomInvitationOriginId)
 
     await setDoc(receivedRoomRequestsDocumentRef, {
       [this.currentUser.uid]: {
         roomName,
-        roomInvitationOriginIdRef
+        roomInvitationOriginRef
       }
     }, { merge: true })
   }
