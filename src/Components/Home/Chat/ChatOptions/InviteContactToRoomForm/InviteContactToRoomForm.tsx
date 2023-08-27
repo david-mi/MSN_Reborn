@@ -4,6 +4,7 @@ import { Button, FormLayout, ModaleLayout } from "@/Components/Shared"
 import type { InviteContactToRoomFormField } from "./types"
 import styles from "./inviteContactToRoomForm.module.css"
 import { Contact } from "@/redux/slices/contact/types"
+import { InviteContactToRoomValidation } from "@/utils/Validation/InviteContactToRoomValidation/InviteContactToRoomValidation"
 
 interface Props {
   toggleInviteContactToRoomForm: () => void
@@ -16,26 +17,14 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
   const request = useAppSelector(({ contact }) => contact.request)
   const hasErrors = Object.keys(errors).length > 0
   const selectedEmail = watch("email")
-  const preventFormSubmit = !selectedEmail || hasErrors || request.status === "PENDING"
+  const preventFormSubmit = hasErrors || !selectedEmail || request.status === "PENDING"
 
-  async function onSubmit({ email }: InviteContactToRoomFormField) {
+  async function onSubmit({ email, roomName }: InviteContactToRoomFormField) {
     try {
       // await dispatch().unwrap()
-      console.log(email)
+      console.log(email, roomName)
       toggleInviteContactToRoomForm()
     } catch { }
-  }
-
-  function handleInputValidation(selectedEmail: string) {
-    return (
-      console.log("validation")
-      // EmailValidation.validateFromInput(selectedEmail) &&
-      // SendFriendRequestEmailValidation.validate({
-      //   emailInput: selectedEmail,
-      //   contactsList,
-      //   currentUserEmail: UserService.currentUser.email!
-      // })
-    )
   }
 
   return (
@@ -46,12 +35,27 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
       onCloseButtonClick={toggleInviteContactToRoomForm}
     >
       <FormLayout onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <label htmlFor="roomName">Nom de la room :</label>
+          <input
+            autoFocus
+            id="roomName"
+            {...register("roomName", { validate: InviteContactToRoomValidation.validateRoomName })}
+          />
+          <small data-testid="register-email-error">{errors.roomName?.message}</small>
+        </div>
         <div className={styles.selectEmail}>
           <select
-            autoFocus
             defaultValue="choose"
             id="email"
-            {...register("email", { onChange: handleInputValidation })}
+            {...register("email", {
+              validate: (selectedEmail: string) => {
+                return InviteContactToRoomValidation.checkIfEmailIsNotInCurrentRoom(
+                  selectedEmail,
+                  contactsOutsideCurrentRoom
+                )
+              }
+            })}
           >
             <option value="choose" disabled>Choisir contact</option>
             {contactsOutsideCurrentRoom.map(({ email, username, id }) => {
