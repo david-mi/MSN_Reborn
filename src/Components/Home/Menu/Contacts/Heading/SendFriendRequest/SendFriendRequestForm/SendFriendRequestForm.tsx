@@ -21,7 +21,6 @@ function SendFriendRequestForm({ toggleSendFriendRequestForm }: Props) {
   const preventFormSubmit = hasErrors || request.status === "PENDING"
 
   async function onSubmit({ email }: EmailFormFields) {
-    console.log({ email })
     try {
       await dispatch(sendFriendRequest(email)).unwrap()
       toggleSendFriendRequestForm()
