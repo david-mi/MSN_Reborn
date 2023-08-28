@@ -21,11 +21,11 @@ function useRoomInvitation() {
 
       const pendingRoomsInvitationToSend: PendingRoomInvitation[] = []
 
-      for (const userId in pendingRoomsInvitation) {
-        const { roomInvitationOriginRef, roomName } = pendingRoomsInvitation[userId]
+      for (const roomInvitationId in pendingRoomsInvitation) {
+        const { roomInvitationOriginRef, roomName } = pendingRoomsInvitation[roomInvitationId]
 
         const pendingRoomInvitationToSend: PendingRoomInvitation = {
-          id: snapshot.id,
+          id: roomInvitationId,
           roomName,
           roomUsersProfile: {}
         }

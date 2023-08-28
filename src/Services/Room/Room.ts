@@ -50,7 +50,7 @@ export class RoomService {
     const roomInvitationOriginRef = doc(firebase.firestore, "rooms", roomInvitationOriginId)
 
     await setDoc(receivedRoomRequestsDocumentRef, {
-      [this.currentUser.uid]: {
+      [crypto.randomUUID()]: {
         roomName,
         roomInvitationOriginRef
       }
