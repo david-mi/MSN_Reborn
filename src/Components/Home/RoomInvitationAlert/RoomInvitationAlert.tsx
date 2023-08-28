@@ -1,6 +1,7 @@
 import { ModaleLayout, Button } from "@/Components/Shared";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { PendingRoomInvitation } from "@/redux/slices/room/types";
+import { acceptRoomInvitation, denyRoomInvitation } from "@/redux/slices/room/room";
 import RoomUsersProfile from "./RoomUsersProfile/RoomUsersProfile";
 import styles from "./roomInvitationAlert.module.css"
 
@@ -15,13 +16,15 @@ function RoomInvitationAlert({ roomInfos }: Props) {
   const request = useAppSelector(({ contact }) => contact.request)
 
   function handleAcceptButtonClick() {
-    console.log("accept")
-    // dispatch(acceptRoomInvitation(id))
+    dispatch(acceptRoomInvitation({
+      roomInvitationId: id,
+      roomName,
+      roomUsersIds: Object.keys(roomUsersProfile)
+    }))
   }
 
   function handleDenyButtonClick() {
-    console.log("deny")
-    // dispatch(denyRoomInvitation(id))
+    dispatch(denyRoomInvitation(id))
   }
 
   return (

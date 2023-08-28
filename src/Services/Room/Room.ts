@@ -6,7 +6,9 @@ import {
   DocumentData,
   QuerySnapshot,
   doc,
-  setDoc
+  setDoc,
+  updateDoc,
+  deleteField
 }
   from "firebase/firestore"
 
@@ -32,10 +34,15 @@ export class RoomService {
     return contactsProfile as Room[]
   }
 
-  public static async createRoom(roomType: RoomType, users: { [userId: string]: true }): Promise<string> {
+  public static async createRoom(
+    roomType: RoomType,
+    users: { [userId: string]: true },
+    name: string | null = null
+  ): Promise<string> {
     const roomRef = collection(firebase.firestore, "rooms")
 
     const roomData = {
+      name,
       type: roomType,
       users
     }
@@ -55,5 +62,28 @@ export class RoomService {
         roomInvitationOriginRef
       }
     }, { merge: true })
+  }
+
+  public static async acceptRoomInvitation(roomInvitationId: string, roomName: string, roomUsersId: string[]) {
+    const roomUsers: { [userId: string]: true } = { [this.currentUser.uid]: true }
+
+    roomUsersId.forEach((roomUserId) => {
+      roomUsers[roomUserId] = true
+    })
+
+    await this.createRoom("manyToMany", roomUsers, roomName)
+    return this.removeRoomInvitationIdFromReceivedRoomsRequest(roomInvitationId)
+  }
+
+  public static async denyRoomInvitation(roomInvitationId: string) {
+    return this.removeRoomInvitationIdFromReceivedRoomsRequest(roomInvitationId)
+  }
+
+  private static async removeRoomInvitationIdFromReceivedRoomsRequest(roomInvitationId: string) {
+    const receivedRoomRequestsRef = doc(firebase.firestore, "receivedRoomRequests", this.currentUser.uid)
+
+    return updateDoc(receivedRoomRequestsRef, {
+      [roomInvitationId]: deleteField()
+    })
   }
 }

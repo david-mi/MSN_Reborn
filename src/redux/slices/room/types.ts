@@ -31,6 +31,7 @@ export interface DatabaseMessage {
 }
 
 export interface Room {
+  name: null | string
   id: string
   type: RoomType
   users: UserId[]
@@ -41,6 +42,7 @@ export interface Room {
 
 export type DatabaseRoom = {
   id: string
+  name: string | null
   type: RoomType
   users: {
     [userId: string]: true

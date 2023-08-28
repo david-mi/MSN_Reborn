@@ -147,6 +147,21 @@ export const sendNewRoomInvitation = createAppAsyncThunk(
     return RoomService.sendNewRoomInvitation(requestedUserId, roomName, roomInvitationOriginId)
   })
 
+export const acceptRoomInvitation = createAppAsyncThunk(
+  "contact/acceptRoomInvitation",
+  async (
+    { roomName, roomUsersIds, roomInvitationId }:
+      { roomName: string, roomUsersIds: string[], roomInvitationId: string }
+  ) => {
+    return RoomService.acceptRoomInvitation(roomInvitationId, roomName, roomUsersIds)
+  })
+
+export const denyRoomInvitation = createAppAsyncThunk(
+  "contact/denyRoomInvitation",
+  async (requestingUserId: string) => {
+    return RoomService.denyRoomInvitation(requestingUserId)
+  })
+
 export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
