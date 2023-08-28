@@ -27,6 +27,8 @@ function useRoomNonFriendUsers(roomId: string, roomType: RoomType) {
       )
     })
 
+    if (roomUsersIdWithoutContactsAndCurrentUser.length === 0) return
+
     const nonContactRoomUsersQuery = query(
       collection(firebase.firestore, "users"),
       where(documentId(), "in", roomUsersIdWithoutContactsAndCurrentUser)
