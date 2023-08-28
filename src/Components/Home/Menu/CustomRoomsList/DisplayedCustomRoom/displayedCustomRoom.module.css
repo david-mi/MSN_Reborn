@@ -1,0 +1,57 @@
+.displayedCustomRoom {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid transparent;
+  user-select: none;
+  margin-bottom: auto;
+
+  &:hover {
+    border: 1px solid #4890c8;
+    cursor: pointer;
+    filter: brightness(1.02);
+
+    &::before {
+      position: absolute;
+      content: "";
+      inset: 0;
+      border: 1px solid white;
+      background: linear-gradient(to bottom,
+          rgb(224, 240, 240) 0%,
+          rgb(192, 224, 232) 93%,
+          rgb(192, 224, 232) 100%);
+      z-index: -1;
+    }
+  }
+
+  & > :nth-child(1) {
+    margin-right: 10px;
+    position: relative;
+
+    & > :nth-child(2) {
+      display: grid;
+      place-items: center;
+      position: absolute;
+      border-radius: 50%;
+      border-top: solid 1px #D8D9D9;
+      border-right: solid 1px #D8D9D9;
+      top: -10px;
+      left: -10px;
+      height: 23px;
+      width: 23px;
+      background-color: red;
+      color: white;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+  }
+
+  & > :nth-child(2) {
+    font-weight: 500;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

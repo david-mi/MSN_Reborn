@@ -1,4 +1,4 @@
-import { Header, Profile, Contacts } from ".";
+import { Header, Profile, Contacts, CustomRoomsList } from ".";
 import { GradientLayout } from "@/Components/Shared";
 import styles from "./menu.module.css"
 
@@ -14,6 +14,7 @@ function Menu({ isChatDisplayed }: Props) {
       <Header />
       <Profile />
       <Contacts />
+      <CustomRoomsList />
     </GradientLayout>
   );
 }
