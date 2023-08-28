@@ -59,6 +59,15 @@ const roomSlice = createSlice({
       }
       state.getRoomNonFriendProfilesRequest.status = "IDLE"
     },
+    removeUserFromRoomNonContactUsersProfile(state, { payload: userId }: PayloadAction<string>) {
+      for (const roomId in state.roomsList) {
+        const room = state.roomsList[roomId]
+
+        if (room.usersProfile[userId]) {
+          delete room.usersProfile[userId]
+        }
+      }
+    },
     setUnreadMessageCount(state, { payload }: PayloadAction<{ count: number | "reset", roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
 
@@ -93,7 +102,7 @@ const roomSlice = createSlice({
     },
     setPendingRoomsInvitation(state, { payload }: PayloadAction<PendingRoomInvitation[]>) {
       state.pendingRoomsInvitation = payload
-    },
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(sendMessage.pending, (state) => {
@@ -171,7 +180,8 @@ export const {
   editRoomMessage,
   setRoomUserProfile,
   setRoomsLoaded,
-  setPendingRoomsInvitation
+  setPendingRoomsInvitation,
+  removeUserFromRoomNonContactUsersProfile
 } = roomSlice.actions
 
 

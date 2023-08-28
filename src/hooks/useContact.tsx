@@ -13,6 +13,7 @@ import { UserService } from "@/Services";
 import { doc } from "firebase/firestore";
 import { UserProfile } from "@/redux/slices/user/types";
 import { Contact } from "@/redux/slices/contact/types";
+import { removeUserFromRoomNonContactUsersProfile } from "@/redux/slices/room/room";
 
 function useContact() {
   const dispatch = useAppDispatch()
@@ -52,6 +53,9 @@ function useContact() {
 
         switch (change.type) {
           case "added":
+            dispatch(removeUserFromRoomNonContactUsersProfile(contactProfile.id))
+            dispatch(setContactProfile(contactProfile))
+            break
           case "modified": {
             dispatch(setContactProfile(contactProfile))
           }
