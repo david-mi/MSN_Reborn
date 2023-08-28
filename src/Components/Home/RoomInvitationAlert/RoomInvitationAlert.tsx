@@ -29,7 +29,7 @@ function RoomInvitationAlert({ roomInfos }: Props) {
       <div className={styles.container}>
         <h2 className={styles.roomName}>{roomName}</h2>
         <h3 className={styles.roomMembersTitle}>Membres</h3>
-        <RoomUsersProfile roomUsersProfile={roomUsersProfile} />
+        <RoomUsersProfile roomUsersProfileList={Object.values(roomUsersProfile)} />
         <div className={styles.submitButtonContainer}>
           <Button
             theme="gradient"

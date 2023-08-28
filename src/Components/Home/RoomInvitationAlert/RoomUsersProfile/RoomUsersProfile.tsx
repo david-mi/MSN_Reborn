@@ -3,13 +3,13 @@ import { UserProfile } from "@/redux/slices/user/types";
 import styles from "./roomUsersProfile.module.css";
 
 interface Props {
-  roomUsersProfile: UserProfile[]
+  roomUsersProfileList: UserProfile[]
 }
 
-function RoomUsersProfile({ roomUsersProfile }: Props) {
+function RoomUsersProfile({ roomUsersProfileList }: Props) {
   return (
     <div className={styles.roomUsersProfile}>
-      {roomUsersProfile.map(({ avatarSrc, username, email, id }) => {
+      {roomUsersProfileList.map(({ avatarSrc, username, email, id }) => {
         return (
           <div key={id} className={styles.roomUserProfile}>
             <Avatar src={avatarSrc} size="mini" />

@@ -50,7 +50,9 @@ export type DatabaseRoom = {
 export interface PendingRoomInvitation {
   id: string
   roomName: string,
-  roomUsersProfile: UserProfile[]
+  roomUsersProfile: {
+    [userId: string]: UserProfile
+  }
 }
 
 export type DataBasePendingRoomInvitation = {

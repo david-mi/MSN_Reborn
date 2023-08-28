@@ -27,7 +27,7 @@ function useRoomInvitation() {
         const pendingRoomInvitationToSend: PendingRoomInvitation = {
           id: snapshot.id,
           roomName,
-          roomUsersProfile: []
+          roomUsersProfile: {}
         }
 
         const originRoomSnapshot = await getDoc(roomInvitationOriginRef)
@@ -43,7 +43,7 @@ function useRoomInvitation() {
             id: originRoomUserProfileSnapshot.id
           } as UserProfile
 
-          pendingRoomInvitationToSend.roomUsersProfile.push(originRoomUserProfileData)
+          pendingRoomInvitationToSend.roomUsersProfile[originRoomUserProfileSnapshot.id] = originRoomUserProfileData
         }
 
         pendingRoomsInvitationToSend.push(pendingRoomInvitationToSend)
