@@ -13,6 +13,7 @@ function ContactsList() {
 
   return (
     <ul className={styles.container}>
+      <h2 className={styles.title}>Contacts</h2>
       {contacts.map((contact) => <Contact key={contact.id} contact={contact} />)}
     </ul>
   );
