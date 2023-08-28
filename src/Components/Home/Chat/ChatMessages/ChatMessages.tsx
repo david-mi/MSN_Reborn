@@ -22,6 +22,7 @@ function ChatMessages(props: Props) {
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentUser = useAppSelector(({ user }) => user)
+  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -72,7 +73,11 @@ function ChatMessages(props: Props) {
             key={message.id}
             roomId={roomId}
             message={message}
-            user={usersProfile[message.userId] || currentUser}
+            user={
+              usersProfile[message.userId] ||
+              contactsProfile[message.userId] ||
+              currentUser
+            }
           />
         )
       })}

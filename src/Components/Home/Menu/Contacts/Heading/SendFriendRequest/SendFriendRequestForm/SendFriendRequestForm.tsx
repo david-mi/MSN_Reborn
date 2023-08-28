@@ -6,6 +6,7 @@ import { UserService } from "@/Services"
 import { sendFriendRequest } from "@/redux/slices/contact/contact"
 import { SendFriendRequestEmailValidation, EmailValidation } from "@/utils/Validation"
 import styles from "./sendFriendRequestForm.module.css"
+import { Contact } from "@/redux/slices/contact/types"
 
 interface Props {
   toggleSendFriendRequestForm: () => void
@@ -15,7 +16,7 @@ function SendFriendRequestForm({ toggleSendFriendRequestForm }: Props) {
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors } } = useForm<EmailFormFields>()
   const request = useAppSelector(({ contact }) => contact.request)
-  const contactsList = useAppSelector(({ contact }) => contact.contactsList)
+  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
 
   const hasErrors = Object.keys(errors).length > 0
   const preventFormSubmit = hasErrors || request.status === "PENDING"
@@ -34,7 +35,7 @@ function SendFriendRequestForm({ toggleSendFriendRequestForm }: Props) {
       ? inputValidation
       : SendFriendRequestEmailValidation.validate({
         emailInput,
-        contactsList,
+        contactsList: Object.values<Contact>(contactsProfile),
         currentUserEmail: UserService.currentUser.email!
       })
   }

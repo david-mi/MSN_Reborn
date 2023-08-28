@@ -14,14 +14,14 @@ interface Props {
 
 function ChatOptions({ roomType, usersProfile, roomId }: Props) {
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
-  const contactsList = useAppSelector(({ contact }) => contact.contactsList)
+  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
-    return contactsList.filter((contact) => {
+    return Object.values(contactsProfile).filter((contact) => {
       return !Object
         .values(usersProfile)
         .find((userProfile) => userProfile.id === contact.id)
     })
-  }, [contactsList, usersProfile])
+  }, [contactsProfile, usersProfile])
 
   function toggleInviteContactToRoomForm() {
     setInviteContactToRoomFormOpen((state) => !state)

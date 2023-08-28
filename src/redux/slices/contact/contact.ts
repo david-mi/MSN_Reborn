@@ -8,7 +8,7 @@ import { DocumentData } from "firebase/firestore";
 import { UserProfile } from "../user/types";
 
 export const initialContactState: ContactSlice = {
-  contactsList: [],
+  contactsProfile: {},
   contactsIds: [],
   usersWhoSentFriendRequest: [],
   getFriendsRequest: {
@@ -33,16 +33,14 @@ const contactSlice = createSlice({
       if (!payload) return
 
       for (const contactId in payload) {
-        if (state.contactsList.findIndex((contact) => contact.id === contactId) === -1) {
-          state.contactsList.push({
-            id: contactId,
-            roomId: payload[contactId],
-            avatarSrc: "",
-            displayedStatus: "offline",
-            email: "",
-            personalMessage: "",
-            username: ""
-          })
+        state.contactsProfile[contactId] = {
+          id: contactId,
+          roomId: payload[contactId],
+          avatarSrc: "",
+          displayedStatus: "offline",
+          email: "",
+          personalMessage: "",
+          username: ""
         }
       }
     },
@@ -52,10 +50,8 @@ const contactSlice = createSlice({
         : []
     },
     setContactProfile(state, { payload }: PayloadAction<UserProfile>) {
-      const foundContactIndex = state.contactsList.findIndex((contact) => payload.id === contact.id)!
-
-      state.contactsList[foundContactIndex] = {
-        ...state.contactsList[foundContactIndex],
+      state.contactsProfile[payload.id] = {
+        ...state.contactsProfile[payload.id],
         ...payload
       }
     },

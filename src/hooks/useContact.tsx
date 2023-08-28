@@ -9,15 +9,15 @@ import {
   setContactsError,
   setContactsLoaded
 } from "@/redux/slices/contact/contact";
-import { setRoomUserProfile } from "@/redux/slices/room/room";
 import { UserService } from "@/Services";
 import { doc } from "firebase/firestore";
 import { UserProfile } from "@/redux/slices/user/types";
+import { Contact } from "@/redux/slices/contact/types";
 
 function useContact() {
   const dispatch = useAppDispatch()
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
-  const contacts = useAppSelector(({ contact }) => contact.contactsList)
+  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsError = useAppSelector(({ contact }) => contact.getContactsProfile.error)
   const [isFirstLoadingContacts, setIsFirstLoadingContacts] = useState(true)
   const retrieveRoomsStatus = useAppSelector(({ room }) => room.getRoomsRequest.status)
@@ -54,7 +54,6 @@ function useContact() {
           case "added":
           case "modified": {
             dispatch(setContactProfile(contactProfile))
-            dispatch(setRoomUserProfile(contactProfile))
           }
         }
 
@@ -70,7 +69,7 @@ function useContact() {
   }, [contactsIds])
 
   return {
-    contacts,
+    contactsProfileList: Object.values<Contact>(contactsProfile),
     isFirstLoadingContacts,
     contactsError
   }

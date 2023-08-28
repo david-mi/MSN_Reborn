@@ -5,7 +5,7 @@ import Contact from "./DisplayedContact/DisplayedContact";
 
 function ContactsList() {
   useRoom()
-  const { contacts, contactsError } = useContact()
+  const { contactsProfileList, contactsError } = useContact()
 
   if (contactsError) {
     return <small>Une erreur est survenue lors de la récupération des contacts</small>
@@ -14,7 +14,7 @@ function ContactsList() {
   return (
     <ul className={styles.container}>
       <h2 className={styles.title}>Contacts</h2>
-      {contacts.map((contact) => <Contact key={contact.id} contact={contact} />)}
+      {contactsProfileList.map((contact) => <Contact key={contact.id} contact={contact} />)}
     </ul>
   );
 }

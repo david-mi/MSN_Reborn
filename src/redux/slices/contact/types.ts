@@ -4,7 +4,9 @@ import { UserProfile } from "@/redux/slices/user/types";
 export type Contact = UserProfile & { roomId: string }
 
 export interface ContactSlice {
-  contactsList: Contact[]
+  contactsProfile: {
+    [userId: string]: Contact
+  }
   contactsIds: string[]
   usersWhoSentFriendRequest: UserProfile[]
   getFriendsRequest: {
