@@ -1,19 +1,29 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useState } from "react";
 import DisplayedCustomRoom from "./DisplayedCustomRoom/DisplayedCustomRoom";
+import useRoom from "@/hooks/useRoom";
+import { ArrowIconLarge } from "@/Components/Shared";
 import styles from "./customRoomsList.module.css"
 
 function CustomRoomsList() {
-  const roomsList = useAppSelector(({ room }) => room.roomsList)
+  const { customRoomsList, customRoomsListCount } = useRoom()
+  const [displayCustomRoomsList, setDisplayCustomRoomsList] = useState(true)
+
+  function toggleDisplayCustomRoomsList() {
+    setDisplayCustomRoomsList((state) => !state)
+  }
 
   return (
-    <ul className={styles.container}>
-      <h2 className={styles.title}>Salons Personnalisés</h2>
-      {Object
-        .values(roomsList)
-        .filter((room) => room.type === "manyToMany")
-        .map((room) => <DisplayedCustomRoom key={room.id} room={room} />)
-      }
-    </ul>
+    <div className={styles.container}>
+      {customRoomsListCount > 0 && (
+        <>
+          <button className={styles.title} onClick={toggleDisplayCustomRoomsList}>
+            <ArrowIconLarge className={displayCustomRoomsList ? styles.display : ""} />
+            <span>Salons Personnalisés</span>
+          </button>
+          {displayCustomRoomsList && customRoomsList.map((room) => <DisplayedCustomRoom key={room.id} room={room} />)}
+        </>
+      )}
+    </div>
   );
 }
 

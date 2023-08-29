@@ -6,6 +6,7 @@
   border: 1px solid transparent;
   user-select: none;
   margin-bottom: auto;
+  margin-inline: 19px;
 
   &:hover {
     border: 1px solid #4890c8;

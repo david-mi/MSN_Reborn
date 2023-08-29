@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
@@ -9,6 +9,12 @@ import type { DatabaseRoom } from "@/redux/slices/room/types";
 
 function useRoom() {
   const dispatch = useAppDispatch()
+  const roomsList = useAppSelector(({ room }) => room.roomsList)
+  const customRoomsList = useMemo(() => {
+    return Object
+      .values(roomsList)
+      .filter((room) => room.type === "manyToMany")
+  }, [roomsList])
   const unSubscribeRoomMessagesMapRef = useRef<Map<string, Unsubscribe>>(new Map())
 
   useEffect(() => {
@@ -72,6 +78,11 @@ function useRoom() {
       }
     }
   }, [])
+
+  return {
+    customRoomsList,
+    customRoomsListCount: customRoomsList.length
+  }
 }
 
 export default useRoom
