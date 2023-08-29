@@ -10,6 +10,7 @@
   padding: 8px;
   border: 1px solid transparent;
   user-select: none;
+  margin-inline: 19px;
 
   &:hover {
     border: 1px solid #4890c8;
@@ -40,10 +41,7 @@
 
     & > :is(:nth-child(2), :nth-child(3)) {
       position: absolute;
-
-
       background-color: white;
-
       border-radius: 50%;
       border-top: solid 1px #D8D9D9;
       border-right: solid 1px #D8D9D9;

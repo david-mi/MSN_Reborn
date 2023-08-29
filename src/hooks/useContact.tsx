@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { onSnapshot, query, collection, where, documentId } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -20,8 +20,23 @@ function useContact() {
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsError = useAppSelector(({ contact }) => contact.getContactsProfile.error)
-  const [isFirstLoadingContacts, setIsFirstLoadingContacts] = useState(true)
+  const retrieveContactsStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
   const retrieveRoomsStatus = useAppSelector(({ room }) => room.getRoomsRequest.status)
+  const contactsProfileList = Object.values<Contact>(contactsProfile)
+
+  const { onlineContactsProfileList, onlineContactsCount } = useMemo(() => {
+    const onlineContactsProfileList = contactsProfileList.filter((contact) => contact.displayedStatus !== "offline")
+    const onlineContactsCount = onlineContactsProfileList.length
+
+    return { onlineContactsProfileList, onlineContactsCount }
+  }, [contactsProfileList])
+
+  const { offlineContactsProfileList, offlineContactsCount } = useMemo(() => {
+    const offlineContactsProfileList = contactsProfileList.filter((contact) => contact.displayedStatus === "offline")
+    const offlineContactsCount = offlineContactsProfileList.length
+
+    return { offlineContactsProfileList, offlineContactsCount }
+  }, [contactsProfileList])
 
   useEffect(() => {
     if (retrieveRoomsStatus === "PENDING") return
@@ -37,7 +52,10 @@ function useContact() {
   }, [retrieveRoomsStatus])
 
   useEffect(() => {
-    if (contactsIds.length === 0) return
+    if (contactsIds.length === 0) {
+      dispatch(setContactsLoaded())
+      return
+    }
 
     const queryUserContacts = query(
       collection(firebase.firestore, "users"),
@@ -60,8 +78,6 @@ function useContact() {
             dispatch(setContactProfile(contactProfile))
           }
         }
-
-        setIsFirstLoadingContacts(false)
       })
 
       dispatch(setContactsLoaded())
@@ -73,9 +89,12 @@ function useContact() {
   }, [contactsIds])
 
   return {
-    contactsProfileList: Object.values<Contact>(contactsProfile),
-    isFirstLoadingContacts,
-    contactsError
+    onlineContactsProfileList,
+    onlineContactsCount,
+    offlineContactsProfileList,
+    offlineContactsCount,
+    contactsError,
+    retrieveContactsStatus
   }
 }
 

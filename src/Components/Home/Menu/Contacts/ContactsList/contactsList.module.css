@@ -1,9 +1,50 @@
 .container {
+  --contacts-gap: 5px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--contacts-gap);
 
-  .title {
-    font-size: 1rem;
+  & :is(.online, .offline) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--contacts-gap);
+  }
+
+  & button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--contacts-gap);
+    background-color: transparent;
+    border: none;
+
+    &:hover {
+      background-color: #d2eaf6;
+    }
+
+    &:hover path {
+      fill: #3078d8;
+    }
+
+    & svg {
+      transition: 200ms;
+      transform: rotate(-90deg);
+      margin-right: calc(var(--contacts-gap) / 2 * -1);
+
+
+      &.display {
+        transform: rotate(0deg);
+      }
+
+      & path {
+        fill: #a8a8a8;
+        transition: 200ms;
+      }
+    }
+
+    & span {
+      font-weight: 500;
+      font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+    }
   }
 }
