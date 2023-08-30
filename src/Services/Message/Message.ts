@@ -10,7 +10,7 @@ import {
   getDocs,
   orderBy,
   endBefore,
-  limit,
+  limitToLast,
   doc,
   updateDoc
 } from "firebase/firestore"
@@ -97,7 +97,7 @@ export class MessageService {
       collection(firebase.firestore, "rooms", roomId, "messages"),
       orderBy("createdAt"),
       endBefore(oldestUnreadRoomMessageDate),
-      limit(limitAmount)
+      limitToLast(limitAmount)
     )
 
     const readRoomMessagesSnapshot = await getDocs(readMessagesQuery)
