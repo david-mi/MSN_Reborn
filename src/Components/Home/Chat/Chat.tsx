@@ -1,4 +1,4 @@
-import useRoomNonFriendUsers from "@/hooks/useRoomNonFriendUsers";
+import useRoomUsers from "@/hooks/useRoomUsers";
 import {
   ChatHeader,
   ChatOptions,
@@ -12,13 +12,15 @@ import { useRef } from "react"
 import { Loader } from "@/Components/Shared";
 
 function Chat() {
-  const { id, usersProfile, messages, users, type } = useAppSelector(({ room }) => {
-    const currentRoomId = room.currentRoomId
-    return room.roomsList[currentRoomId as string]
-  })
+  const room = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
+  const { id, messages, users, type } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
-  const { getRoomNonFriendProfilesRequest } = useRoomNonFriendUsers(id, type)
+  const {
+    getRoomNonFriendProfilesRequest,
+    currentRoomUsersProfileList,
+    currentRoomUsersProfile
+  } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const classNames = `${styles.chat} ${styles[type]}`
 

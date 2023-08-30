@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { onSnapshot, query, where, documentId, collection } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -7,15 +7,31 @@ import { setRoomNonContactUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
 import { RoomType } from "@/redux/slices/room/types";
 
-function useRoomNonFriendUsers(roomId: string, roomType: RoomType) {
+function useRoomUsers(roomId: string, roomType: RoomType) {
   const dispatch = useAppDispatch()
-  const currentUserId = useAppSelector(({ user }) => user.id)
-  const currentRoomUsersId = useAppSelector(({ room }) => {
-    const currentRoomId = room.currentRoomId
-    return room.roomsList[currentRoomId as string].users
-  })
-  const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const getRoomNonFriendProfilesRequest = useAppSelector(({ room }) => room.getRoomNonFriendProfilesRequest)
+  const currentUser = useAppSelector(({ user }) => user)
+  const currentRoom = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
+  const currentRoomUsersId = currentRoom.users
+  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
+  const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
+  const { currentRoomUsersProfile, currentRoomUsersProfileList } = useMemo(() => {
+    const currentRoomUsersProfileList: UserProfile[] = []
+    const currentRoomUsersProfile: { [userId: string]: UserProfile } = {
+      ...currentRoom.usersProfile
+    }
+
+    for (const contactId in contactsProfile) {
+      const contactProfile = contactsProfile[contactId]
+
+      if (currentRoomUsersId.indexOf(contactId) !== -1) {
+        currentRoomUsersProfileList.push(contactProfile)
+        currentRoomUsersProfile[contactId] = contactProfile
+      }
+    }
+
+    return { currentRoomUsersProfileList, currentRoomUsersProfile }
+  }, [contactsProfile, currentRoom.usersProfile, currentRoomUsersId])
 
   useEffect(() => {
     if (roomType === "oneToOne") return
@@ -23,7 +39,7 @@ function useRoomNonFriendUsers(roomId: string, roomType: RoomType) {
     const roomUsersIdWithoutContactsAndCurrentUser = currentRoomUsersId.filter((currentRoomUserId) => {
       return (
         contactsIds.indexOf(currentRoomUserId) === -1 &&
-        currentRoomUserId !== currentUserId
+        currentRoomUserId !== currentUser.id
       )
     })
 
@@ -51,8 +67,10 @@ function useRoomNonFriendUsers(roomId: string, roomType: RoomType) {
   }, [currentRoomUsersId, contactsIds])
 
   return {
-    getRoomNonFriendProfilesRequest
+    getRoomNonFriendProfilesRequest,
+    currentRoomUsersProfileList,
+    currentRoomUsersProfile
   }
 }
 
-export default useRoomNonFriendUsers
+export default useRoomUsers
