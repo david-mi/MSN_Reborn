@@ -1,21 +1,19 @@
 import chatLogo from "./chat-logo.png"
-import { ImageLoadWrapper } from "@/Components/Shared";
-import { CloseButton } from "@/Components/Shared";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { ImageLoadWrapper, CloseButton } from "@/Components/Shared";
+import { useAppDispatch } from "@/redux/hooks";
 import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 import styles from "./chatHeader.module.css";
-import { RoomType } from "@/redux/slices/room/types";
+import { Room } from "@/redux/slices/room/types";
 import { statusesObject } from "@/Components/Shared/SelectDisplayedStatus/statusesData";
+import { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
-  roomType: RoomType
-  users: string[]
+  room: Room
+  currentRoomUsersProfileList: UserProfile[]
 }
 
-function ChatHeader({ roomType, users }: Props) {
+function ChatHeader({ room, currentRoomUsersProfileList }: Props) {
   const dispatch = useAppDispatch()
-  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
-  const currentUser = useAppSelector(({ user }) => user)
 
   function closeChat() {
     dispatch(setcurrentDisplayedRoom(null))
@@ -23,13 +21,13 @@ function ChatHeader({ roomType, users }: Props) {
 
   let headerInfos: JSX.Element
 
-  if (roomType === "oneToOne") {
-    const targetUser = contactsProfile[users.filter((userId) => userId !== currentUser.id)[0]]
+  if (room.type === "oneToOne") {
+    const targetUser = currentRoomUsersProfileList[0]
     const { displayedStatus, personalMessage, email, username } = targetUser
     const targetUserStatus = statusesObject[displayedStatus]
 
     headerInfos = (
-      <div className={styles.singleInfos}>
+      <div className={styles.oneToOne}>
         <p className={styles.pseudo}>{username}</p>
         <div className={styles.status}>
           (<p>{targetUserStatus.sentence}</p>
@@ -48,8 +46,8 @@ function ChatHeader({ roomType, users }: Props) {
     )
   } else {
     headerInfos = (
-      <div className={styles.multiInfos}>
-        INCOMING
+      <div className={styles.manyToMany}>
+        <p className={styles.name}>{room.name}</p>
       </div>
     )
   }

@@ -16,7 +16,7 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const { currentRoomUsersProfile, currentRoomUsersProfileList } = useMemo(() => {
-    const currentRoomUsersProfileList: UserProfile[] = []
+    const currentRoomUsersProfileList: UserProfile[] = Object.values(currentRoom.usersProfile)
     const currentRoomUsersProfile: { [userId: string]: UserProfile } = {
       ...currentRoom.usersProfile
     }

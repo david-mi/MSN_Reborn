@@ -1,28 +1,24 @@
-import { Message, RoomUsersProfile } from "@/redux/slices/room/types";
+import { Message, RoomType, RoomUsersProfile } from "@/redux/slices/room/types";
 import ChatMessage from "./ChatMessage/ChatMessage";
 import { MutableRefObject, useEffect, useRef } from "react";
 import { useAppSelector } from "@/redux/hooks";
-import { RequestStatus } from "@/redux/slices/types";
-import { Loader } from "@/Components/Shared";
 import styles from "./chatMessages.module.css";
+import { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
   messages: Message[],
-  usersProfile: RoomUsersProfile
+  currentRoomUsersProfile: RoomUsersProfile
   roomId: string
+  roomType: RoomType
   shouldScrollToBottomRef: MutableRefObject<boolean>
-  getRoomNonFriendProfilesRequest: {
-    status: RequestStatus
-    error: string | null
-  }
+  currentRoomUsersProfileList: UserProfile[]
 }
 
 function ChatMessages(props: Props) {
-  const { messages, usersProfile, roomId, shouldScrollToBottomRef, getRoomNonFriendProfilesRequest } = props
+  const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef, currentRoomUsersProfileList } = props
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentUser = useAppSelector(({ user }) => user)
-  const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -56,10 +52,6 @@ function ChatMessages(props: Props) {
     }
   }, [messages])
 
-  if (getRoomNonFriendProfilesRequest.status === "PENDING") {
-    return <Loader size="2rem" />
-  }
-
   return (
     <div
       onScroll={handleScroll}
@@ -72,12 +64,10 @@ function ChatMessages(props: Props) {
             displayAllInfos={shouldDisplayAllMessageInfos(index, message)}
             key={message.id}
             roomId={roomId}
+            roomType={roomType}
             message={message}
-            user={
-              usersProfile[message.userId] ||
-              contactsProfile[message.userId] ||
-              currentUser
-            }
+            user={currentRoomUsersProfile[message.userId] || currentUser}
+            currentRoomUsersProfileList={currentRoomUsersProfileList}
           />
         )
       })}

@@ -26,22 +26,24 @@ function Chat() {
 
   if (
     getCurrentUserProfileStatus === "PENDING" ||
-    getContactsProfileStatus === "PENDING"
+    getContactsProfileStatus === "PENDING" ||
+    getRoomNonFriendProfilesRequest.status === "PENDING"
   ) {
     return <Loader size={"3rem"} />
   }
 
   return (
     <div className={classNames}>
-      <ChatHeader roomType={type} users={users} />
+      <ChatHeader room={room} currentRoomUsersProfileList={currentRoomUsersProfileList} />
       <ChatOptions roomId={id} roomType={type} users={users} />
       {type === "manyToMany" && <ChatAvatars />}
       <ChatMessages
-        getRoomNonFriendProfilesRequest={getRoomNonFriendProfilesRequest}
         shouldScrollToBottomRef={shouldScrollToBottomRef}
         roomId={id}
+        roomType={type}
         messages={messages}
-        usersProfile={usersProfile}
+        currentRoomUsersProfile={currentRoomUsersProfile}
+        currentRoomUsersProfileList={currentRoomUsersProfileList}
       />
       <ChatForm
         shouldScrollToBottomRef={shouldScrollToBottomRef}

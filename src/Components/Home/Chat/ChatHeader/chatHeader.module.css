@@ -16,7 +16,7 @@
     grid-area: logo;
   }
 
-  & .singleInfos {
+  & .oneToOne {
     grid-area: infos;
     display: grid;
     grid-template-columns: auto 1fr;
@@ -42,8 +42,6 @@
       justify-self: flex-start;
       display: flex;
       align-items: center;
-      font-weight: 500;
-      color: #0000008f;
 
       & > :nth-child(1) {
         margin-right: calc(var(--chat-gap) / 2);
@@ -63,11 +61,16 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #0000008f;
     }
   }
 
-  & .multiInfos {
+  & .manyToMany {
     grid-area: infos;
+
+    & .name {
+      font-weight: 500;
+    }
   }
 
   & .closeButton {
