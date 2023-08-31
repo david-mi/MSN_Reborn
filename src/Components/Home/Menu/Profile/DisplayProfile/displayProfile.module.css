@@ -66,7 +66,6 @@
   border: solid transparent 1px;
   position: relative;
   z-index: 10;
-  width: fit-content;
 
   &:not(:nth-child(1)) {
     padding-inline: 4px;
@@ -100,12 +99,13 @@
   font-weight: 500;
   max-width: 100%;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .displayProfile button:nth-child(3) {
   grid-area: status;
+  white-space: nowrap;
 }
 
 .displayProfile button:nth-child(4) {
@@ -115,6 +115,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  justify-self: flex-start;
 }
 
 .loader {
