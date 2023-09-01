@@ -5,16 +5,17 @@ import type { InviteContactToRoomFormField } from "./types"
 import styles from "./inviteContactToRoomForm.module.css"
 import { Contact } from "@/redux/slices/contact/types"
 import { InviteContactToRoomValidation } from "@/utils/Validation/InviteContactToRoomValidation/InviteContactToRoomValidation"
-import { sendNewRoomInvitation } from "@/redux/slices/room/room"
 import { FirebaseError } from "firebase/app"
+import { createCustomRoom, sendNewRoomInvitation } from "@/redux/slices/room/room"
+import { UserProfile } from "@/redux/slices/user/types"
 
 interface Props {
   toggleInviteContactToRoomForm: () => void
   contactsOutsideCurrentRoom: Contact[]
-  roomId: string
+  currentRoomUsersProfileList: UserProfile[]
 }
 
-function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, roomId }: Props) {
+function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfileList }: Props) {
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
@@ -23,12 +24,13 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
   const preventFormSubmit = hasErrors || !selectedEmail || request.status === "PENDING"
 
   async function onSubmit({ email, roomName }: InviteContactToRoomFormField) {
+    const userIdToInvite = contactsOutsideCurrentRoom.find((contact) => contact.email === email)!.id
+
     try {
-      await dispatch(sendNewRoomInvitation({
-        requestedUserId: contactsOutsideCurrentRoom.find((contact) => contact.email === email)!.id,
-        roomInvitationOriginId: roomId,
-        roomName
-      })).unwrap()
+      const { payload } = await dispatch(createCustomRoom({ name: roomName }))
+      const roomId = payload as string
+      await dispatch(sendNewRoomInvitation({ roomId, userIdToInvite: currentRoomUsersProfileList[0].id }))
+      await dispatch(sendNewRoomInvitation({ roomId, userIdToInvite }))
       toggleInviteContactToRoomForm()
     } catch (error) {
       setError("root.submitError", { message: (error as FirebaseError).message })

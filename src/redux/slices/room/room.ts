@@ -5,6 +5,7 @@ import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { UserProfile } from "../user/types";
+import { firebase } from "@/firebase/config";
 
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
@@ -45,6 +46,13 @@ const roomSlice = createSlice({
         messages: [],
         usersProfile: {},
         unreadMessagesCount: 0
+      }
+    },
+    modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
+      state.roomsList[roomToEdit.id] = {
+        ...state.roomsList[roomToEdit.id],
+        users: Object.keys(roomToEdit.users),
+        name: roomToEdit.name
       }
     },
     setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
@@ -145,25 +153,30 @@ export const markRoomMessageAsRead = createAppAsyncThunk(
   })
 
 interface SendRoomInvitation {
-  requestedUserId: string,
-  roomName: string,
-  roomInvitationOriginId: string
+  roomId: string
+  userIdToInvite: string
 }
 
 export const sendNewRoomInvitation = createAppAsyncThunk(
   "contact/sendNewRoomInvitation",
-  async ({ requestedUserId, roomName, roomInvitationOriginId }: SendRoomInvitation) => {
-    return RoomService.sendNewRoomInvitation(requestedUserId, roomName, roomInvitationOriginId)
+  async ({ roomId, userIdToInvite }: SendRoomInvitation) => {
+    return RoomService.sendNewRoomInvitation(roomId, userIdToInvite)
   })
 
 export const acceptRoomInvitation = createAppAsyncThunk(
   "contact/acceptRoomInvitation",
-  async (
-    { roomName, roomUsersIds, roomInvitationId }:
-      { roomName: string, roomUsersIds: string[], roomInvitationId: string }
-  ) => {
-    return RoomService.acceptRoomInvitation(roomInvitationId, roomName, roomUsersIds)
+  async ({ roomInvitationId, roomId }: { roomInvitationId: string, roomId: string }) => {
+    return RoomService.acceptRoomInvitation(roomInvitationId, roomId)
   })
+
+export const createCustomRoom = createAppAsyncThunk(
+  "contact/createCustomRoom",
+  async ({ name }: { name: string }) => {
+    const currentUserId = firebase.auth.currentUser!.uid
+
+    return RoomService.createRoom("manyToMany", { [currentUserId]: true }, name)
+  })
+
 
 export const denyRoomInvitation = createAppAsyncThunk(
   "contact/denyRoomInvitation",
@@ -181,8 +194,8 @@ export const {
   setRoomUserProfile,
   setRoomsLoaded,
   setPendingRoomsInvitation,
-  removeUserFromRoomNonContactUsersProfile
+  removeUserFromRoomNonContactUsersProfile,
+  modifyRoom
 } = roomSlice.actions
-
 
 export const roomReducer = roomSlice.reducer

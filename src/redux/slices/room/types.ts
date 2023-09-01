@@ -49,19 +49,21 @@ export type DatabaseRoom = {
   }
 }
 
+export type DatabaseCustomRoom = DatabaseRoom & {
+  name: string
+}
+
 export interface PendingRoomInvitation {
   id: string
-  roomName: string,
+  roomId: string
+  roomName: string
   roomUsersProfile: {
     [userId: string]: UserProfile
   }
 }
 
 export type DataBasePendingRoomInvitation = {
-  [userId: string]: {
-    roomName: string,
-    roomInvitationOriginRef: DocumentReference<DocumentData>
-  }
+  [userId: string]: DocumentReference<DocumentData>
 }
 
 export interface RoomSlice {

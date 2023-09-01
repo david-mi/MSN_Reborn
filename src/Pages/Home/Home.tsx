@@ -14,7 +14,7 @@ function Home() {
   return (
     <div className={styles.home} data-testid="home">
       {haveFriendRequest && <FriendRequestAlert userWhoSentFriendRequest={usersWhoSentFriendRequest[0]} />}
-      {havePendingRoomInvitation && <RoomInvitationAlert roomInfos={pendingRoomsInvitation[0]} />}
+      {havePendingRoomInvitation && <RoomInvitationAlert roomInvitation={pendingRoomsInvitation[0]} />}
       <Menu isChatDisplayed={isChatDisplayed} />
       {isChatDisplayed && <Chat />}
     </div>

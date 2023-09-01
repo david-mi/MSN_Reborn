@@ -6,25 +6,20 @@ import RoomUsersProfile from "./RoomUsersProfile/RoomUsersProfile";
 import styles from "./roomInvitationAlert.module.css"
 
 interface Props {
-  roomInfos: PendingRoomInvitation
+  roomInvitation: PendingRoomInvitation
 }
 
-function RoomInvitationAlert({ roomInfos }: Props) {
-  const { roomName, roomUsersProfile, id } = roomInfos
-
+function RoomInvitationAlert({ roomInvitation }: Props) {
+  const { roomName, roomId, roomUsersProfile, id: invitationId } = roomInvitation
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ contact }) => contact.request)
 
   function handleAcceptButtonClick() {
-    dispatch(acceptRoomInvitation({
-      roomInvitationId: id,
-      roomName,
-      roomUsersIds: Object.keys(roomUsersProfile)
-    }))
+    dispatch(acceptRoomInvitation({ roomInvitationId: invitationId, roomId }))
   }
 
   function handleDenyButtonClick() {
-    dispatch(denyRoomInvitation(id))
+    dispatch(denyRoomInvitation(invitationId))
   }
 
   return (

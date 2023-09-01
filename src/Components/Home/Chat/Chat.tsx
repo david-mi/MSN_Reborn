@@ -35,7 +35,11 @@ function Chat() {
   return (
     <div className={classNames}>
       <ChatHeader room={room} currentRoomUsersProfileList={currentRoomUsersProfileList} />
-      <ChatOptions roomId={id} roomType={type} users={users} />
+      <ChatOptions
+        roomType={type}
+        users={users}
+        currentRoomUsersProfileList={currentRoomUsersProfileList}
+      />
       {type === "manyToMany" && <ChatAvatars />}
       <ChatMessages
         shouldScrollToBottomRef={shouldScrollToBottomRef}

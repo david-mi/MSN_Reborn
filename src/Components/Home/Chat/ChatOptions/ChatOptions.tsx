@@ -5,14 +5,15 @@ import addUserToChatIcon from "./chat-add-user.png"
 import InviteContactToRoomForm from "./InviteContactToRoomForm/InviteContactToRoomForm";
 import { useAppSelector } from "@/redux/hooks";
 import styles from "./chatOptions.module.css";
+import { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
   roomType: RoomType
   users: string[]
-  roomId: string
+  currentRoomUsersProfileList: UserProfile[]
 }
 
-function ChatOptions({ roomType, users, roomId }: Props) {
+function ChatOptions({ roomType, users, currentRoomUsersProfileList }: Props) {
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
@@ -52,7 +53,7 @@ function ChatOptions({ roomType, users, roomId }: Props) {
         <InviteContactToRoomForm
           toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
           contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
-          roomId={roomId}
+          currentRoomUsersProfileList={currentRoomUsersProfileList}
         />
       )}
       {optionsContent}

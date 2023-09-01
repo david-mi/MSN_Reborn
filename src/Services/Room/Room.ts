@@ -52,26 +52,25 @@ export class RoomService {
     return createdRoom.id
   }
 
-  public static async sendNewRoomInvitation(requestedUserId: string, roomName: string, roomInvitationOriginId: string) {
-    const receivedRoomRequestsDocumentRef = doc(firebase.firestore, "receivedRoomRequests", requestedUserId)
-    const roomInvitationOriginRef = doc(firebase.firestore, "rooms", roomInvitationOriginId)
+  public static async addUserToRoom(roomId: string, userId: string): Promise<void> {
+    const roomRef = doc(firebase.firestore, "rooms", roomId)
+
+    return updateDoc(roomRef, {
+      [`users.${this.currentUser.uid}`]: true
+    })
+  }
+
+  public static async sendNewRoomInvitation(roomId: string, userIdToInvite: string) {
+    const receivedRoomRequestsDocumentRef = doc(firebase.firestore, "receivedRoomRequests", userIdToInvite)
+    const roomInvitationOriginRef = doc(firebase.firestore, "rooms", roomId)
 
     await setDoc(receivedRoomRequestsDocumentRef, {
-      [crypto.randomUUID()]: {
-        roomName,
-        roomInvitationOriginRef
-      }
+      [crypto.randomUUID()]: roomInvitationOriginRef
     }, { merge: true })
   }
 
-  public static async acceptRoomInvitation(roomInvitationId: string, roomName: string, roomUsersId: string[]) {
-    const roomUsers: { [userId: string]: true } = { [this.currentUser.uid]: true }
-
-    roomUsersId.forEach((roomUserId) => {
-      roomUsers[roomUserId] = true
-    })
-
-    await this.createRoom("manyToMany", roomUsers, roomName)
+  public static async acceptRoomInvitation(roomInvitationId: string, roomId: string) {
+    await this.addUserToRoom(roomId, this.currentUser.uid)
     return this.removeRoomInvitationIdFromReceivedRoomsRequest(roomInvitationId)
   }
 

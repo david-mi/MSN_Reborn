@@ -39,7 +39,7 @@ function ChatMessage(props: Props) {
   }
 
   useEffect(() => {
-    const isMessageUnread = !message.readBy[currentUserId]
+    const isMessageUnread = message.readBy[currentUserId] === false
 
     if (isMessageUnread) {
       const markRoomMessageAsReadDispatch = dispatch(markRoomMessageAsRead({ roomId, messageId: message.id }))

@@ -5,7 +5,7 @@ import { firebase } from "@/firebase/config";
 import { UserService } from "@/Services";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setPendingRoomsInvitation } from "@/redux/slices/room/room";
-import { DataBasePendingRoomInvitation, DatabaseRoom, PendingRoomInvitation } from "@/redux/slices/room/types";
+import { DataBasePendingRoomInvitation, DatabaseCustomRoom, PendingRoomInvitation } from "@/redux/slices/room/types";
 import { UserProfile } from "@/redux/slices/user/types";
 
 function useRoomInvitation() {
@@ -22,28 +22,28 @@ function useRoomInvitation() {
       const pendingRoomsInvitationToSend: PendingRoomInvitation[] = []
 
       for (const roomInvitationId in pendingRoomsInvitation) {
-        const { roomInvitationOriginRef, roomName } = pendingRoomsInvitation[roomInvitationId]
+        const roomRef = pendingRoomsInvitation[roomInvitationId]
+
+        const roomSnapshot = await getDoc(roomRef)
+        const { name: roomName, users: roomUsersId } = roomSnapshot.data() as DatabaseCustomRoom
 
         const pendingRoomInvitationToSend: PendingRoomInvitation = {
           id: roomInvitationId,
+          roomId: roomSnapshot.id,
           roomName,
           roomUsersProfile: {}
         }
 
-        const originRoomSnapshot = await getDoc(roomInvitationOriginRef)
-        const originRoomData = originRoomSnapshot.data() as DatabaseRoom
-        const originRoomUsers = originRoomData.users
+        for (const roomUserId in roomUsersId) {
+          const roomUserProfileRef = doc(firebase.firestore, "users", roomUserId)
+          const roomUserProfileSnapshot = await getDoc(roomUserProfileRef)
 
-        for (const originRoomUserId in originRoomUsers) {
-          const originRoomUserProfileRef = doc(firebase.firestore, "users", originRoomUserId)
-          const originRoomUserProfileSnapshot = await getDoc(originRoomUserProfileRef)
-
-          const originRoomUserProfileData = {
-            ...originRoomUserProfileSnapshot.data(),
-            id: originRoomUserProfileSnapshot.id
+          const roomUserProfile = {
+            ...roomUserProfileSnapshot.data(),
+            id: roomUserProfileSnapshot.id
           } as UserProfile
 
-          pendingRoomInvitationToSend.roomUsersProfile[originRoomUserProfileSnapshot.id] = originRoomUserProfileData
+          pendingRoomInvitationToSend.roomUsersProfile[roomUserProfileSnapshot.id] = roomUserProfile
         }
 
         pendingRoomsInvitationToSend.push(pendingRoomInvitationToSend)
