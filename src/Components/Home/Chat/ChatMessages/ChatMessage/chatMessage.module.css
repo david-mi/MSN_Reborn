@@ -27,12 +27,13 @@
 
   & > :nth-child(3) {
     grid-area: message;
-    flex: 1;
+    margin-right: 10px;
   }
 
   & > :nth-child(4) {
     grid-area: createdAt;
     justify-self: right;
+    white-space: nowrap;
   }
 }
 
@@ -41,7 +42,7 @@
   margin-bottom: 5px;
   padding: 5px 10px;
   width: fit-content;
-  border-radius: 5px;
+  border-radius: 4px;
   box-shadow: 0 0 2px #bed6e0;
 
   & .icon {
@@ -54,7 +55,7 @@
     &.read {
       position: absolute;
       right: -7px;
-      bottom: 2px;
+      bottom: 0px;
     }
 
     & path {
@@ -116,6 +117,6 @@
 
   & > .date {
     opacity: 0;
-    width: 40px;
+    width: 45px;
   }
 }
