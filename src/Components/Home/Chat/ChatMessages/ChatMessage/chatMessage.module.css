@@ -45,7 +45,7 @@
   border-radius: 4px;
   box-shadow: 0 0 2px #bed6e0;
 
-  svg {
+  .read {
     position: absolute;
     right: -7px;
     bottom: 0px;

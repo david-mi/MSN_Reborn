@@ -60,7 +60,6 @@ function ChatMessage(props: Props) {
         onMouseLeave={toogleDisplayUsersWhoReadMessage}
       >
         <p>{text}</p>
-        {readByCount > 1 && readByCount === roomUsersCount && <CheckMarkIcon />}
         {displayUsersWhoReadMessage && (
           <ReadByList
             currentRoomUsersProfileList={currentRoomUsersProfileList}
@@ -72,7 +71,7 @@ function ChatMessage(props: Props) {
     : (
       <span className={styles.text}>
         <p>{text}</p>
-        {readByCount > 1 && readByCount === roomUsersCount && <CheckMarkIcon />}
+        {readByCount === roomUsersCount && <CheckMarkIcon className={styles.read} />}
       </span>
     )
 
