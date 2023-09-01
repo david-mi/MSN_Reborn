@@ -8,17 +8,21 @@ import { InviteContactToRoomValidation } from "@/utils/Validation/InviteContactT
 import { FirebaseError } from "firebase/app"
 import { createCustomRoom, sendNewRoomInvitation } from "@/redux/slices/room/room"
 import { UserProfile } from "@/redux/slices/user/types"
+import { RoomType } from "@/redux/slices/room/types"
 
 interface Props {
+  roomType: RoomType
   toggleInviteContactToRoomForm: () => void
   contactsOutsideCurrentRoom: Contact[]
   currentRoomUsersProfileList: UserProfile[]
 }
 
-function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfileList }: Props) {
+function InviteContactToRoomForm(props: Props) {
+  const { toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfileList, roomType } = props
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
+  const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
   const hasErrors = Object.keys(errors).length > 0
   const selectedEmail = watch("email")
   const preventFormSubmit = hasErrors || !selectedEmail || request.status === "PENDING"
@@ -27,10 +31,14 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
     const userIdToInvite = contactsOutsideCurrentRoom.find((contact) => contact.email === email)!.id
 
     try {
-      const { payload } = await dispatch(createCustomRoom({ name: roomName }))
-      const roomId = payload as string
-      await dispatch(sendNewRoomInvitation({ roomId, userIdToInvite: currentRoomUsersProfileList[0].id }))
-      await dispatch(sendNewRoomInvitation({ roomId, userIdToInvite }))
+      if (roomType === "manyToMany") {
+        await dispatch(sendNewRoomInvitation({ roomId: currentRoomId as string, userIdToInvite })).unwrap()
+      } else {
+        const createdRoomId = await dispatch(createCustomRoom({ name: roomName })).unwrap()
+        await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite: currentRoomUsersProfileList[0].id })).unwrap()
+        await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite })).unwrap()
+      }
+
       toggleInviteContactToRoomForm()
     } catch (error) {
       setError("root.submitError", { message: (error as FirebaseError).message })
@@ -45,15 +53,17 @@ function InviteContactToRoomForm({ toggleInviteContactToRoomForm, contactsOutsid
       onCloseButtonClick={toggleInviteContactToRoomForm}
     >
       <FormLayout onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="roomName">Nom de la room :</label>
-          <input
-            autoFocus
-            id="roomName"
-            {...register("roomName", { validate: InviteContactToRoomValidation.validateRoomName })}
-          />
-          <small data-testid="register-email-error">{errors.roomName?.message}</small>
-        </div>
+        {roomType !== "manyToMany" && (
+          <div>
+            <label htmlFor="roomName">Nom de la room :</label>
+            <input
+              autoFocus
+              id="roomName"
+              {...register("roomName", { validate: InviteContactToRoomValidation.validateRoomName })}
+            />
+            <small data-testid="register-email-error">{errors.roomName?.message}</small>
+          </div>
+        )}
         <div className={styles.selectEmail}>
           <select
             defaultValue="choose"
