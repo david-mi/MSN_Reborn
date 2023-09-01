@@ -4,4 +4,7 @@
   flex-direction: column;
   column-gap: 10px;
   overflow-y: auto;
+  background-color: white;
+  padding: var(--chat-gap);
+  border: solid 1px var(--separators-clr);
 }
