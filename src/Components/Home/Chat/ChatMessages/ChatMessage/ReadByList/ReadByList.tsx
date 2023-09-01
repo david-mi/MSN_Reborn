@@ -15,14 +15,15 @@ function ReadByList({ currentRoomUsersProfileList, messageReadBy }: Props) {
     <ul className={styles.readByList}>
       {currentRoomUsersProfileList.map(({ avatarSrc, username, id }) => {
         return (
-          <li key={id}>
-            <Avatar src={avatarSrc} size="micro" />
-            <p>{username}</p>
-            {messageReadBy[id]
-              ? <CheckMarkIcon />
-              : null
-            }
-          </li>
+          messageReadBy[id]
+            ? (
+              <li key={id}>
+                <Avatar src={avatarSrc} size="micro" />
+                <p>{username}</p>
+                <CheckMarkIcon />
+              </li>
+            )
+            : null
         )
       })}
     </ul>
