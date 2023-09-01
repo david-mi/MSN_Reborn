@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { markRoomMessageAsRead } from "@/redux/slices/room/room";
 import CheckMarkIcon from "./CheckMarkIcon/CheckMarkIcon";
 import styles from "./chatMessage.module.css";
+import ReadByList from "./ReadByList/ReadByList";
 
 interface Props {
   message: Message,
@@ -32,9 +33,13 @@ function ChatMessage(props: Props) {
       minute: "numeric",
     })
   }, [createdAt])
+  const isMessageReadList = Object.entries(readBy)
+  const readByCount = (isMessageReadList.filter(([_, isRead]) => isRead)).length
+  const roomUsersCount = isMessageReadList.length
 
   function toogleDisplayUsersWhoReadMessage(event: MouseEvent) {
     event.stopPropagation()
+    if (readByCount <= 1) return
     setDisplayUsersWhoReadMessage((state) => !state)
   }
 
@@ -47,33 +52,29 @@ function ChatMessage(props: Props) {
     }
   }, [dispatch])
 
-  let readByCheckMark: JSX.Element | null = null
-  const isMessageReadList = Object.entries(readBy)
-
-  if (isMessageReadList.filter(([_, isRead]) => isRead).length === isMessageReadList.length) {
-    readByCheckMark = <CheckMarkIcon className={`${styles.icon} ${styles.read}`} />
-  }
-
-  let readByUserList: JSX.Element | null = null
-
-  if (roomType === "manyToMany") {
-    readByUserList = (
-      <ul className={styles.readByList}>
-        {currentRoomUsersProfileList.map(({ avatarSrc, username, id }) => {
-          return (
-            <li key={id}>
-              <Avatar src={avatarSrc} size="micro" />
-              <p>{username}</p>
-              {readBy[id]
-                ? <CheckMarkIcon className={styles.icon} />
-                : null
-              }
-            </li>
-          )
-        })}
-      </ul>
+  const chatText = roomType === "manyToMany"
+    ? (
+      <span
+        className={styles.text}
+        onMouseEnter={toogleDisplayUsersWhoReadMessage}
+        onMouseLeave={toogleDisplayUsersWhoReadMessage}
+      >
+        <p>{text}</p>
+        {readByCount > 1 && readByCount === roomUsersCount && <CheckMarkIcon />}
+        {displayUsersWhoReadMessage && (
+          <ReadByList
+            currentRoomUsersProfileList={currentRoomUsersProfileList}
+            messageReadBy={readBy}
+          />
+        )}
+      </span>
     )
-  }
+    : (
+      <span className={styles.text}>
+        <p>{text}</p>
+        {readByCount > 1 && readByCount === roomUsersCount && <CheckMarkIcon />}
+      </span>
+    )
 
   return (
     displayAllInfos
@@ -81,22 +82,14 @@ function ChatMessage(props: Props) {
         <div className={styles.chatMessage}>
           <Avatar size="mini" src={avatarSrc} />
           <p>{username}</p>
-          <span className={styles.text} onMouseEnter={toogleDisplayUsersWhoReadMessage} onMouseLeave={toogleDisplayUsersWhoReadMessage}>
-            <p>{text}</p>
-            {readByCheckMark}
-            {displayUsersWhoReadMessage && readByUserList}
-          </span>
+          {chatText}
           <small>{parseTimestamp(createdAt, false)}</small>
         </div>
       )
       : (
         <div className={styles.simpleChatMessage}>
           <small className={styles.date}>{parseTimestamp(createdAt, true)}</small>
-          <span className={styles.text} onMouseEnter={toogleDisplayUsersWhoReadMessage} onMouseLeave={toogleDisplayUsersWhoReadMessage}>
-            <p>{text}</p>
-            {readByCheckMark}
-            {displayUsersWhoReadMessage && readByUserList}
-          </span>
+          {chatText}
         </div>
       )
   );
