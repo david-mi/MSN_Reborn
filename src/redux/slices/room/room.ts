@@ -126,7 +126,9 @@ const roomSlice = createSlice({
     })
     builder.addCase(markRoomMessageAsRead.fulfilled, (state, { payload: roomId }: PayloadAction<string>) => {
       const targetRoom = state.roomsList[roomId]
-      targetRoom.unreadMessagesCount--
+      if (targetRoom.unreadMessagesCount > 0) {
+        targetRoom.unreadMessagesCount--
+      }
     })
     builder.addCase(sendNewRoomInvitation.pending, (state) => {
       state.sendNewRoomInvitationRequest.status = "PENDING"
