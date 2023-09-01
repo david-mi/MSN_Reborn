@@ -26,37 +26,22 @@ function ChatOptions({ roomType, users, currentRoomUsersProfileList }: Props) {
     setInviteContactToRoomFormOpen((state) => !state)
   }
 
-  let optionsContent: JSX.Element
-
-  if (roomType === "oneToOne") {
-    optionsContent = (
+  return (
+    <div className={styles.chatOptions}>
+      {inviteContactToRoomFormOpen && (
+        <InviteContactToRoomForm
+          roomType={roomType}
+          toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
+          contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
+          currentRoomUsersProfileList={currentRoomUsersProfileList}
+        />
+      )}
       <ButtonWithImage
         onClick={toggleInviteContactToRoomForm}
         src={addUserToChatIcon}
         className={styles.addContactButton}
         disabled={contactsOutsideCurrentRoom.length === 0}
       />
-    )
-  } else {
-    optionsContent = (
-      <ButtonWithImage
-        onClick={toggleInviteContactToRoomForm}
-        src={addUserToChatIcon}
-        className={styles.addContactButton}
-      />
-    )
-  }
-
-  return (
-    <div className={styles.chatOptions}>
-      {inviteContactToRoomFormOpen && (
-        <InviteContactToRoomForm
-          toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
-          contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
-          currentRoomUsersProfileList={currentRoomUsersProfileList}
-        />
-      )}
-      {optionsContent}
     </div>
   );
 }
