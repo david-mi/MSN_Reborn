@@ -1,4 +1,4 @@
-import { KeyboardEvent, MutableRefObject } from "react"
+import { KeyboardEvent, MutableRefObject, useEffect } from "react"
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { sendMessage } from "@/redux/slices/room/room";
@@ -42,6 +42,10 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
       event.preventDefault()
     }
   }
+
+  useEffect(() => {
+    setFocus("content")
+  }, [roomId])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.chatForm}>
