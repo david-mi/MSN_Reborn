@@ -5,8 +5,8 @@
   column-gap: var(--chat-gap);
   grid-template-areas:
     "avatar username createdAt"
-    "avatar message message"
-  ;
+    "avatar message message";
+  align-content: space-between;
 
   &:not(:first-child) {
     margin-top: var(--chat-gap);
@@ -23,6 +23,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    align-self: center;
+    position: relative;
+    bottom: 3px;
   }
 
   & > :nth-child(3) {
@@ -34,21 +37,24 @@
     grid-area: createdAt;
     justify-self: right;
     white-space: nowrap;
+    font-weight: bold;
+    opacity: 0.6;
+    font-size: clamp(0.7rem, 0.8rem - 0.2vw, 0.8rem);
+    align-self: center;
   }
 }
 
 .text {
   position: relative;
-  margin-bottom: 5px;
-  padding: 5px 10px;
+  padding: 1px 8px;
   width: fit-content;
   border-radius: 4px;
-  box-shadow: 0 0 2px #bed6e0;
+  border: solid 1px #bed6e0b0;
 
   .read {
     position: absolute;
     right: -7px;
-    bottom: 0px;
+    bottom: -5px;
   }
 
   & path {
@@ -66,6 +72,6 @@
 
   & > .date {
     opacity: 0;
-    width: 45px;
+    width: 50px;
   }
 }

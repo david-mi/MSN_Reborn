@@ -26,7 +26,6 @@
       "chatOptions chatOptions"
       "displayMessages chatAvatars"
       "sendMessage sendMessage";
-    column-gap: var(--chat-gap);
   }
 }
 

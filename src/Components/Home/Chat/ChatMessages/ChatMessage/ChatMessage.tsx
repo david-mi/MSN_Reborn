@@ -79,15 +79,15 @@ function ChatMessage(props: Props) {
     displayAllInfos
       ? (
         <div className={styles.chatMessage}>
-          <Avatar size="mini" src={avatarSrc} />
+          <Avatar size="small" src={avatarSrc} />
           <p>{username}</p>
           {chatText}
-          <small>{parseTimestamp(createdAt, false)}</small>
+          <p>{parseTimestamp(createdAt, false)}</p>
         </div>
       )
       : (
         <div className={styles.simpleChatMessage}>
-          <small className={styles.date}>{parseTimestamp(createdAt, true)}</small>
+          <p className={styles.date}>{parseTimestamp(createdAt, true)}</p>
           {chatText}
         </div>
       )
