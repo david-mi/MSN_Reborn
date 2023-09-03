@@ -1,0 +1,27 @@
+.toggleUsersPanelButton {
+  background-color: transparent;
+  border: none;
+  margin-left: auto;
+
+  &::disabled path {
+    fill: #C1C1C1;
+  }
+
+  &:hover path {
+    fill: #0088e0;
+  }
+
+  &.isOpen svg {
+    transform: rotateY(180deg);
+  }
+
+  & svg {
+    height: clamp(25px, 35px - 1.5vw, 35px);
+    transition: 300ms;
+  }
+
+  & path {
+    transition: 200ms;
+    fill: #509a3e;
+  }
+}

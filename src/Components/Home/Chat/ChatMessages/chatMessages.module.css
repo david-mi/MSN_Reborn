@@ -8,4 +8,5 @@
   padding: var(--chat-gap);
   border: solid 1px var(--separators-clr);
   row-gap: var(--chat-gap);
+  min-width: 350px;
 }

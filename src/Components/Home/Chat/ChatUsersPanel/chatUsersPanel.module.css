@@ -4,9 +4,13 @@
   background-color: #e6eff3;
   border: solid 1px var(--separators-clr);
   margin-left: var(--chat-gap);
+  width: clamp(200px, 20vw, 250px);
+
+  & ul {
+    flex: 1;
+  }
 
   .displayedContact {
-    max-width: 200px;
     position: relative;
     display: grid;
     align-items: center;

@@ -4,17 +4,21 @@ import ButtonWithImage from "@/Components/Shared/ButtonWithImage/ButtonWithImage
 import addUserToChatIcon from "./chat-add-user.png"
 import InviteContactToRoomForm from "./InviteContactToRoomForm/InviteContactToRoomForm";
 import { useAppSelector } from "@/redux/hooks";
-import styles from "./chatOptions.module.css";
 import { UserProfile } from "@/redux/slices/user/types";
+import ToggleUsersPanelButton from "./ToggleUsersPanelButton/ToggleUsersPanelButton";
+import styles from "./chatOptions.module.css";
 
 interface Props {
   roomType: RoomType
   users: string[]
   currentRoomUsersProfileList: UserProfile[]
+  displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
 }
 
-function ChatOptions({ roomType, users, currentRoomUsersProfileList, setDisplayUsersPanel }: Props) {
+function ChatOptions(props: Props) {
+  const { roomType, users, currentRoomUsersProfileList, displayUsersPanel, setDisplayUsersPanel } = props
+
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
@@ -27,9 +31,6 @@ function ChatOptions({ roomType, users, currentRoomUsersProfileList, setDisplayU
     setInviteContactToRoomFormOpen((state) => !state)
   }
 
-  function toggleUsersPanel() {
-    setDisplayUsersPanel((state) => !state)
-  }
 
   return (
     <div className={styles.chatOptions}>
@@ -47,7 +48,9 @@ function ChatOptions({ roomType, users, currentRoomUsersProfileList, setDisplayU
         className={styles.addContactButton}
         disabled={contactsOutsideCurrentRoom.length === 0}
       />
-      <button onClick={toggleUsersPanel}>toggle</button>
+      {roomType === "manyToMany" && (
+        <ToggleUsersPanelButton displayUsersPanel={displayUsersPanel} setDisplayUsersPanel={setDisplayUsersPanel} />
+      )}
     </div>
   );
 }

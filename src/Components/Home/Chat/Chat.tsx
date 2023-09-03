@@ -40,6 +40,7 @@ function Chat() {
         roomType={type}
         users={users}
         currentRoomUsersProfileList={currentRoomUsersProfileList}
+        displayUsersPanel={displayUsersPanel}
         setDisplayUsersPanel={setDisplayUsersPanel}
       />
       {type === "manyToMany" && displayUsersPanel && (
