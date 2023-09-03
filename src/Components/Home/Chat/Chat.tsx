@@ -2,13 +2,13 @@ import useRoomUsers from "@/hooks/useRoomUsers";
 import {
   ChatHeader,
   ChatOptions,
-  ChatAvatars,
+  ChatUsersPanel,
   ChatMessages,
   ChatForm
 } from ".";
 import styles from "./chat.module.css";
 import { useAppSelector } from "@/redux/hooks";
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { Loader } from "@/Components/Shared";
 
 function Chat() {
@@ -22,6 +22,7 @@ function Chat() {
     currentRoomUsersProfile
   } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
+  const [displayUsersPanel, setDisplayUsersPanel] = useState(true)
   const classNames = `${styles.chat} ${styles[type]}`
 
   if (
@@ -39,8 +40,11 @@ function Chat() {
         roomType={type}
         users={users}
         currentRoomUsersProfileList={currentRoomUsersProfileList}
+        setDisplayUsersPanel={setDisplayUsersPanel}
       />
-      {type === "manyToMany" && <ChatAvatars />}
+      {type === "manyToMany" && displayUsersPanel && (
+        <ChatUsersPanel currentRoomUsersProfileList={currentRoomUsersProfileList} />
+      )}
       <ChatMessages
         shouldScrollToBottomRef={shouldScrollToBottomRef}
         roomId={id}

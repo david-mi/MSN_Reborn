@@ -1,0 +1,97 @@
+.chatUsersPanel {
+  grid-area: chatUsersPanel;
+  display: flex;
+  background-color: #e6eff3;
+  border: solid 1px var(--separators-clr);
+  margin-left: var(--chat-gap);
+
+  .displayedContact {
+    max-width: 200px;
+    position: relative;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, auto) 1fr;
+    grid-template-rows: repeat(2, auto);
+    grid-template-areas:
+      "avatar username . ."
+      "avatar personalSentence personalSentence personalSentence";
+    padding: 8px;
+    border: 1px solid transparent;
+    user-select: none;
+
+    &:nth-child(even) {
+      background-color: #e8faff;
+    }
+
+
+    &:nth-child(odd) {
+      background-color: #e8faff;
+    }
+
+    & > :not(:nth-child(1)) {
+      padding-inline: 4px;
+    }
+
+    & > :nth-child(1) {
+      grid-area: avatar;
+      margin-right: 10px;
+      position: relative;
+
+      & > :is(:nth-child(2), :nth-child(3)) {
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        border-top: solid 1px #D8D9D9;
+        border-right: solid 1px #D8D9D9;
+
+        & img {
+          height: 16px;
+          width: 16px;
+        }
+      }
+
+      & > :nth-child(2) {
+        top: -10px;
+        right: -10px;
+        padding: 3px;
+      }
+
+      & > :nth-child(3) {
+        top: -10px;
+        left: -10px;
+        display: grid;
+        place-items: center;
+        height: 23px;
+        width: 23px;
+        background-color: red;
+        color: white;
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
+    }
+
+    & > :nth-child(2) {
+      grid-area: username;
+      font-weight: 500;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    & > :nth-child(3) {
+      grid-area: personalSentence;
+      font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+@media (width < 700px) {
+  .chatUsersPanel {
+    display: none;
+  }
+}

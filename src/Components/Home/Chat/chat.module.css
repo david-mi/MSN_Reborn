@@ -24,7 +24,7 @@
     grid-template-areas:
       "chatHeader chatHeader"
       "chatOptions chatOptions"
-      "displayMessages chatAvatars"
+      "displayMessages chatUsersPanel"
       "sendMessage sendMessage";
   }
 }

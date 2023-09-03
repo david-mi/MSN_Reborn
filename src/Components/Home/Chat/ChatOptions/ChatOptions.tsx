@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, Dispatch, SetStateAction } from "react"
 import type { RoomType } from "@/redux/slices/room/types";
 import ButtonWithImage from "@/Components/Shared/ButtonWithImage/ButtonWithImage";
 import addUserToChatIcon from "./chat-add-user.png"
@@ -11,9 +11,10 @@ interface Props {
   roomType: RoomType
   users: string[]
   currentRoomUsersProfileList: UserProfile[]
+  setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
 }
 
-function ChatOptions({ roomType, users, currentRoomUsersProfileList }: Props) {
+function ChatOptions({ roomType, users, currentRoomUsersProfileList, setDisplayUsersPanel }: Props) {
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
@@ -24,6 +25,10 @@ function ChatOptions({ roomType, users, currentRoomUsersProfileList }: Props) {
 
   function toggleInviteContactToRoomForm() {
     setInviteContactToRoomFormOpen((state) => !state)
+  }
+
+  function toggleUsersPanel() {
+    setDisplayUsersPanel((state) => !state)
   }
 
   return (
@@ -42,6 +47,7 @@ function ChatOptions({ roomType, users, currentRoomUsersProfileList }: Props) {
         className={styles.addContactButton}
         disabled={contactsOutsideCurrentRoom.length === 0}
       />
+      <button onClick={toggleUsersPanel}>toggle</button>
     </div>
   );
 }
