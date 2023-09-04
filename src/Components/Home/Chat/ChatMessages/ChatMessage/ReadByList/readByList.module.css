@@ -7,20 +7,25 @@
   border-radius: 5px;
   box-shadow: 0 0 5px rgb(196, 196, 196);
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 0;
-  padding: 5px;
   user-select: none;
   cursor: default;
   min-width: 125px;
   max-width: 250px;
 
   & li {
+    padding-top: 5px;
+    padding-inline: 5px;
     display: flex;
     align-items: center;
     gap: 5px;
     white-space: nowrap;
     justify-content: flex-start;
+
+    &:last-child {
+      padding-bottom: 5px;
+    }
 
     & > :nth-child(1) {
       flex-shrink: 0;

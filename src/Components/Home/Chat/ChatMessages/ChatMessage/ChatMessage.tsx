@@ -20,7 +20,7 @@ interface Props {
 function ChatMessage(props: Props) {
   const { message, user, displayAllInfos, roomId, currentRoomUsersProfileList, roomType } = props
   const { avatarSrc, username } = user;
-  const { message: text, createdAt, readBy } = message
+  const { message: text, createdAt, readBy, userId } = message
 
   const currentUserId = useAppSelector(({ user }) => user.id)
   const dispatch = useAppDispatch()
@@ -39,7 +39,6 @@ function ChatMessage(props: Props) {
 
   function toogleDisplayUsersWhoReadMessage(event: MouseEvent) {
     event.stopPropagation()
-    if (readByCount <= 1) return
     setDisplayUsersWhoReadMessage((state) => !state)
   }
 
@@ -64,6 +63,7 @@ function ChatMessage(props: Props) {
           <ReadByList
             currentRoomUsersProfileList={currentRoomUsersProfileList}
             messageReadBy={readBy}
+            messageUserId={userId}
           />
         )}
       </span>
@@ -71,7 +71,10 @@ function ChatMessage(props: Props) {
     : (
       <span className={styles.text}>
         <p>{text}</p>
-        {readByCount === roomUsersCount && <CheckMarkIcon className={styles.read} />}
+        {
+          readByCount === roomUsersCount &&
+          userId === currentUserId && <CheckMarkIcon className={styles.read} />
+        }
       </span>
     )
 

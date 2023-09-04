@@ -8,14 +8,15 @@ interface Props {
   messageReadBy: {
     [userId: string]: boolean
   }
+  messageUserId: string
 }
 
-function ReadByList({ currentRoomUsersProfileList, messageReadBy }: Props) {
+function ReadByList({ currentRoomUsersProfileList, messageReadBy, messageUserId }: Props) {
   return (
     <ul className={styles.readByList}>
       {currentRoomUsersProfileList.map(({ avatarSrc, username, id }) => {
         return (
-          messageReadBy[id]
+          messageReadBy[id] && id !== messageUserId
             ? (
               <li key={id}>
                 <Avatar src={avatarSrc} size="micro" />
