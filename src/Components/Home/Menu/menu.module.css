@@ -6,12 +6,13 @@
   gap: var(--menu-vertical-gap);
   display: flex;
   flex-direction: column;
-  margin-inline: auto;
   max-width: 325px;
 }
 
 @media (width < 700px) {
   .menu {
+    max-width: none;
+
     &.closedInMobile {
       display: none;
     }

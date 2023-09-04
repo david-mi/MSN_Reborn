@@ -1,14 +1,29 @@
 .chat {
   --chat-gap: 8px;
-  padding-inline: var(--chat-gap);
+  padding: 0px var(--chat-gap) var(--chat-gap);
   flex: 1;
   max-width: none;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   row-gap: var(--chat-gap);
-  padding-bottom: calc(var(--chat-gap) * 3);
   background-color: #ecf3f6;
-  max-height: 100dvh;
+
+  position: relative;
+  border-style: solid;
+  border-width: 1px 1px 1px 0px;
+  border-color: #55759c;
+  max-width: 1000px;
+
+  &::before {
+    position: absolute;
+    content: "";
+    inset: 0px;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 2px 2px 2px 0px;
+    border-color: rgba(148, 157, 188, 0.38);
+    z-index: 0;
+  }
 
   &.oneToOne {
     grid-template-columns: 1fr;

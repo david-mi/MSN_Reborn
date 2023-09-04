@@ -12,16 +12,26 @@ button {
   --font-size-global: clamp(0.9rem, 1rem - 0.2vw, 1rem);
   --modale-gap: 30px;
   --modale-inline-padding: clamp(0.5rem, 15vw - 2vmax, 5rem);
+  --padding-root: clamp(0px, 2vw, 50px);
 }
 
 #root {
-  min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
+  padding: var(--padding-root);
+  background: url("/public/windows-xp-background.jpg") no-repeat;
+  background-size: cover;
 
   small {
     font-style: italic;
     font-size: clamp(0.8rem, 0.9rem - 0.2vw, 0.9rem);
+  }
+}
+
+@media (width < 700px) {
+  #root {
+    padding: 0;
   }
 }
