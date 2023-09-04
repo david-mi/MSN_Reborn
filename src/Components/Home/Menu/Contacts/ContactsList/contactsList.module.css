@@ -10,6 +10,7 @@
     gap: var(--contacts-gap);
   }
 
+
   & button {
     width: 100%;
     display: flex;

@@ -5,8 +5,8 @@
   max-height: calc(100dvh - var(--padding-root) * 2);
 }
 
-@media (width < 700px) {
+@media (width < 850px) {
   .home {
-    max-height: 100dvh;
+    max-height: none;
   }
 }

@@ -5,6 +5,7 @@
   border: solid 1px var(--separators-clr);
   margin-left: var(--chat-gap);
   width: clamp(200px, 20vw, 250px);
+  background-color: #e9f6fa;
 
   & ul {
     flex: 1;
@@ -22,15 +23,6 @@
     padding: 8px;
     border: 1px solid transparent;
     user-select: none;
-
-    &:nth-child(even) {
-      background-color: #e8faff;
-    }
-
-
-    &:nth-child(odd) {
-      background-color: #e8faff;
-    }
 
     & > :not(:nth-child(1)) {
       padding-inline: 4px;
@@ -80,8 +72,12 @@
   }
 }
 
-@media (width < 700px) {
+@media (width < 850px) {
   .chatUsersPanel {
-    display: none;
+    /* display: none; */
+    position: absolute;
+    inset: 0;
+    margin-left: 0;
+    width: auto;
   }
 }

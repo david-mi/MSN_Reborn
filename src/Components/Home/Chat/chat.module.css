@@ -1,11 +1,12 @@
 .chat {
   --chat-gap: 8px;
+  position: relative;
   padding: 0px var(--chat-gap) var(--chat-gap);
   flex: 1;
   max-width: none;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  row-gap: var(--chat-gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--chat-gap);
   background-color: #ecf3f6;
 
   position: relative;
@@ -25,33 +26,16 @@
     z-index: 0;
   }
 
-  &.oneToOne {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "chatHeader chatHeader"
-      "chatOptions chatOptions"
-      "displayMessages displayMessages"
-      "sendMessage sendMessage";
-  }
-
-  &.manyToMany {
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "chatHeader chatHeader"
-      "chatOptions chatOptions"
-      "displayMessages chatUsersPanel"
-      "sendMessage sendMessage";
+  & .messagesAndUsersPanel {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow-y: auto;
   }
 }
 
-@media (width < 700px) {
+@media (width < 850px) {
   .chat {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto 1fr auto;
-    grid-template-areas:
-      "chatHeader"
-      "chatOptions"
-      "displayMessages"
-      "sendMessage";
+    height: 100dvh;
   }
 }

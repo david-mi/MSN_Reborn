@@ -16,13 +16,9 @@ function Chat() {
   const { id, messages, users, type } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
-  const {
-    getRoomNonFriendProfilesRequest,
-    currentRoomUsersProfileList,
-    currentRoomUsersProfile
-  } = useRoomUsers(id, type)
+  const { getRoomNonFriendProfilesRequest, currentRoomUsersProfileList, currentRoomUsersProfile } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
-  const [displayUsersPanel, setDisplayUsersPanel] = useState(true)
+  const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 850px)").matches)
   const classNames = `${styles.chat} ${styles[type]}`
 
   if (
@@ -43,17 +39,19 @@ function Chat() {
         displayUsersPanel={displayUsersPanel}
         setDisplayUsersPanel={setDisplayUsersPanel}
       />
-      {type === "manyToMany" && displayUsersPanel && (
-        <ChatUsersPanel currentRoomUsersProfileList={currentRoomUsersProfileList} />
-      )}
-      <ChatMessages
-        shouldScrollToBottomRef={shouldScrollToBottomRef}
-        roomId={id}
-        roomType={type}
-        messages={messages}
-        currentRoomUsersProfile={currentRoomUsersProfile}
-        currentRoomUsersProfileList={currentRoomUsersProfileList}
-      />
+      <div className={styles.messagesAndUsersPanel}>
+        <ChatMessages
+          shouldScrollToBottomRef={shouldScrollToBottomRef}
+          roomId={id}
+          roomType={type}
+          messages={messages}
+          currentRoomUsersProfile={currentRoomUsersProfile}
+          currentRoomUsersProfileList={currentRoomUsersProfileList}
+        />
+        {type === "manyToMany" && displayUsersPanel && (
+          <ChatUsersPanel currentRoomUsersProfileList={currentRoomUsersProfileList} />
+        )}
+      </div>
       <ChatForm
         shouldScrollToBottomRef={shouldScrollToBottomRef}
         roomId={id}

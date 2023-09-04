@@ -9,7 +9,7 @@
   max-width: 325px;
 }
 
-@media (width < 700px) {
+@media (width < 850px) {
   .menu {
     max-width: none;
 

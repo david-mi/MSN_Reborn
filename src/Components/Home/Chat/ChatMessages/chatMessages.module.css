@@ -9,4 +9,11 @@
   border: solid 1px var(--separators-clr);
   row-gap: var(--chat-gap);
   min-width: 350px;
+  flex: 1;
+}
+
+@media (width < 850px) {
+  .chatMessages {
+    min-width: auto;
+  }
 }

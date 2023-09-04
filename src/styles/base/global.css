@@ -12,7 +12,7 @@ button {
   --font-size-global: clamp(0.9rem, 1rem - 0.2vw, 1rem);
   --modale-gap: 30px;
   --modale-inline-padding: clamp(0.5rem, 15vw - 2vmax, 5rem);
-  --padding-root: clamp(0px, 2vw, 50px);
+  --padding-root: clamp(0px, 3vw, 70px);
 }
 
 #root {
@@ -30,7 +30,7 @@ button {
   }
 }
 
-@media (width < 700px) {
+@media (width < 850px) {
   #root {
     padding: 0;
   }
