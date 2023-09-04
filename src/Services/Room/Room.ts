@@ -52,7 +52,7 @@ export class RoomService {
     return createdRoom.id
   }
 
-  public static async addUserToRoom(roomId: string, userId: string): Promise<void> {
+  public static async addCurrentUserToRoom(roomId: string): Promise<void> {
     const roomRef = doc(firebase.firestore, "rooms", roomId)
 
     return updateDoc(roomRef, {
@@ -70,7 +70,7 @@ export class RoomService {
   }
 
   public static async acceptRoomInvitation(roomInvitationId: string, roomId: string) {
-    await this.addUserToRoom(roomId, this.currentUser.uid)
+    await this.addCurrentUserToRoom(roomId)
     return this.removeRoomInvitationIdFromReceivedRoomsRequest(roomInvitationId)
   }
 
