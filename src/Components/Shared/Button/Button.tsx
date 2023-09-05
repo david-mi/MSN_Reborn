@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, forwardRef } from "react"
 import DotLoader from "./DotLoader/DotLoader"
 import styles from "./button.module.css"
 
@@ -9,7 +9,7 @@ type Props = React.ComponentProps<"button"> & {
   waitTimer?: number
 }
 
-function Button({ title, theme, wait, waitTimer = 0, ...props }: Props) {
+const Button = forwardRef<HTMLButtonElement, Props>(({ title, theme, wait, waitTimer = 0, ...props }, ref) => {
   const [waitTime, setWaitTime] = useState(waitTimer)
   const waitIntervalIdRef = useRef<NodeJS.Timer>()
 
@@ -35,13 +35,13 @@ function Button({ title, theme, wait, waitTimer = 0, ...props }: Props) {
   }, [waitTime])
 
   return (
-    <button {...props} disabled={disabled} className={className}>
+    <button {...props} disabled={disabled} className={className} ref={ref}>
       {wait || waitTime
         ? <DotLoader className={styles.wait} waitTime={waitTime} />
         : title
       }
     </button>
   )
-}
+})
 
 export default Button
