@@ -45,7 +45,8 @@ const roomSlice = createSlice({
         users: Object.keys(payload.users),
         messages: [],
         usersProfile: {},
-        unreadMessagesCount: 0
+        unreadMessagesCount: 0,
+        oldestRetrievedMessageDate: null
       }
     },
     modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
@@ -55,9 +56,11 @@ const roomSlice = createSlice({
         name: roomToEdit.name
       }
     },
-    setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string }>) {
+    setRoomMessage(state, { payload }: PayloadAction<{ message: Message, roomId: string, insertBefore?: boolean }>) {
       const targetRoom = state.roomsList[payload.roomId]
-      targetRoom.messages.push(payload.message)
+      payload.insertBefore === true
+        ? targetRoom.messages.unshift(payload.message)
+        : targetRoom.messages.push(payload.message)
     },
     setRoomNonContactUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
@@ -110,6 +113,10 @@ const roomSlice = createSlice({
     },
     setPendingRoomsInvitation(state, { payload }: PayloadAction<PendingRoomInvitation[]>) {
       state.pendingRoomsInvitation = payload
+    },
+    setOldestRoomMessageDate(state, { payload }: PayloadAction<{ roomId: string, date: number }>) {
+      const targetRoom = state.roomsList[payload.roomId]
+      targetRoom.oldestRetrievedMessageDate = payload.date
     }
   },
   extraReducers: (builder) => {
@@ -197,7 +204,8 @@ export const {
   setRoomsLoaded,
   setPendingRoomsInvitation,
   removeUserFromRoomNonContactUsersProfile,
-  modifyRoom
+  modifyRoom,
+  setOldestRoomMessageDate
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer

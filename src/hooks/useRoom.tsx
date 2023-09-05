@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import type { DatabaseRoom } from "@/redux/slices/room/types";
@@ -16,7 +16,7 @@ function useRoom() {
       .filter((room) => room.type === "manyToMany")
   }, [roomsList])
   const unSubscribeMessagesCallbacksRef = useRef<Unsubscribe[]>([])
-
+  const hasAddedOldestRoomMessageDate = useRef(false)
 
   useEffect(() => {
     const userSubscribedRoomsQuery = query(
@@ -51,6 +51,11 @@ function useRoom() {
 
                 switch (change.type) {
                   case "added": {
+                    if (hasAddedOldestRoomMessageDate.current === false) {
+                      dispatch(setOldestRoomMessageDate({ roomId: roomSnapshot.id, date: message.createdAt }))
+                      hasAddedOldestRoomMessageDate.current = true
+                    }
+
                     dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
 
                     if (message.readBy[firebase.auth.currentUser!.uid] === false) {

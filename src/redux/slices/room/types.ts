@@ -38,6 +38,7 @@ export interface Room {
   usersProfile: RoomUsersProfile
   messages: Message[]
   unreadMessagesCount: number
+  oldestRetrievedMessageDate: number | null
 }
 
 export type DatabaseRoom = {

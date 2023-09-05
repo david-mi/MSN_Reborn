@@ -1,4 +1,4 @@
-.chatMessages {
+.chatMessagesContainer {
   grid-area: displayMessages;
   display: flex;
   flex-direction: column;
@@ -8,12 +8,35 @@
   padding: var(--chat-gap);
   border: solid 1px var(--separators-clr);
   row-gap: var(--chat-gap);
-  min-width: 350px;
+  overflow: auto;
   flex: 1;
+}
+
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 0 100%;
+  min-width: 350px;
 }
 
 @media (width < 850px) {
   .chatMessages {
     min-width: auto;
   }
+}
+
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  overflow-y: auto;
+  flex: 1;
 }
