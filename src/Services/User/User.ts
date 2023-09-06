@@ -1,8 +1,8 @@
 import { reload } from "firebase/auth";
-import { doc, setDoc, getDoc, deleteDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore"
+import { doc, setDoc, deleteDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import { DisplayedStatus, UserProfile } from "@/redux/slices/user/types";
-import { set, ref, get } from "firebase/database";
+import { set, ref } from "firebase/database";
 
 export class UserService {
 
@@ -45,22 +45,6 @@ export class UserService {
     const savedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
 
     return set(savedStatusRef, statusToSave)
-  }
-
-  static async getProfile(): Promise<UserProfile> {
-    const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
-
-    const userProfileDoc = await getDoc(userProfileRef)
-    return {
-      ...userProfileDoc.data(),
-      id: userProfileDoc.id
-    } as UserProfile
-  }
-
-  static async getSavedStatus(): Promise<DisplayedStatus> {
-    const savedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
-    const savedStatusSnapshot = await get(savedStatusRef)
-    return savedStatusSnapshot.val()
   }
 
   static async deleteAccount() {

@@ -66,26 +66,6 @@ const userSlice = createSlice({
       state.accountVerificationRequest.status = "IDLE"
       state.verified = true
     })
-    builder.addCase(getProfile.pending, (state) => {
-      state.getProfile.status = "PENDING"
-      state.getProfile.error = null
-    })
-    builder.addCase(getProfile.rejected, (state, { error }) => {
-      state.getProfile.status = "REJECTED"
-      state.getProfile.error = (error as FirebaseError).message
-    })
-    builder.addCase(getProfile.fulfilled, (state, { payload }) => {
-      state.getProfile.status = "IDLE"
-      state.id = payload.id
-      state.avatarSrc = payload.avatarSrc
-      state.username = payload.username
-      state.displayedStatus = payload.displayedStatus
-      state.personalMessage = payload.personalMessage
-      state.verified = payload.verified
-    })
-    builder.addCase(getSavedStatus.fulfilled, (state, { payload }) => {
-      state.displayedStatus = payload
-    })
     builder.addCase(editProfile.pending, (state) => {
       state.editProfileRequest.status = "PENDING"
       state.editProfileRequest.error = null
@@ -132,22 +112,6 @@ export const disconnect = createAppAsyncThunk(
     await AuthService.disconnect()
     dispatch(disconnectAction())
   }
-)
-
-export const getProfile = createAppAsyncThunk(
-  "user/getProfile",
-  async (userProfile: UserProfile) => {
-    const isVerified = await UserService.checkIfVerified()
-    return {
-      ...userProfile,
-      verified: isVerified
-    }
-  }
-)
-
-export const getSavedStatus = createAppAsyncThunk(
-  "user/getSavedStatus",
-  () => UserService.getSavedStatus()
 )
 
 export const editProfile = createAppAsyncThunk(
