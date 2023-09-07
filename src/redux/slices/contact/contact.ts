@@ -40,6 +40,7 @@ const contactSlice = createSlice({
           roomId: payload[contactId],
           avatarSrc: "",
           displayedStatus: "offline",
+          statusBeforeDisconnect: "offline",
           email: "",
           personalMessage: "",
           username: ""

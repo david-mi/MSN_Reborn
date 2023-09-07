@@ -12,7 +12,6 @@ import {
   signOut
 } from "firebase/auth";
 import { UserService } from "..";
-import { ref, remove } from "firebase/database";
 
 export class AuthService {
   public static errorsMessages = {
@@ -84,16 +83,7 @@ export class AuthService {
     return signInWithEmailAndPassword(firebase.auth, email, password)
   }
 
-  public static async getUserAuthTimeToNumber() {
-    const userTokenResult = await this.currentUser.getIdTokenResult()
-    return new Date(userTokenResult.authTime).getTime()
-  }
-
   static async disconnect() {
-    const userAuthTimeToNumber = await this.getUserAuthTimeToNumber()
-    const userDatabaseSavedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/entries/${userAuthTimeToNumber}`)
-
-    await remove(userDatabaseSavedStatusRef)
     return signOut(firebase.auth)
   }
 }

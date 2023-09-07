@@ -12,6 +12,7 @@ export const initialUserState: UserSlice = {
   avatarSrc: "",
   username: "",
   displayedStatus: "offline",
+  statusBeforeDisconnect: "offline",
   personalMessage: "",
   email: "",
   authState: "PENDING",
@@ -78,6 +79,7 @@ const userSlice = createSlice({
       state.avatarSrc = payload.avatarSrc
       state.username = payload.username
       state.displayedStatus = payload.displayedStatus
+      state.statusBeforeDisconnect = payload.statusBeforeDisconnect
       state.personalMessage = payload.personalMessage
       state.editProfileRequest.status = "IDLE"
     })

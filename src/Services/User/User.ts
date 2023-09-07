@@ -1,8 +1,7 @@
 import { reload } from "firebase/auth";
-import { collection, where, getDocs } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import { UserProfile } from "@/redux/slices/user/types";
-import { set, ref, update, remove, equalTo, orderByKey, query, orderByChild, get } from "firebase/database";
+import { set, ref, update, remove, equalTo, query, orderByChild, get } from "firebase/database";
 
 export class UserService {
 
@@ -20,6 +19,7 @@ export class UserService {
     return set(profilesRef, {
       ...profileData,
       displayedStatus: "online",
+      statusBeforeDisconnect: "online",
       personalMessage: ""
     })
   }

@@ -1,32 +1,33 @@
 import { useEffect, useRef } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
-import { onDisconnect, ref, onValue, push, Unsubscribe } from "firebase/database"
+import { onDisconnect, ref, onValue, Unsubscribe, update } from "firebase/database"
 import { firebase } from "@/firebase/config";
-import { AuthService } from "@/Services";
 
 function VerifiedRoutes() {
   const isAccountVerified = useAppSelector(({ user }) => user.verified)
   const connectedListenerRef = useRef<Unsubscribe | null>(null)
   const firstEffectCall = useRef(true)
   const currentUser = firebase.auth.currentUser!
+  const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
+  const userStatusBeforeDisconnect = useAppSelector(({ user }) => user.statusBeforeDisconnect)
 
   /**
    * Track user presence and reflect it on status
   */
 
   useEffect(() => {
-    if (firstEffectCall.current === false) return
+    if (firstEffectCall.current === false || getCurrentUserProfileStatus === "PENDING") return
 
-    (async function () {
-      const userAuthTimeToNumber = await AuthService.getUserAuthTimeToNumber()
+    (function () {
       const connectedRef = ref(firebase.database, ".info/connected");
-      const userStatusEntriesRef = ref(firebase.database, `/status/${currentUser.uid}/entries/${userAuthTimeToNumber}`);
-      const userStatusNewEntryRef = push(userStatusEntriesRef, true)
+      const userStatusEntriesRef = ref(firebase.database, `/profiles/${currentUser.uid}`);
 
-      connectedListenerRef.current = onValue(connectedRef, async () => {
-        onDisconnect(userStatusNewEntryRef)
-          .remove()
+      connectedListenerRef.current = onValue(connectedRef, () => {
+        onDisconnect(userStatusEntriesRef)
+          .update({ displayedStatus: "offline" })
+
+        update(userStatusEntriesRef, { displayedStatus: userStatusBeforeDisconnect })
       });
     })()
 
@@ -37,7 +38,7 @@ function VerifiedRoutes() {
         connectedListenerRef.current!()
       }
     }
-  }, [])
+  }, [getCurrentUserProfileStatus])
 
   return isAccountVerified
     ? <Outlet />

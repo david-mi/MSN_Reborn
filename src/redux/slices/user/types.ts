@@ -10,6 +10,7 @@ export interface UserProfile {
   username: string,
   personalMessage: string
   displayedStatus: DisplayedStatus
+  statusBeforeDisconnect: DisplayedStatus
 }
 
 export interface UserSlice extends UserProfile {

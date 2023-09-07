@@ -12,7 +12,7 @@ interface Props {
 }
 
 function DisplayedStatusesList({ setStatusSentence, setShowStatusesList }: Props) {
-  const { setValue } = useFormContext<Pick<UserProfile, "displayedStatus">>()
+  const { setValue } = useFormContext<Pick<UserProfile, "displayedStatus" | "statusBeforeDisconnect">>()
 
   function handleStatusClick({ currentTarget }: MouseEvent) {
     const retrievedStatus = (currentTarget as HTMLLIElement).dataset.key as DisplayedStatus
@@ -20,6 +20,7 @@ function DisplayedStatusesList({ setStatusSentence, setShowStatusesList }: Props
 
     setStatusSentence(retrievedStatusSentence)
     setValue("displayedStatus", retrievedStatus)
+    setValue("statusBeforeDisconnect", retrievedStatus)
     closeShowStatusMenu()
   }
 

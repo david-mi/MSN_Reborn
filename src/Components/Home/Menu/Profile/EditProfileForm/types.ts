@@ -4,5 +4,6 @@ export interface EditProfileFormFields {
   username: string
   avatarSrc: string
   displayedStatus: DisplayedStatus,
+  statusBeforeDisconnect: DisplayedStatus,
   personalMessage: string
 }
