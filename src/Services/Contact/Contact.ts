@@ -1,7 +1,9 @@
 import { doc, setDoc, deleteField, updateDoc, getDoc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore"
+import { ref } from "firebase/database";
 import { firebase } from "@/firebase/config";
 import type { UserProfile } from "@/redux/slices/user/types";
 import { RoomService } from "..";
+import { get } from "firebase/database";
 
 export class ContactService {
   static get currentUser() {
@@ -21,13 +23,13 @@ export class ContactService {
     const userWhoSentFriendRequestSnapshot = await Promise.all(
       Object
         .keys(receveidFriendRequestsDocumentData)
-        .map((userId) => getDoc<UserProfile>(receveidFriendRequestsDocumentData[userId]))
+        .map((userId) => get(ref(firebase.database, `/profiles/${userId}`)))
     )
 
     return userWhoSentFriendRequestSnapshot.map((docSnap) => {
       return {
-        ...docSnap.data()!,
-        id: docSnap.id
+        ...docSnap.val()!,
+        id: docSnap.key
       }
     })
   }
@@ -48,10 +50,9 @@ export class ContactService {
 
   public static async sendFriendRequest(requestedUserId: string) {
     const receivedFriendRequestDocumentRef = doc(firebase.firestore, "receivedFriendRequests", requestedUserId)
-    const currentUserRef = doc(firebase.firestore, "users", this.currentUser.uid)
 
     await setDoc(receivedFriendRequestDocumentRef, {
-      [this.currentUser.uid]: currentUserRef
+      [this.currentUser.uid]: true
     }, { merge: true })
   }
 

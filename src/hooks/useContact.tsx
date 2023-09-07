@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react"
-import { onSnapshot, query, collection, where, documentId } from "firebase/firestore";
+import { useEffect, useMemo, useRef } from "react"
+import { onSnapshot } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
@@ -14,6 +14,8 @@ import { doc } from "firebase/firestore";
 import { UserProfile } from "@/redux/slices/user/types";
 import { Contact } from "@/redux/slices/contact/types";
 import { removeUserFromRoomNonContactUsersProfile } from "@/redux/slices/room/room";
+import { ref, onValue, Unsubscribe } from "firebase/database";
+import { RoomId } from "@/redux/slices/room/types";
 
 function useContact() {
   const dispatch = useAppDispatch()
@@ -37,6 +39,7 @@ function useContact() {
 
     return { offlineContactsProfileList, offlineContactsCount }
   }, [contactsProfileList])
+  const contactsProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
   useEffect(() => {
     if (retrieveRoomsStatus === "PENDING") return
@@ -44,8 +47,13 @@ function useContact() {
     const contactsRef = doc(firebase.firestore, "contacts", UserService.currentUser.uid)
 
     const unsubscribeContactsId = onSnapshot(contactsRef, async (snapshot) => {
-      dispatch(setContactsIds(snapshot.data()))
-      dispatch(initializeContactsList(snapshot.data()))
+      const contacts = snapshot.data() as { [contactId: string]: RoomId }
+      dispatch(setContactsIds(contacts))
+      dispatch(initializeContactsList(contacts))
+
+      for (const contactId in contacts) {
+        dispatch(removeUserFromRoomNonContactUsersProfile(contactId))
+      }
     })
 
     return unsubscribeContactsId
@@ -57,35 +65,29 @@ function useContact() {
       return
     }
 
-    const queryUserContacts = query(
-      collection(firebase.firestore, "users"),
-      where(documentId(), "in", contactsIds)
-    )
+    for (const userId of contactsIds) {
+      const contactProfileRef = ref(firebase.database, `profiles/${userId}`)
 
-    const unsubscribeContactsProfile = onSnapshot(queryUserContacts, async (contactsSnapshot) => {
-      contactsSnapshot.docChanges().forEach((change) => {
+      const unsubscribeContactProfile = onValue(contactProfileRef, async (snapshot) => {
         const contactProfile = {
-          ...change.doc.data(),
-          id: change.doc.id
+          ...snapshot.val(),
+          id: snapshot.key
         } as UserProfile
 
-        switch (change.type) {
-          case "added":
-            dispatch(removeUserFromRoomNonContactUsersProfile(contactProfile.id))
-            dispatch(setContactProfile(contactProfile))
-            break
-          case "modified": {
-            dispatch(setContactProfile(contactProfile))
-          }
-        }
+        dispatch(setContactProfile(contactProfile))
+      }, (error) => {
+        dispatch(setContactsError(error))
       })
 
-      dispatch(setContactsLoaded())
-    }, (error) => {
-      dispatch(setContactsError(error))
-    })
+      contactsProfileUnsubscribeList.current.push(unsubscribeContactProfile)
+    }
 
-    return unsubscribeContactsProfile
+    return () => {
+      contactsProfileUnsubscribeList.current.forEach((unSubscribeMessageCallback) => {
+        unSubscribeMessageCallback()
+        contactsProfileUnsubscribeList.current = []
+      })
+    }
   }, [contactsIds])
 
   return {

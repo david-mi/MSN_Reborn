@@ -1,11 +1,10 @@
-import { useEffect, useMemo } from "react"
-import { onSnapshot, query, where, documentId, collection } from "firebase/firestore";
+import { useEffect, useMemo, useRef } from "react"
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { ContactService } from "@/Services";
 import { setRoomNonContactUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
 import { RoomType } from "@/redux/slices/room/types";
+import { onValue, ref, Unsubscribe } from "firebase/database";
 
 function useRoomUsers(roomId: string, roomType: RoomType) {
   const dispatch = useAppDispatch()
@@ -32,6 +31,7 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
 
     return { currentRoomUsersProfileList, currentRoomUsersProfile }
   }, [contactsProfile, currentRoom.usersProfile, currentRoomUsersId])
+  const nonRoomUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
   useEffect(() => {
     if (roomType === "oneToOne") return
@@ -45,25 +45,33 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
 
     if (roomUsersIdWithoutContactsAndCurrentUser.length === 0) return
 
-    const nonContactRoomUsersQuery = query(
-      collection(firebase.firestore, "users"),
-      where(documentId(), "in", roomUsersIdWithoutContactsAndCurrentUser)
-    )
+    const usersProfile: {
+      [id: string]: UserProfile
+    } = {}
 
-    const unsubscribe = onSnapshot(nonContactRoomUsersQuery, async (snapshot) => {
-      const roomUsersProfile = await ContactService.getContactsProfile(snapshot.docs)
-      const usersProfile: {
-        [id: string]: UserProfile
-      } = {}
+    for (const userId of roomUsersIdWithoutContactsAndCurrentUser) {
+      const nonRoomUserProfileRef = ref(firebase.database, `profiles/${userId}`)
 
-      for (const userProfile of roomUsersProfile) {
-        usersProfile[userProfile.id] = userProfile
-      }
+      const unsubscribeNonRoomUserProfile = onValue(nonRoomUserProfileRef, async (snapshot) => {
+        const nonRoomUserProfile = {
+          ...snapshot.val(),
+          id: snapshot.key
+        } as UserProfile
 
-      dispatch(setRoomNonContactUsersProfile({ roomId, usersProfile: usersProfile }))
-    })
+        usersProfile[nonRoomUserProfile.id] = nonRoomUserProfile
 
-    return () => unsubscribe()
+        dispatch(setRoomNonContactUsersProfile({ roomId, usersProfile: usersProfile }))
+      })
+
+      nonRoomUsersProfileUnsubscribeList.current.push(unsubscribeNonRoomUserProfile)
+    }
+
+    return () => {
+      nonRoomUsersProfileUnsubscribeList.current.forEach((unSubscribeMessageCallback) => {
+        unSubscribeMessageCallback()
+        nonRoomUsersProfileUnsubscribeList.current = []
+      })
+    }
   }, [currentRoomUsersId, contactsIds])
 
   return {

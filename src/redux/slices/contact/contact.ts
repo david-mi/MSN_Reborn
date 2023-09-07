@@ -33,6 +33,8 @@ const contactSlice = createSlice({
       if (!payload) return
 
       for (const contactId in payload) {
+        if (state.contactsProfile[contactId] !== undefined) continue
+
         state.contactsProfile[contactId] = {
           id: contactId,
           roomId: payload[contactId],
@@ -55,7 +57,7 @@ const contactSlice = createSlice({
         ...payload
       }
     },
-    setContactsError(state, { payload }: PayloadAction<FirebaseError>) {
+    setContactsError(state, { payload }: PayloadAction<Error>) {
       state.getContactsProfile.error = payload.message
     },
     setContactsLoaded(state) {
@@ -99,7 +101,6 @@ export const sendFriendRequest = createAppAsyncThunk(
     try {
       retrievedUserId = await UserService.findByEmailAndGetId(email)
     } catch (error) {
-      console.log(error)
       throw new FirebaseError("404", "Utilisateur non trouvé")
     }
 

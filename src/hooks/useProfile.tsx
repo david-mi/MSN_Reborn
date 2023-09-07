@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { doc, onSnapshot } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { UserProfile } from "@/redux/slices/user/types";
 import { UserService } from "@/Services";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setProfile } from "@/redux/slices/user/user";
-import { onValue, query, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 
 function useProfile() {
   const dispatch = useAppDispatch()
