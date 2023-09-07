@@ -11,6 +11,7 @@ import {
   indexedDBLocalPersistence,
   signOut
 } from "firebase/auth";
+import { ref, update } from "firebase/database";
 import { UserService } from "..";
 
 export class AuthService {
@@ -84,6 +85,9 @@ export class AuthService {
   }
 
   static async disconnect() {
-    return signOut(firebase.auth)
+    const currentUserProfileRef = ref(firebase.database, `profiles/${this.currentUser.uid}`)
+    update(currentUserProfileRef, { displayedStatus: "offline" })
+
+    await signOut(firebase.auth)
   }
 }

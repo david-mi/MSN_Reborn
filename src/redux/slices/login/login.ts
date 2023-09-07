@@ -40,7 +40,7 @@ export const loginAndUpdateDisplayStatus = createAppAsyncThunk(
 
     await AuthService.setPersitence(rememberAuth)
     await AuthService.login(email, password)
-    await UserService.updateProfile({ displayedStatus })
+    await UserService.updateProfile({ displayedStatus, statusBeforeDisconnect: displayedStatus })
   })
 
 export const loginReducer = loginSlice.reducer
