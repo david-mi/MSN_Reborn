@@ -5,6 +5,7 @@ import { UserProfile } from "@/redux/slices/user/types";
 import { UserService } from "@/Services";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setProfile } from "@/redux/slices/user/user";
+import { onValue, query, ref } from "firebase/database";
 
 function useProfile() {
   const dispatch = useAppDispatch()
@@ -13,12 +14,12 @@ function useProfile() {
 
   useEffect(() => {
     if (retrieveRoomsStatus === "PENDING") return
-    const userRef = doc(firebase.firestore, "users", UserService.currentUser.uid)
+    const currentUserProfileRef = ref(firebase.database, `profiles/${UserService.currentUser.uid}`)
 
-    const unsubscribe = onSnapshot(userRef, async (snapshot) => {
+    const unsubscribe = onValue(currentUserProfileRef, async (snapshot) => {
       const userProfile = {
-        ...snapshot.data(),
-        id: snapshot.id
+        ...snapshot.val(),
+        id: snapshot.key
       } as UserProfile
 
       dispatch(setProfile(userProfile))

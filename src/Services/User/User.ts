@@ -1,8 +1,8 @@
 import { reload } from "firebase/auth";
-import { doc, setDoc, deleteDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore"
+import { collection, where, getDocs } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
-import { DisplayedStatus, UserProfile } from "@/redux/slices/user/types";
-import { set, ref } from "firebase/database";
+import { UserProfile } from "@/redux/slices/user/types";
+import { set, ref, update, remove, equalTo, orderByKey, query, orderByChild, get } from "firebase/database";
 
 export class UserService {
 
@@ -16,15 +16,12 @@ export class UserService {
   }
 
   static async setProfile(profileData: Pick<UserProfile, "avatarSrc" | "username" | "email">) {
-    const profilesRef = doc(firebase.firestore, "users", this.currentUser.uid)
-
-    await setDoc(profilesRef, {
+    const profilesRef = ref(firebase.database, `/profiles/${this.currentUser.uid}`)
+    return set(profilesRef, {
       ...profileData,
       displayedStatus: "online",
       personalMessage: ""
     })
-
-    return this.setSavedStatus("online")
   }
 
   static async forceRefreshToken() {
@@ -32,27 +29,14 @@ export class UserService {
   }
 
   static async updateProfile(profileData: Partial<UserProfile>) {
-    const userProfileRef = doc(firebase.firestore, "users", this.currentUser.uid)
-
-    await updateDoc(userProfileRef, profileData)
-
-    if (profileData.displayedStatus) {
-      await this.setSavedStatus(profileData.displayedStatus)
-    }
-  }
-
-  private static async setSavedStatus(statusToSave: DisplayedStatus) {
-    const savedStatusRef = ref(firebase.database, `/status/${this.currentUser.uid}/saved`)
-
-    return set(savedStatusRef, statusToSave)
+    const profilesRef = ref(firebase.database, `/profiles/${this.currentUser.uid}`)
+    return update(profilesRef, profileData)
   }
 
   static async deleteAccount() {
-    const userId = this.currentUser.uid
-    const userProfileRef = doc(firebase.firestore, `users/${userId}`)
-
+    const profilesRef = ref(firebase.database, `/profiles/${this.currentUser.uid}`)
     await this.currentUser.delete()
-    return deleteDoc(userProfileRef)
+    return remove(profilesRef)
   }
 
   static async checkIfVerified() {
@@ -62,17 +46,20 @@ export class UserService {
   }
 
   public static async findByEmailAndGetId(email: string) {
+    const profilesRef = ref(firebase.database, "profiles")
+
     const findUserByEmailQuery = query(
-      collection(firebase.firestore, "users"),
-      where("email", "==", email)
+      profilesRef,
+      orderByChild("email"),
+      equalTo(email)
     )
 
-    const retrievedUsersSnapShot = await getDocs(findUserByEmailQuery)
+    const retrievedUsersSnapShot = await get(findUserByEmailQuery)
 
-    if (retrievedUsersSnapShot.empty) {
+    if (retrievedUsersSnapShot.exists() === false) {
       throw new Error("Utilisateur non trouvé")
     }
 
-    return retrievedUsersSnapShot.docs[0].id
+    return Object.keys(retrievedUsersSnapShot.val())[0]
   }
 }

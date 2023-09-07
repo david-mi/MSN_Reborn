@@ -99,6 +99,7 @@ export const sendFriendRequest = createAppAsyncThunk(
     try {
       retrievedUserId = await UserService.findByEmailAndGetId(email)
     } catch (error) {
+      console.log(error)
       throw new FirebaseError("404", "Utilisateur non trouvé")
     }
 

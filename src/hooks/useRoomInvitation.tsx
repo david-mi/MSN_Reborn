@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setPendingRoomsInvitation } from "@/redux/slices/room/room";
 import { DataBasePendingRoomInvitation, DatabaseCustomRoom, PendingRoomInvitation } from "@/redux/slices/room/types";
 import { UserProfile } from "@/redux/slices/user/types";
+import { ref, get } from "firebase/database";
 
 function useRoomInvitation() {
   const dispatch = useAppDispatch()
@@ -35,15 +36,15 @@ function useRoomInvitation() {
         }
 
         for (const roomUserId in roomUsersId) {
-          const roomUserProfileRef = doc(firebase.firestore, "users", roomUserId)
-          const roomUserProfileSnapshot = await getDoc(roomUserProfileRef)
-
+          const roomUserProfileRef = ref(firebase.database, `profiles/${roomUserId}`)
+          const roomUserProfileSnapshot = await get(roomUserProfileRef)
+          roomUserProfileSnapshot.key
           const roomUserProfile = {
-            ...roomUserProfileSnapshot.data(),
-            id: roomUserProfileSnapshot.id
+            ...roomUserProfileSnapshot.val(),
+            id: roomUserProfileSnapshot.key
           } as UserProfile
 
-          pendingRoomInvitationToSend.roomUsersProfile[roomUserProfileSnapshot.id] = roomUserProfile
+          pendingRoomInvitationToSend.roomUsersProfile[roomUserProfile.id] = roomUserProfile
         }
 
         pendingRoomsInvitationToSend.push(pendingRoomInvitationToSend)
