@@ -4,17 +4,17 @@ import styles from "./readByList.module.css";
 import { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
-  currentRoomUsersProfileList: UserProfile[],
+  currentRoomUsersProfile: Map<string, UserProfile>
   messageReadBy: {
     [userId: string]: boolean
   }
   messageUserId: string
 }
 
-function ReadByList({ currentRoomUsersProfileList, messageReadBy, messageUserId }: Props) {
+function ReadByList({ currentRoomUsersProfile, messageReadBy, messageUserId }: Props) {
   return (
     <ul className={styles.readByList}>
-      {currentRoomUsersProfileList.map(({ avatarSrc, username, id }) => {
+      {Array.from(currentRoomUsersProfile.values()).map(({ avatarSrc, username, id }) => {
         return (
           messageReadBy[id] && id !== messageUserId
             ? (

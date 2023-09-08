@@ -3,7 +3,7 @@ import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setRoomNonContactUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
-import { RoomType } from "@/redux/slices/room/types";
+import { RoomType, UserId } from "@/redux/slices/room/types";
 import { onValue, ref, Unsubscribe } from "firebase/database";
 
 function useRoomUsers(roomId: string, roomType: RoomType) {
@@ -14,22 +14,18 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
   const currentRoomUsersId = currentRoom.users
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
-  const { currentRoomUsersProfile, currentRoomUsersProfileList } = useMemo(() => {
-    const currentRoomUsersProfileList: UserProfile[] = Object.values(currentRoom.usersProfile)
-    const currentRoomUsersProfile: { [userId: string]: UserProfile } = {
-      ...currentRoom.usersProfile
-    }
+  const currentRoomUsersProfile = useMemo(() => {
+    const currentRoomUsersProfile = new Map<UserId, UserProfile>(Object.entries(currentRoom.usersProfile))
 
     for (const contactId in contactsProfile) {
       const contactProfile = contactsProfile[contactId]
 
       if (currentRoomUsersId.indexOf(contactId) !== -1) {
-        currentRoomUsersProfileList.push(contactProfile)
-        currentRoomUsersProfile[contactId] = contactProfile
+        currentRoomUsersProfile.set(contactId, contactProfile)
       }
     }
 
-    return { currentRoomUsersProfileList, currentRoomUsersProfile }
+    return currentRoomUsersProfile
   }, [contactsProfile, currentRoom.usersProfile, currentRoomUsersId])
   const nonRoomUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
@@ -76,7 +72,6 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
 
   return {
     getRoomNonFriendProfilesRequest,
-    currentRoomUsersProfileList,
     currentRoomUsersProfile
   }
 }

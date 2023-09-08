@@ -1,4 +1,4 @@
-import { Message, RoomType, RoomUsersProfile } from "@/redux/slices/room/types";
+import { Message, RoomType } from "@/redux/slices/room/types";
 import ChatMessage from "./ChatMessage/ChatMessage";
 import { MutableRefObject, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -10,16 +10,15 @@ import { Button, Loader } from "@/Components/Shared";
 
 interface Props {
   messages: Message[],
-  currentRoomUsersProfile: RoomUsersProfile
+  currentRoomUsersProfile: Map<string, UserProfile>
   roomId: string
   roomType: RoomType
   shouldScrollToBottomRef: MutableRefObject<boolean>
-  currentRoomUsersProfileList: UserProfile[]
 }
 
 function ChatMessages(props: Props) {
   const dispatch = useAppDispatch()
-  const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef, currentRoomUsersProfileList } = props
+  const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef } = props
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentRoomOldestRetrievedMessageDate = useAppSelector(({ room }) => room.roomsList[roomId].oldestRetrievedMessageDate)
@@ -114,8 +113,8 @@ function ChatMessages(props: Props) {
               roomId={roomId}
               roomType={roomType}
               message={message}
-              user={currentRoomUsersProfile[message.userId] || currentUser}
-              currentRoomUsersProfileList={currentRoomUsersProfileList}
+              user={currentRoomUsersProfile.get(message.userId) || currentUser}
+              currentRoomUsersProfile={currentRoomUsersProfile}
             />
           )
         })}

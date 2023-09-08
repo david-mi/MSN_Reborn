@@ -16,7 +16,7 @@ function Chat() {
   const { id, messages, users, type } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
-  const { getRoomNonFriendProfilesRequest, currentRoomUsersProfileList, currentRoomUsersProfile } = useRoomUsers(id, type)
+  const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 850px)").matches)
   const classNames = `${styles.chat} ${styles[type]}`
@@ -31,11 +31,11 @@ function Chat() {
 
   return (
     <div className={classNames}>
-      <ChatHeader room={room} currentRoomUsersProfileList={currentRoomUsersProfileList} />
+      <ChatHeader room={room} currentRoomUsersProfile={currentRoomUsersProfile} />
       <ChatOptions
         roomType={type}
         users={users}
-        currentRoomUsersProfileList={currentRoomUsersProfileList}
+        currentRoomUsersProfile={currentRoomUsersProfile}
         displayUsersPanel={displayUsersPanel}
         setDisplayUsersPanel={setDisplayUsersPanel}
       />
@@ -46,10 +46,9 @@ function Chat() {
           roomType={type}
           messages={messages}
           currentRoomUsersProfile={currentRoomUsersProfile}
-          currentRoomUsersProfileList={currentRoomUsersProfileList}
         />
         {type === "manyToMany" && displayUsersPanel && (
-          <ChatUsersPanel currentRoomUsersProfileList={currentRoomUsersProfileList} />
+          <ChatUsersPanel currentRoomUsersProfile={currentRoomUsersProfile} />
         )}
       </div>
       <ChatForm

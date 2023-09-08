@@ -14,11 +14,11 @@ interface Props {
   roomType: RoomType
   toggleInviteContactToRoomForm: () => void
   contactsOutsideCurrentRoom: Contact[]
-  currentRoomUsersProfileList: UserProfile[]
+  currentRoomUsersProfile: Map<string, UserProfile>
 }
 
 function InviteContactToRoomForm(props: Props) {
-  const { toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfileList, roomType } = props
+  const { toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfile, roomType } = props
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
@@ -34,8 +34,9 @@ function InviteContactToRoomForm(props: Props) {
       if (roomType === "manyToMany") {
         await dispatch(sendNewRoomInvitation({ roomId: currentRoomId as string, userIdToInvite })).unwrap()
       } else {
+        const currentRoomContact = currentRoomUsersProfile.values().next().value as UserProfile
         const createdRoomId = await dispatch(createCustomRoom({ name: roomName })).unwrap()
-        await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite: currentRoomUsersProfileList[0].id })).unwrap()
+        await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite: currentRoomContact.id })).unwrap()
         await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite })).unwrap()
       }
 

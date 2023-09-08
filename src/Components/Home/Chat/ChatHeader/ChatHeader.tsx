@@ -9,10 +9,10 @@ import { UserProfile } from "@/redux/slices/user/types";
 
 interface Props {
   room: Room
-  currentRoomUsersProfileList: UserProfile[]
+  currentRoomUsersProfile: Map<string, UserProfile>
 }
 
-function ChatHeader({ room, currentRoomUsersProfileList }: Props) {
+function ChatHeader({ room, currentRoomUsersProfile }: Props) {
   const dispatch = useAppDispatch()
 
   function closeChat() {
@@ -22,7 +22,7 @@ function ChatHeader({ room, currentRoomUsersProfileList }: Props) {
   let headerInfos: JSX.Element
 
   if (room.type === "oneToOne") {
-    const targetUser = currentRoomUsersProfileList[0]
+    const targetUser = currentRoomUsersProfile.values().next().value as UserProfile
     const { displayedStatus, personalMessage, email, username } = targetUser
     const targetUserStatus = statusesObject[displayedStatus]
 

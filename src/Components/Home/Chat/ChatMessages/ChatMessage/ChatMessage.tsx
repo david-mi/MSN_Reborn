@@ -13,12 +13,12 @@ interface Props {
   roomId: string
   user: UserProfile
   displayAllInfos: boolean
-  currentRoomUsersProfileList: UserProfile[]
+  currentRoomUsersProfile: Map<string, UserProfile>
   roomType: RoomType
 }
 
 function ChatMessage(props: Props) {
-  const { message, user, displayAllInfos, roomId, currentRoomUsersProfileList, roomType } = props
+  const { message, user, displayAllInfos, roomId, currentRoomUsersProfile, roomType } = props
   const { avatarSrc, username } = user;
   const { message: text, createdAt, readBy, userId } = message
 
@@ -61,7 +61,7 @@ function ChatMessage(props: Props) {
         <p>{text}</p>
         {displayUsersWhoReadMessage && (
           <ReadByList
-            currentRoomUsersProfileList={currentRoomUsersProfileList}
+            currentRoomUsersProfile={currentRoomUsersProfile}
             messageReadBy={readBy}
             messageUserId={userId}
           />

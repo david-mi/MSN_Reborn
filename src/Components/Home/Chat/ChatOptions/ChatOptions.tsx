@@ -11,13 +11,13 @@ import styles from "./chatOptions.module.css";
 interface Props {
   roomType: RoomType
   users: string[]
-  currentRoomUsersProfileList: UserProfile[]
+  currentRoomUsersProfile: Map<string, UserProfile>
   displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
 }
 
 function ChatOptions(props: Props) {
-  const { roomType, users, currentRoomUsersProfileList, displayUsersPanel, setDisplayUsersPanel } = props
+  const { roomType, users, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel } = props
 
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
@@ -39,7 +39,7 @@ function ChatOptions(props: Props) {
           roomType={roomType}
           toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
           contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
-          currentRoomUsersProfileList={currentRoomUsersProfileList}
+          currentRoomUsersProfile={currentRoomUsersProfile}
         />
       )}
       <ButtonWithImage
