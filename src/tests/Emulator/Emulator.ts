@@ -1,7 +1,9 @@
 import { DocumentReference, deleteDoc, doc } from "firebase/firestore"
+import { ref, get } from "firebase/database";
 import { sendEmailVerification, applyActionCode, signOut } from "firebase/auth"
 import { firebase } from "@/firebase/config"
 import { AuthService, UserService } from "@/Services";
+import { UserProfile } from "@/redux/slices/user/types";
 
 export class Emulator {
   public static get currentUser() {
@@ -37,6 +39,17 @@ export class Emulator {
       currentUser: this.currentUser
     }
   }
+
+  static async getProfile(): Promise<UserProfile> {
+    const userProfileRef = ref(firebase.database, `/profiles/${this.currentUser.uid}`)
+
+    const userProfileSnapshot = await get(userProfileRef)
+    return {
+      ...userProfileSnapshot.val(),
+      id: userProfileSnapshot.key
+    } as UserProfile
+  }
+
 
   public static async getOobCodeForEmail(email: string) {
     const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
