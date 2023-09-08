@@ -42,9 +42,9 @@ const roomSlice = createSlice({
 
       state.roomsList[roomId] = {
         ...payload,
-        users: Object.keys(payload.users),
+        usersId: Object.keys(payload.users),
         messages: [],
-        usersProfile: {},
+        nonFriendUsersProfile: {},
         unreadMessagesCount: 0,
         oldestRetrievedMessageDate: null
       }
@@ -52,7 +52,7 @@ const roomSlice = createSlice({
     modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
       state.roomsList[roomToEdit.id] = {
         ...state.roomsList[roomToEdit.id],
-        users: Object.keys(roomToEdit.users),
+        usersId: Object.keys(roomToEdit.users),
         name: roomToEdit.name
       }
     },
@@ -62,11 +62,11 @@ const roomSlice = createSlice({
         ? targetRoom.messages.unshift(payload.message)
         : targetRoom.messages.push(payload.message)
     },
-    setRoomNonContactUsersProfile(state, { payload }: PayloadAction<{ usersProfile: RoomUsersProfile, roomId: string }>) {
+    setRoomNonFriendUsersProfile(state, { payload }: PayloadAction<{ nonFriendUsersProfile: RoomUsersProfile, roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
-      targetRoom.usersProfile = {
-        ...targetRoom.usersProfile,
-        ...payload.usersProfile
+      targetRoom.nonFriendUsersProfile = {
+        ...targetRoom.nonFriendUsersProfile,
+        ...payload.nonFriendUsersProfile
       }
       state.getRoomNonFriendProfilesRequest.status = "IDLE"
     },
@@ -74,8 +74,8 @@ const roomSlice = createSlice({
       for (const roomId in state.roomsList) {
         const room = state.roomsList[roomId]
 
-        if (room.usersProfile[userId]) {
-          delete room.usersProfile[userId]
+        if (room.nonFriendUsersProfile[userId]) {
+          delete room.nonFriendUsersProfile[userId]
         }
       }
     },
@@ -102,8 +102,8 @@ const roomSlice = createSlice({
     setRoomUserProfile(state, { payload: userProfile }: PayloadAction<UserProfile>) {
       for (const roomList in state.roomsList) {
         const room = state.roomsList[roomList]
-        if (room.users.includes(userProfile.id)) {
-          room.usersProfile[userProfile.id] = userProfile
+        if (room.usersId.includes(userProfile.id)) {
+          room.nonFriendUsersProfile[userProfile.id] = userProfile
         }
       }
     },
@@ -150,8 +150,8 @@ const roomSlice = createSlice({
 
 export const sendMessage = createAppAsyncThunk(
   "rooms/sendMessage",
-  async ({ content, roomId, users }: { content: string, roomId: string, users: string[], }) => {
-    return MessageService.add(content, roomId, users)
+  async ({ content, roomId, usersId }: { content: string, roomId: string, usersId: string[], }) => {
+    return MessageService.add(content, roomId, usersId)
   })
 
 export const markRoomMessageAsRead = createAppAsyncThunk(
@@ -197,7 +197,7 @@ export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
   initializeRoom,
-  setRoomNonContactUsersProfile,
+  setRoomNonFriendUsersProfile,
   setUnreadMessageCount,
   editRoomMessage,
   setRoomUserProfile,

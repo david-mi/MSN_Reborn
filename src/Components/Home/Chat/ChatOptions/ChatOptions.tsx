@@ -10,22 +10,22 @@ import styles from "./chatOptions.module.css";
 
 interface Props {
   roomType: RoomType
-  users: string[]
+  usersId: string[]
   currentRoomUsersProfile: Map<string, UserProfile>
   displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
 }
 
 function ChatOptions(props: Props) {
-  const { roomType, users, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel } = props
+  const { roomType, usersId, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel } = props
 
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
     return Object
       .values(contactsProfile)
-      .filter((contact) => users.includes(contact.id) === false)
-  }, [contactsProfile, users])
+      .filter((contact) => usersId.includes(contact.id) === false)
+  }, [contactsProfile, usersId])
 
   function toggleInviteContactToRoomForm() {
     setInviteContactToRoomFormOpen((state) => !state)

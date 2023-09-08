@@ -34,8 +34,8 @@ export interface Room {
   name: null | string
   id: string
   type: RoomType
-  users: UserId[]
-  usersProfile: RoomUsersProfile
+  usersId: UserId[]
+  nonFriendUsersProfile: RoomUsersProfile
   messages: Message[]
   unreadMessagesCount: number
   oldestRetrievedMessageDate: number | null

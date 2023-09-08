@@ -8,11 +8,11 @@ import styles from "./chatForm.module.css";
 
 interface Props {
   roomId: string
-  users: string[]
+  usersId: string[]
   shouldScrollToBottomRef: MutableRefObject<boolean>
 }
 
-function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
+function ChatForm({ roomId, usersId, shouldScrollToBottomRef }: Props) {
   const dispatch = useAppDispatch()
   const {
     register,
@@ -27,7 +27,7 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
 
   async function onSubmit({ content }: ChatFormFields) {
     try {
-      await dispatch(sendMessage({ roomId, users, content })).unwrap()
+      await dispatch(sendMessage({ roomId, usersId, content })).unwrap()
       setFocus("content")
       reset()
     } catch (error) {

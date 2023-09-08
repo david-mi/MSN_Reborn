@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react"
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setRoomNonContactUsersProfile } from "@/redux/slices/room/room";
+import { setRoomNonFriendUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
 import { RoomType, UserId } from "@/redux/slices/room/types";
 import { onValue, ref, Unsubscribe } from "firebase/database";
@@ -11,28 +11,27 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
   const getRoomNonFriendProfilesRequest = useAppSelector(({ room }) => room.getRoomNonFriendProfilesRequest)
   const currentUser = useAppSelector(({ user }) => user)
   const currentRoom = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
-  const currentRoomUsersId = currentRoom.users
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const currentRoomUsersProfile = useMemo(() => {
-    const currentRoomUsersProfile = new Map<UserId, UserProfile>(Object.entries(currentRoom.usersProfile))
+    const currentRoomUsersProfile = new Map<UserId, UserProfile>(Object.entries(currentRoom.nonFriendUsersProfile))
 
     for (const contactId in contactsProfile) {
       const contactProfile = contactsProfile[contactId]
 
-      if (currentRoomUsersId.indexOf(contactId) !== -1) {
+      if (currentRoom.usersId.indexOf(contactId) !== -1) {
         currentRoomUsersProfile.set(contactId, contactProfile)
       }
     }
 
     return currentRoomUsersProfile
-  }, [contactsProfile, currentRoom.usersProfile, currentRoomUsersId])
-  const nonRoomUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
+  }, [contactsProfile, currentRoom.nonFriendUsersProfile, currentRoom.usersId])
+  const nonFriendUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
   useEffect(() => {
     if (roomType === "oneToOne") return
 
-    const roomUsersIdWithoutContactsAndCurrentUser = currentRoomUsersId.filter((currentRoomUserId) => {
+    const roomUsersIdWithoutContactsAndCurrentUser = currentRoom.usersId.filter((currentRoomUserId) => {
       return (
         contactsIds.indexOf(currentRoomUserId) === -1 &&
         currentRoomUserId !== currentUser.id
@@ -41,7 +40,7 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
 
     if (roomUsersIdWithoutContactsAndCurrentUser.length === 0) return
 
-    const usersProfile: {
+    const nonFriendUsersProfile: {
       [id: string]: UserProfile
     } = {}
 
@@ -54,21 +53,21 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
           id: snapshot.key
         } as UserProfile
 
-        usersProfile[nonRoomUserProfile.id] = nonRoomUserProfile
+        nonFriendUsersProfile[nonRoomUserProfile.id] = nonRoomUserProfile
 
-        dispatch(setRoomNonContactUsersProfile({ roomId, usersProfile: usersProfile }))
+        dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile }))
       })
 
-      nonRoomUsersProfileUnsubscribeList.current.push(unsubscribeNonRoomUserProfile)
+      nonFriendUsersProfileUnsubscribeList.current.push(unsubscribeNonRoomUserProfile)
     }
 
     return () => {
-      nonRoomUsersProfileUnsubscribeList.current.forEach((unSubscribeMessageCallback) => {
+      nonFriendUsersProfileUnsubscribeList.current.forEach((unSubscribeMessageCallback) => {
         unSubscribeMessageCallback()
-        nonRoomUsersProfileUnsubscribeList.current = []
+        nonFriendUsersProfileUnsubscribeList.current = []
       })
     }
-  }, [currentRoomUsersId, contactsIds])
+  }, [currentRoom.usersId, contactsIds])
 
   return {
     getRoomNonFriendProfilesRequest,
