@@ -4,10 +4,27 @@
   align-items: center;
   background-color: yellow;
   margin: calc(var(--chat-gap) * -1);
+  gap: var(--chat-gap);
   margin-bottom: auto;
   height: 37px;
   height: clamp(37px, 45px - 1vw, 45px);
   background: linear-gradient(180deg, #fdfefe 4.88%, #e8f0f3 52.51%, #dde9ee 53.26%, #e6eff3 97.22%);
   border-block: solid 1px var(--separators-clr);
   padding-inline: var(--chat-gap);
+}
+
+.isOpen {
+  transform: rotateY(180deg);
+}
+
+.leaveRoom {
+  margin-left: auto;
+
+  & svg {
+    transform: rotateY(180deg);
+  }
+
+  & path {
+    fill: rgb(255, 40, 40);
+  }
 }
