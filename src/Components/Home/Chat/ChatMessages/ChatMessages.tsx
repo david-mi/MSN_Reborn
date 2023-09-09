@@ -6,7 +6,7 @@ import styles from "./chatMessages.module.css";
 import { UserProfile } from "@/redux/slices/user/types";
 import useRoomMessagesPagination from "@/hooks/useRoomMessagesPagination";
 import { setOldestRoomMessageDate } from "@/redux/slices/room/room";
-import { Button, Loader } from "@/Components/Shared";
+import { Loader } from "@/Components/Shared";
 
 interface Props {
   messages: Message[],
@@ -24,8 +24,9 @@ function ChatMessages(props: Props) {
   const currentRoomOldestRetrievedMessageDate = useAppSelector(({ room }) => room.roomsList[roomId].oldestRetrievedMessageDate)
   const currentUser = useAppSelector(({ user }) => user)
   const { canPaginate, paginate, loadingPagination } = useRoomMessagesPagination(roomId, 5)
-  const buttonRef = useRef<HTMLButtonElement>(null!)
+  const loaderRef = useRef<HTMLDivElement>(null!)
   const containerRef = useRef<HTMLDivElement>(null!)
+  const displayLoader = !loadingPagination && canPaginate && currentRoomOldestRetrievedMessageDate !== null
 
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -47,7 +48,7 @@ function ChatMessages(props: Props) {
   }
 
   function handleScroll() {
-    const { clientHeight, scrollHeight, scrollTop } = chatMessagesContainerRef!.current
+    const { clientHeight, scrollHeight, scrollTop } = containerRef!.current
     const hasReachedBottom = clientHeight + Math.ceil(scrollTop) === scrollHeight
 
     shouldScrollToBottomRef.current = hasReachedBottom
@@ -56,52 +57,44 @@ function ChatMessages(props: Props) {
   useEffect(() => {
     if (shouldScrollToBottomRef.current === true) {
       chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
+    } else {
+      containerRef!.current.scrollTop = 50
     }
+
     if (messages[0] && messages[0].createdAt !== currentRoomOldestRetrievedMessageDate) {
       dispatch(setOldestRoomMessageDate({ roomId, date: messages[0].createdAt }))
     }
 
   }, [messages])
 
-  // useEffect(() => {
-  //   if (buttonRef.current !== null && loadingPagination === false) {
-  //     const observer = new IntersectionObserver(([entry]) => {
-  //       console.log(entry.isIntersecting)
-  //       if (entry.isIntersecting === false) return
-  //       shouldScrollToBottomRef.current = false
-  //       paginate()
-  //     }, { root: containerRef.current, threshold: 1 })
+  useEffect(() => {
+    if (displayLoader === false) return
 
-  //     observer.observe(buttonRef.current)
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting === false) return
+      shouldScrollToBottomRef.current = false
+      paginate()
+    }, { root: containerRef.current, threshold: 0.9 })
 
-  //     return () => {
-  //       console.log("return")
-  //       observer.disconnect()
-  //     }
-  //   }
-  // }, [roomId, loadingPagination])
+    observer.observe(loaderRef.current)
 
-  function handleClick() {
-    shouldScrollToBottomRef.current = false
-    paginate()
-  }
+    return () => {
+      observer.disconnect()
+    }
+  }, [roomId, displayLoader])
 
   return (
-    <div className={styles.chatMessagesContainer} ref={containerRef}>
+    <div className={styles.chatMessagesContainer} ref={containerRef} onScroll={handleScroll}>
       <div className={styles.paginationContainer}>
-        {loadingPagination && <Loader size={"2rem"} />}
-        {!loadingPagination && canPaginate && currentRoomOldestRetrievedMessageDate !== null && (
-          <Button
-            theme="gradient"
-            title="Pagination"
-            ref={buttonRef}
-            onClick={handleClick}
+        {displayLoader && (
+          <Loader
+            size={"2rem"}
+            ref={loaderRef}
             className={styles.pagination}
           />
         )}
       </div>
       <div
-        onScroll={handleScroll}
         ref={chatMessagesContainerRef}
         className={styles.chatMessages}
       >

@@ -1,5 +1,5 @@
 
-import type { HTMLAttributes } from "react"
+import { HTMLAttributes, forwardRef } from "react"
 import styles from "./loader.module.css";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   thickness?: string
 }
 
-function Loader({ className, size, thickness }: Props) {
+const Loader = forwardRef<HTMLSpanElement, Props>(({ className, size, thickness }, ref) => {
   const classNames = `${styles.loader} ${className ? className : ""}`
   const style: HTMLAttributes<HTMLSpanElement>["style"] = {
     width: size ?? "80%",
@@ -16,8 +16,8 @@ function Loader({ className, size, thickness }: Props) {
   }
 
   return (
-    <span className={classNames} style={style}></span>
+    <span className={classNames} style={style} ref={ref}></span>
   );
-}
+})
 
 export default Loader;
