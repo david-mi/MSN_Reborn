@@ -8,13 +8,12 @@ import { firebase } from "@/firebase/config"
 function useRoomMessagesPagination(roomId: string, paginationTicks = 10) {
   const dispatch = useAppDispatch()
   const [canPaginate, setCanPaginate] = useState(true)
-  const [loadingPagination, setLoadingPagination] = useState(false)
+  const [retrievingPreviousMessages, setRetrievingPreviousMessages] = useState(false)
   const currentRoomOldestRetrievedMessageDate = useAppSelector(({ room }) => room.roomsList[roomId].oldestRetrievedMessageDate)
-
 
   const paginate = useCallback(async () => {
     if (currentRoomOldestRetrievedMessageDate === null) return
-    setLoadingPagination(true)
+    setRetrievingPreviousMessages(true)
 
     const roomMessagesPaginationQuery = query(
       collection(firebase.firestore, "rooms", roomId, "messages"),
@@ -27,7 +26,7 @@ function useRoomMessagesPagination(roomId: string, paginationTicks = 10) {
       const docChanges = roomMessagesSnapshot.docChanges()
       if (roomMessagesSnapshot.empty) {
         setCanPaginate(false)
-        setLoadingPagination(false)
+        setRetrievingPreviousMessages(false)
         return
       }
 
@@ -45,7 +44,7 @@ function useRoomMessagesPagination(roomId: string, paginationTicks = 10) {
         }
       })
 
-      setLoadingPagination(false)
+      setRetrievingPreviousMessages(false)
     })
 
   }, [currentRoomOldestRetrievedMessageDate])
@@ -53,7 +52,7 @@ function useRoomMessagesPagination(roomId: string, paginationTicks = 10) {
   return {
     paginate,
     canPaginate,
-    loadingPagination
+    retrievingPreviousMessages
   }
 
 }

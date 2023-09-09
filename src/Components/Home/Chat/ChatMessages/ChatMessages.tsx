@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import styles from "./chatMessages.module.css";
 import { UserProfile } from "@/redux/slices/user/types";
 import useRoomMessagesPagination from "@/hooks/useRoomMessagesPagination";
-import { setOldestRoomMessageDate } from "@/redux/slices/room/room";
+import { setOldestRoomMessageDate, setPreviousScrollTop } from "@/redux/slices/room/room";
 import { Loader } from "@/Components/Shared";
 
 interface Props {
@@ -14,20 +14,20 @@ interface Props {
   roomId: string
   roomType: RoomType
   shouldScrollToBottomRef: MutableRefObject<boolean>
+  previousMessagesScrollTop: number | null
 }
 
 function ChatMessages(props: Props) {
   const dispatch = useAppDispatch()
-  const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef } = props
-  const chatMessagesContainerRef = useRef<HTMLDivElement>(null!)
+  const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef, previousMessagesScrollTop } = props
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentRoomOldestRetrievedMessageDate = useAppSelector(({ room }) => room.roomsList[roomId].oldestRetrievedMessageDate)
   const currentUser = useAppSelector(({ user }) => user)
-  const { canPaginate, paginate, loadingPagination } = useRoomMessagesPagination(roomId, 5)
+  const { canPaginate, paginate, retrievingPreviousMessages } = useRoomMessagesPagination(roomId, 5)
   const loaderRef = useRef<HTMLDivElement>(null!)
   const containerRef = useRef<HTMLDivElement>(null!)
-  const displayLoader = !loadingPagination && canPaginate && currentRoomOldestRetrievedMessageDate !== null
-
+  const containerRefScrollTopRef = useRef<null | number>(null)
+  const displayLoader = !retrievingPreviousMessages && canPaginate && currentRoomOldestRetrievedMessageDate !== null
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
       return true
@@ -50,6 +50,7 @@ function ChatMessages(props: Props) {
   function handleScroll() {
     const { clientHeight, scrollHeight, scrollTop } = containerRef!.current
     const hasReachedBottom = clientHeight + Math.ceil(scrollTop) === scrollHeight
+    containerRefScrollTopRef.current = scrollTop
 
     shouldScrollToBottomRef.current = hasReachedBottom
   }
@@ -64,7 +65,6 @@ function ChatMessages(props: Props) {
     if (messages[0] && messages[0].createdAt !== currentRoomOldestRetrievedMessageDate) {
       dispatch(setOldestRoomMessageDate({ roomId, date: messages[0].createdAt }))
     }
-
   }, [messages])
 
   useEffect(() => {
@@ -83,6 +83,19 @@ function ChatMessages(props: Props) {
     }
   }, [roomId, displayLoader])
 
+  useEffect(() => {
+    if (previousMessagesScrollTop !== null) {
+      containerRef!.current.scrollTop = previousMessagesScrollTop
+    }
+
+    return () => {
+      dispatch(setPreviousScrollTop({
+        roomId,
+        scrollTop: containerRefScrollTopRef.current
+      }))
+    }
+  }, [roomId])
+
   return (
     <div className={styles.chatMessagesContainer} ref={containerRef} onScroll={handleScroll}>
       <div className={styles.paginationContainer}>
@@ -94,10 +107,7 @@ function ChatMessages(props: Props) {
           />
         )}
       </div>
-      <div
-        ref={chatMessagesContainerRef}
-        className={styles.chatMessages}
-      >
+      <div className={styles.chatMessages}>
         {messages.map((message, index) => {
           return (
             <ChatMessage

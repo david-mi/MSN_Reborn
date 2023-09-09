@@ -46,7 +46,8 @@ const roomSlice = createSlice({
         messages: [],
         nonFriendUsersProfile: {},
         unreadMessagesCount: 0,
-        oldestRetrievedMessageDate: null
+        oldestRetrievedMessageDate: null,
+        previousMessagesScrollTop: null
       }
     },
     modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
@@ -117,6 +118,11 @@ const roomSlice = createSlice({
     setOldestRoomMessageDate(state, { payload }: PayloadAction<{ roomId: string, date: number }>) {
       const targetRoom = state.roomsList[payload.roomId]
       targetRoom.oldestRetrievedMessageDate = payload.date
+    },
+    setPreviousScrollTop(state, { payload }: PayloadAction<{ scrollTop: number | null, roomId: string }>) {
+      const targetRoom = state.roomsList[payload.roomId]
+
+      targetRoom.previousMessagesScrollTop = payload.scrollTop
     }
   },
   extraReducers: (builder) => {
@@ -205,7 +211,8 @@ export const {
   setPendingRoomsInvitation,
   removeUserFromRoomNonContactUsersProfile,
   modifyRoom,
-  setOldestRoomMessageDate
+  setOldestRoomMessageDate,
+  setPreviousScrollTop
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer
