@@ -15,7 +15,7 @@ interface Props {
   currentRoomUsersProfile: Map<string, UserProfile>
   displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
-  roomName: string
+  roomName: string | null
 }
 
 function ChatOptions(props: Props) {
@@ -45,7 +45,7 @@ function ChatOptions(props: Props) {
 
   return (
     <div className={styles.chatOptions}>
-      {displayLeaveRoomAlert && <LeaveRoomAlert roomName={roomName} setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert} />}
+      {displayLeaveRoomAlert && <LeaveRoomAlert roomName={roomName as string} setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert} />}
       {inviteContactToRoomFormOpen && (
         <InviteContactToRoomForm
           roomType={roomType}
