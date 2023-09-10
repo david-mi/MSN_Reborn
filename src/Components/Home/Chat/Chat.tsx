@@ -13,7 +13,7 @@ import { Loader } from "@/Components/Shared";
 
 function Chat() {
   const room = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
-  const { id, messages, usersId, type, previousMessagesScrollTop } = room
+  const { id, messages, usersId, type, previousMessagesScrollTop, name } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
   const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
@@ -38,6 +38,7 @@ function Chat() {
         currentRoomUsersProfile={currentRoomUsersProfile}
         displayUsersPanel={displayUsersPanel}
         setDisplayUsersPanel={setDisplayUsersPanel}
+        roomName={name}
       />
       <div className={styles.messagesAndUsersPanel}>
         <ChatMessages

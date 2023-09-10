@@ -7,6 +7,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { UserProfile } from "@/redux/slices/user/types";
 import styles from "./chatOptions.module.css";
 import { ButtonWithSvg } from "@/Components/Shared";
+import LeaveRoomAlert from "./LeaveRoomAlert/LeaveRoomAlert";
 
 interface Props {
   roomType: RoomType
@@ -14,12 +15,14 @@ interface Props {
   currentRoomUsersProfile: Map<string, UserProfile>
   displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
+  roomName: string
 }
 
 function ChatOptions(props: Props) {
-  const { roomType, usersId, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel } = props
+  const { roomType, usersId, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel, roomName } = props
 
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
+  const [displayLeaveRoomAlert, setDisplayLeaveRoomAlert] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
   const contactsOutsideCurrentRoom = useMemo(() => {
     return Object
@@ -36,8 +39,13 @@ function ChatOptions(props: Props) {
     setDisplayUsersPanel((state) => !state)
   }
 
+  function toggleLeaveRoomAlert() {
+    setDisplayLeaveRoomAlert((state) => !state)
+  }
+
   return (
     <div className={styles.chatOptions}>
+      {displayLeaveRoomAlert && <LeaveRoomAlert roomName={roomName} setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert} />}
       {inviteContactToRoomFormOpen && (
         <InviteContactToRoomForm
           roomType={roomType}
@@ -54,7 +62,7 @@ function ChatOptions(props: Props) {
       />
       {roomType === "manyToMany" && (
         <>
-          <ButtonWithSvg onClick={() => console.log("click")} className={styles.leaveRoom}>
+          <ButtonWithSvg onClick={toggleLeaveRoomAlert} className={styles.leaveRoom}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
               <g fill="currentColor">
                 <path fillRule="evenodd" d="M15.347 7.116a.5.5 0 0 1 .704.064l2.083 2.5a.5.5 0 0 1-.768.64l-2.083-2.5a.5.5 0 0 1 .064-.704Z" clipRule="evenodd"></path>
