@@ -14,7 +14,7 @@ import {
   doc,
   updateDoc
 } from "firebase/firestore"
-import type { DatabaseMessage, Message, RoomId } from "@/redux/slices/room/types"
+import type { DatabaseMessage, Message, RoomId, RoomUsers } from "@/redux/slices/room/types"
 
 export class MessageService {
   static get currentUser() {
@@ -37,7 +37,7 @@ export class MessageService {
     } as Message
   }
 
-  public static async add(content: string, roomId: RoomId, users: string[]) {
+  public static async add(content: string, roomId: RoomId, users: RoomUsers) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
     const message = {
@@ -45,12 +45,13 @@ export class MessageService {
       message: content,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      readBy: users.reduce((readBy, userId) => {
-        return {
-          ...readBy,
-          [userId]: userId === this.currentUser.uid,
-        };
-      }, {})
+      readBy: Object.keys(users)
+        .reduce((readBy, userId) => {
+          return {
+            ...readBy,
+            [userId]: userId === this.currentUser.uid,
+          };
+        }, {})
     }
 
     await addDoc(messagesCollectionRef, message)

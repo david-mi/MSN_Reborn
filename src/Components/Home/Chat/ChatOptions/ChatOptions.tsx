@@ -1,5 +1,5 @@
 import { useState, useMemo, Dispatch, SetStateAction } from "react"
-import type { RoomType } from "@/redux/slices/room/types";
+import type { RoomType, RoomUsers } from "@/redux/slices/room/types";
 import ButtonWithImage from "@/Components/Shared/ButtonWithImage/ButtonWithImage";
 import addUserToChatIcon from "./chat-add-user.png"
 import InviteContactToRoomForm from "./InviteContactToRoomForm/InviteContactToRoomForm";
@@ -11,7 +11,7 @@ import LeaveRoomAlert from "./LeaveRoomAlert/LeaveRoomAlert";
 
 interface Props {
   roomType: RoomType
-  usersId: string[]
+  users: RoomUsers
   currentRoomUsersProfile: Map<string, UserProfile>
   displayUsersPanel: boolean
   setDisplayUsersPanel: Dispatch<SetStateAction<boolean>>
@@ -19,7 +19,7 @@ interface Props {
 }
 
 function ChatOptions(props: Props) {
-  const { roomType, usersId, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel, roomName } = props
+  const { roomType, users, currentRoomUsersProfile, displayUsersPanel, setDisplayUsersPanel, roomName } = props
 
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const [displayLeaveRoomAlert, setDisplayLeaveRoomAlert] = useState(false)
@@ -27,8 +27,8 @@ function ChatOptions(props: Props) {
   const contactsOutsideCurrentRoom = useMemo(() => {
     return Object
       .values(contactsProfile)
-      .filter((contact) => usersId.includes(contact.id) === false)
-  }, [contactsProfile, usersId])
+      .filter((contact) => users[contact.id])
+  }, [contactsProfile, users])
   const usersPanelClassName = displayUsersPanel ? styles.isOpen : ""
 
   function toggleInviteContactToRoomForm() {

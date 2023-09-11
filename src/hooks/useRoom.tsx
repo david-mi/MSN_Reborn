@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
-import type { DatabaseRoom } from "@/redux/slices/room/types";
+import { UserId, type DatabaseRoom } from "@/redux/slices/room/types";
 
 function useRoom() {
   const dispatch = useAppDispatch()
@@ -15,7 +15,7 @@ function useRoom() {
       .values(roomsList)
       .filter((room) => room.type === "manyToMany")
   }, [roomsList])
-  const unSubscribeMessagesCallbacksRef = useRef<Unsubscribe[]>([])
+  const unSubscribeMessagesCallbacksRef = useRef<Map<UserId, Unsubscribe>>(new Map())
   const hasAddedOldestRoomMessageDate = useRef(false)
 
   useEffect(() => {
@@ -43,9 +43,7 @@ function useRoom() {
             dispatch(initializeRoom(roomData))
 
             const unSubscribeRoomMessages = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
-              unSubscribeMessagesCallbacksRef.current.push(unSubscribeRoomMessages)
               // if (roomMessagesSnapshot.metadata.hasPendingWrites) return
-
               roomMessagesSnapshot.docChanges().forEach(change => {
                 const message = MessageService.getMessageFromSnapshot(change.doc)
 
@@ -71,11 +69,20 @@ function useRoom() {
               })
 
             })
+            unSubscribeMessagesCallbacksRef.current.set(roomData.id, unSubscribeRoomMessages)
             break;
           }
           case "modified": {
             dispatch(modifyRoom(roomData))
             break;
+          }
+          case "removed": {
+            const unsubscribeRoomMessages = unSubscribeMessagesCallbacksRef.current.get(roomData.id)
+
+            if (unsubscribeRoomMessages) {
+              unsubscribeRoomMessages()
+              unSubscribeMessagesCallbacksRef.current.delete(roomData.id)
+            }
           }
         }
       }
@@ -86,10 +93,9 @@ function useRoom() {
     return () => {
       unSubscribeRooms()
 
-      unSubscribeMessagesCallbacksRef.current.forEach((unSubscribeMessageCallback) => {
-        unSubscribeMessageCallback()
-        unSubscribeMessagesCallbacksRef.current = []
-      })
+      Array
+        .from(unSubscribeMessagesCallbacksRef.current.values())
+        .forEach((unsubscribeMessages) => unsubscribeMessages())
     }
   }, [])
 

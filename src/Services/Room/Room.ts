@@ -85,4 +85,12 @@ export class RoomService {
       [roomInvitationId]: deleteField()
     })
   }
+
+  public static async leaveRoom(roomId: string) {
+    const roomRef = doc(firebase.firestore, "rooms", roomId)
+
+    return updateDoc(roomRef, {
+      [`users.${this.currentUser.uid}`]: false
+    })
+  }
 }

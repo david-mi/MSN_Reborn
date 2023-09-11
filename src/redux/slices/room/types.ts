@@ -30,11 +30,13 @@ export interface DatabaseMessage {
   message: string
 }
 
+export type RoomUsers = { [userId: string]: boolean }
+
 export interface Room {
   name: null | string
   id: string
   type: RoomType
-  usersId: UserId[]
+  users: RoomUsers
   previousMessagesScrollTop: number | null
   nonFriendUsersProfile: RoomUsersProfile
   messages: Message[]
@@ -47,7 +49,7 @@ export type DatabaseRoom = {
   name: string | null
   type: RoomType
   users: {
-    [userId: string]: true
+    [userId: string]: boolean
   }
 }
 
@@ -87,6 +89,10 @@ export interface RoomSlice {
     error: string | null
   }
   sendNewRoomInvitationRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
+  leaveRoomRequest: {
     status: RequestStatus,
     error: string | null
   }

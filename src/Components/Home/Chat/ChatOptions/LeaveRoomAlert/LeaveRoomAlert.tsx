@@ -2,6 +2,7 @@ import { Avatar, ModaleLayout, Button } from "@/Components/Shared";
 import { Dispatch, SetStateAction } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import styles from "./leaveRoomAlert.module.css";
+import { leaveRoom } from "@/redux/slices/room/room";
 
 interface Props {
   roomName: string,
@@ -11,14 +12,20 @@ interface Props {
 
 function LeaveRoomAlert({ roomName, roomAvatarSrc, setDisplayLeaveRoomAlert }: Props) {
   const dispatch = useAppDispatch()
-  const request = useAppSelector(({ contact }) => contact.request)
+  const request = useAppSelector(({ room }) => room.leaveRoomRequest)
+  const roomId = useAppSelector(({ room }) => room.currentRoomId as string)
 
   function closeLeaveRoomAlert() {
     setDisplayLeaveRoomAlert(false)
   }
 
-  function handleAcceptButtonClick() {
-    console.log("accept")
+  async function handleAcceptButtonClick() {
+    try {
+      await dispatch(leaveRoom(roomId)).unwrap()
+      closeLeaveRoomAlert()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

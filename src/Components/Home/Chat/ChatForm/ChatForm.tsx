@@ -5,14 +5,15 @@ import { sendMessage } from "@/redux/slices/room/room";
 import { ChatFormFields } from "./type";
 import { MessageValidation } from "@/utils/Validation";
 import styles from "./chatForm.module.css";
+import { RoomUsers } from "@/redux/slices/room/types";
 
 interface Props {
   roomId: string
-  usersId: string[]
+  users: RoomUsers
   shouldScrollToBottomRef: MutableRefObject<boolean>
 }
 
-function ChatForm({ roomId, usersId, shouldScrollToBottomRef }: Props) {
+function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
   const dispatch = useAppDispatch()
   const {
     register,
@@ -27,7 +28,7 @@ function ChatForm({ roomId, usersId, shouldScrollToBottomRef }: Props) {
 
   async function onSubmit({ content }: ChatFormFields) {
     try {
-      await dispatch(sendMessage({ roomId, usersId, content })).unwrap()
+      await dispatch(sendMessage({ roomId, users, content })).unwrap()
       setFocus("content")
       reset()
     } catch (error) {

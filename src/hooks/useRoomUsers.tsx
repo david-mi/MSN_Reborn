@@ -5,6 +5,7 @@ import { setRoomNonFriendUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
 import { RoomType, UserId } from "@/redux/slices/room/types";
 import { onValue, ref, Unsubscribe } from "firebase/database";
+import { UserService } from "@/Services";
 
 function useRoomUsers(roomId: string, roomType: RoomType) {
   const dispatch = useAppDispatch()
@@ -19,55 +20,72 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
     for (const contactId in contactsProfile) {
       const contactProfile = contactsProfile[contactId]
 
-      if (currentRoom.usersId.indexOf(contactId) !== -1) {
+      if (currentRoom.users[contactId] !== undefined) {
         currentRoomUsersProfile.set(contactId, contactProfile)
       }
     }
 
     return currentRoomUsersProfile
-  }, [contactsProfile, currentRoom.nonFriendUsersProfile, currentRoom.usersId])
+  }, [contactsProfile, currentRoom.nonFriendUsersProfile, currentRoom.users])
   const nonFriendUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
   useEffect(() => {
     if (roomType === "oneToOne") return
 
-    const roomUsersIdWithoutContactsAndCurrentUser = currentRoom.usersId.filter((currentRoomUserId) => {
-      return (
-        contactsIds.indexOf(currentRoomUserId) === -1 &&
-        currentRoomUserId !== currentUser.id
-      )
-    })
+    (async function () {
+      const nonFriendUsers = Object
+        .entries(currentRoom.users)
+        .reduce<{ unsubscribed: UserId[], subscribed: UserId[] }>((nonFriendUsers, [userId, isSubscribed]) => {
+          if (contactsIds.indexOf(userId) !== -1 || userId === currentUser.id) {
+            return nonFriendUsers
+          }
 
-    if (roomUsersIdWithoutContactsAndCurrentUser.length === 0) return
+          if (isSubscribed) {
+            nonFriendUsers.subscribed.push(userId)
+          } else {
+            nonFriendUsers.unsubscribed.push(userId)
+          }
 
-    const nonFriendUsersProfile: {
-      [id: string]: UserProfile
-    } = {}
+          return nonFriendUsers
+        }, { unsubscribed: [], subscribed: [] })
 
-    for (const userId of roomUsersIdWithoutContactsAndCurrentUser) {
-      const nonRoomUserProfileRef = ref(firebase.database, `profiles/${userId}`)
+      const nonFriendUsersProfile: { [id: string]: UserProfile } = {}
 
-      const unsubscribeNonRoomUserProfile = onValue(nonRoomUserProfileRef, async (snapshot) => {
-        const nonRoomUserProfile = {
-          ...snapshot.val(),
-          id: snapshot.key
-        } as UserProfile
+      for (const userId of nonFriendUsers.unsubscribed) {
+        const nonFriendUnsubscribedUserProfile = await UserService.getProfile(userId)
+        nonFriendUsersProfile[nonFriendUnsubscribedUserProfile.id] = nonFriendUnsubscribedUserProfile
 
-        nonFriendUsersProfile[nonRoomUserProfile.id] = nonRoomUserProfile
+        dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile: nonFriendUsersProfile }))
+      }
 
-        dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile }))
-      })
+      if (nonFriendUsers.subscribed.length === 0) return
 
-      nonFriendUsersProfileUnsubscribeList.current.push(unsubscribeNonRoomUserProfile)
-    }
+      for (const userId of nonFriendUsers.subscribed) {
+        const subscribedNonFriendUserProfileRef = ref(firebase.database, `profiles/${userId}`)
+
+        const unsubscribeNonRoomUserProfile = onValue(subscribedNonFriendUserProfileRef, async (snapshot) => {
+          const subscribedNonFriendUserProfile = {
+            ...snapshot.val(),
+            id: snapshot.key
+          } as UserProfile
+
+
+          nonFriendUsersProfile[subscribedNonFriendUserProfile.id] = subscribedNonFriendUserProfile
+
+          dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile }))
+        })
+
+        nonFriendUsersProfileUnsubscribeList.current.push(unsubscribeNonRoomUserProfile)
+      }
+    })()
 
     return () => {
-      nonFriendUsersProfileUnsubscribeList.current.forEach((unSubscribeMessageCallback) => {
-        unSubscribeMessageCallback()
+      nonFriendUsersProfileUnsubscribeList.current.forEach((unSubscribeNonFriendUserProfile) => {
+        unSubscribeNonFriendUserProfile()
         nonFriendUsersProfileUnsubscribeList.current = []
       })
     }
-  }, [currentRoom.usersId, contactsIds])
+  }, [currentRoom.users, contactsIds])
 
   return {
     getRoomNonFriendProfilesRequest,

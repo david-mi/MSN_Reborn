@@ -13,7 +13,7 @@ import { Loader } from "@/Components/Shared";
 
 function Chat() {
   const room = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
-  const { id, messages, usersId, type, previousMessagesScrollTop, name } = room
+  const { id, messages, users, type, previousMessagesScrollTop, name } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
   const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
@@ -34,7 +34,7 @@ function Chat() {
       <ChatHeader room={room} currentRoomUsersProfile={currentRoomUsersProfile} />
       <ChatOptions
         roomType={type}
-        usersId={usersId}
+        users={users}
         currentRoomUsersProfile={currentRoomUsersProfile}
         displayUsersPanel={displayUsersPanel}
         setDisplayUsersPanel={setDisplayUsersPanel}
@@ -51,13 +51,13 @@ function Chat() {
           previousMessagesScrollTop={previousMessagesScrollTop}
         />
         {type === "manyToMany" && displayUsersPanel && (
-          <ChatUsersPanel currentRoomUsersProfile={currentRoomUsersProfile} />
+          <ChatUsersPanel users={users} currentRoomUsersProfile={currentRoomUsersProfile} />
         )}
       </div>
       <ChatForm
         shouldScrollToBottomRef={shouldScrollToBottomRef}
         roomId={id}
-        usersId={usersId}
+        users={users}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsersProfile } from "./types";
+import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile } from "./types";
 import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
@@ -26,6 +26,10 @@ export const initialChatState: RoomSlice = {
   sendNewRoomInvitationRequest: {
     status: "IDLE",
     error: null
+  },
+  leaveRoomRequest: {
+    status: "IDLE",
+    error: null
   }
 }
 
@@ -42,7 +46,6 @@ const roomSlice = createSlice({
 
       state.roomsList[roomId] = {
         ...payload,
-        usersId: Object.keys(payload.users),
         messages: [],
         nonFriendUsersProfile: {},
         unreadMessagesCount: 0,
@@ -53,7 +56,7 @@ const roomSlice = createSlice({
     modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
       state.roomsList[roomToEdit.id] = {
         ...state.roomsList[roomToEdit.id],
-        usersId: Object.keys(roomToEdit.users),
+        users: roomToEdit.users,
         name: roomToEdit.name
       }
     },
@@ -103,7 +106,7 @@ const roomSlice = createSlice({
     setRoomUserProfile(state, { payload: userProfile }: PayloadAction<UserProfile>) {
       for (const roomList in state.roomsList) {
         const room = state.roomsList[roomList]
-        if (room.usersId.includes(userProfile.id)) {
+        if (room.users[userProfile.id]) {
           room.nonFriendUsersProfile[userProfile.id] = userProfile
         }
       }
@@ -122,7 +125,11 @@ const roomSlice = createSlice({
     setPreviousScrollTop(state, { payload }: PayloadAction<{ scrollTop: number | null, roomId: string }>) {
       const targetRoom = state.roomsList[payload.roomId]
 
-      targetRoom.previousMessagesScrollTop = payload.scrollTop
+      // This can be called after room deletion from store
+      // so we need to check if room exist
+      if (targetRoom) {
+        targetRoom.previousMessagesScrollTop = payload.scrollTop
+      }
     }
   },
   extraReducers: (builder) => {
@@ -150,14 +157,27 @@ const roomSlice = createSlice({
     builder.addCase(sendNewRoomInvitation.fulfilled, (state) => {
       state.sendNewRoomInvitationRequest.status = "IDLE"
     })
+    builder.addCase(leaveRoom.pending, (state) => {
+      state.leaveRoomRequest.status = "PENDING"
+      state.leaveRoomRequest.error = null
+    })
+    builder.addCase(leaveRoom.fulfilled, (state, { payload }) => {
+      state.leaveRoomRequest.status = "IDLE"
+      delete state.roomsList[payload]
+      state.currentRoomId = null
+    })
+    builder.addCase(leaveRoom.rejected, (state, { error }) => {
+      state.leaveRoomRequest.status = "REJECTED"
+      state.leaveRoomRequest.error = (error as FirebaseError).message
+    })
     builder.addCase(disconnectAction, () => initialChatState)
   }
 })
 
 export const sendMessage = createAppAsyncThunk(
   "room/sendMessage",
-  async ({ content, roomId, usersId }: { content: string, roomId: string, usersId: string[], }) => {
-    return MessageService.add(content, roomId, usersId)
+  async ({ content, roomId, users }: { content: string, roomId: string, users: RoomUsers, }) => {
+    return MessageService.add(content, roomId, users)
   })
 
 export const markRoomMessageAsRead = createAppAsyncThunk(
@@ -198,6 +218,11 @@ export const denyRoomInvitation = createAppAsyncThunk(
     return RoomService.denyRoomInvitation(requestingUserId)
   })
 
+export const leaveRoom = createAppAsyncThunk("room/leave", async (roomId: string) => {
+  await RoomService.leaveRoom(roomId)
+  return roomId
+})
+
 export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
@@ -211,7 +236,7 @@ export const {
   removeUserFromRoomNonContactUsersProfile,
   modifyRoom,
   setOldestRoomMessageDate,
-  setPreviousScrollTop
+  setPreviousScrollTop,
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer
