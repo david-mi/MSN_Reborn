@@ -23,6 +23,7 @@ function InviteContactToRoomForm(props: Props) {
   const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
+  const currentUserId = useAppSelector(({ user }) => user.id)
   const hasErrors = Object.keys(errors).length > 0
   const selectedEmail = watch("email")
   const preventFormSubmit = hasErrors || !selectedEmail || request.status === "PENDING"
@@ -34,7 +35,9 @@ function InviteContactToRoomForm(props: Props) {
       if (roomType === "manyToMany") {
         await dispatch(sendNewRoomInvitation({ roomId: currentRoomId as string, userIdToInvite })).unwrap()
       } else {
-        const currentRoomContact = currentRoomUsersProfile.values().next().value as UserProfile
+        const currentRoomContact = (Array
+          .from(currentRoomUsersProfile.values())
+          .filter((userProfile) => userProfile.id !== currentUserId))[0]
         const createdRoomId = await dispatch(createCustomRoom({ name: roomName })).unwrap()
         await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite: currentRoomContact.id })).unwrap()
         await dispatch(sendNewRoomInvitation({ roomId: createdRoomId, userIdToInvite })).unwrap()

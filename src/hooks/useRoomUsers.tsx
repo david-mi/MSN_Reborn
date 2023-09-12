@@ -16,6 +16,7 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
   const contactsIds = useAppSelector(({ contact }) => contact.contactsIds)
   const currentRoomUsersProfile = useMemo(() => {
     const currentRoomUsersProfile = new Map<UserId, UserProfile>(Object.entries(currentRoom.nonFriendUsersProfile))
+    currentRoomUsersProfile.set(currentUser.id, currentUser)
 
     for (const contactId in contactsProfile) {
       const contactProfile = contactsProfile[contactId]
@@ -26,7 +27,7 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
     }
 
     return currentRoomUsersProfile
-  }, [contactsProfile, currentRoom.nonFriendUsersProfile, currentRoom.users])
+  }, [contactsProfile, currentRoom.nonFriendUsersProfile, currentRoom.users, currentUser])
   const nonFriendUsersProfileUnsubscribeList = useRef<Unsubscribe[]>([])
 
   useEffect(() => {

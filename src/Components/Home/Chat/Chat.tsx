@@ -20,11 +20,13 @@ function Chat() {
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 850px)").matches)
   const classNames = `${styles.chat} ${styles[type]}`
+  const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === Object.keys(users).length
 
   if (
     getCurrentUserProfileStatus === "PENDING" ||
     getContactsProfileStatus === "PENDING" ||
-    getRoomNonFriendProfilesRequest.status === "PENDING"
+    getRoomNonFriendProfilesRequest.status === "PENDING" ||
+    isEveryRoomUsersLoaded === false
   ) {
     return <Loader size={"3rem"} />
   }

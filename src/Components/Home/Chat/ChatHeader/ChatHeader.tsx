@@ -1,6 +1,6 @@
 import chatLogo from "./chat-logo.png"
 import { ImageLoadWrapper, CloseButton } from "@/Components/Shared";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 import styles from "./chatHeader.module.css";
 import { Room } from "@/redux/slices/room/types";
@@ -14,6 +14,7 @@ interface Props {
 
 function ChatHeader({ room, currentRoomUsersProfile }: Props) {
   const dispatch = useAppDispatch()
+  const currentUserId = useAppSelector(({ user }) => user.id)
 
   function closeChat() {
     dispatch(setcurrentDisplayedRoom(null))
@@ -22,7 +23,9 @@ function ChatHeader({ room, currentRoomUsersProfile }: Props) {
   let headerInfos: JSX.Element
 
   if (room.type === "oneToOne") {
-    const targetUser = currentRoomUsersProfile.values().next().value as UserProfile
+    const targetUser = (Array
+      .from(currentRoomUsersProfile.values())
+      .filter((userProfile) => userProfile.id !== currentUserId))[0]
     const { displayedStatus, personalMessage, email, username } = targetUser
     const targetUserStatus = statusesObject[displayedStatus]
 

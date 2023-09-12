@@ -22,7 +22,6 @@ function ChatMessages(props: Props) {
   const { messages, currentRoomUsersProfile, roomId, roomType, shouldScrollToBottomRef, previousMessagesScrollTop } = props
   const chatMessagesBottomRef = useRef<HTMLDivElement>(null!)
   const currentRoomOldestRetrievedMessageDate = useAppSelector(({ room }) => room.roomsList[roomId].oldestRetrievedMessageDate)
-  const currentUser = useAppSelector(({ user }) => user)
   const { canPaginate, paginate, retrievingPreviousMessages } = useRoomMessagesPagination(roomId, 5)
   const loaderRef = useRef<HTMLDivElement>(null!)
   const containerRef = useRef<HTMLDivElement>(null!)
@@ -116,7 +115,15 @@ function ChatMessages(props: Props) {
               roomId={roomId}
               roomType={roomType}
               message={message}
-              user={currentRoomUsersProfile.get(message.userId) || currentUser}
+              user={currentRoomUsersProfile.get(message.userId) || {
+                avatarSrc: "",
+                displayedStatus: "offline",
+                id: "default",
+                email: "",
+                personalMessage: "",
+                statusBeforeDisconnect: "offline",
+                username: "unknown"
+              }}
               currentRoomUsersProfile={currentRoomUsersProfile}
             />
           )
