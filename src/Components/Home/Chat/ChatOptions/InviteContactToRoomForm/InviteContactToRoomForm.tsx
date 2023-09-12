@@ -13,12 +13,12 @@ import { RoomType } from "@/redux/slices/room/types"
 interface Props {
   roomType: RoomType
   toggleInviteContactToRoomForm: () => void
-  contactsOutsideCurrentRoom: Contact[]
+  unsubscribedContacts: Contact[]
   currentRoomUsersProfile: Map<string, UserProfile>
 }
 
 function InviteContactToRoomForm(props: Props) {
-  const { toggleInviteContactToRoomForm, contactsOutsideCurrentRoom, currentRoomUsersProfile, roomType } = props
+  const { toggleInviteContactToRoomForm, unsubscribedContacts, currentRoomUsersProfile, roomType } = props
   const dispatch = useAppDispatch()
   const { register, handleSubmit, formState: { errors }, watch, setError } = useForm<InviteContactToRoomFormField>()
   const request = useAppSelector(({ contact }) => contact.request)
@@ -28,7 +28,7 @@ function InviteContactToRoomForm(props: Props) {
   const preventFormSubmit = hasErrors || !selectedEmail || request.status === "PENDING"
 
   async function onSubmit({ email, roomName }: InviteContactToRoomFormField) {
-    const userIdToInvite = contactsOutsideCurrentRoom.find((contact) => contact.email === email)!.id
+    const userIdToInvite = unsubscribedContacts.find((contact) => contact.email === email)!.id
 
     try {
       if (roomType === "manyToMany") {
@@ -73,13 +73,13 @@ function InviteContactToRoomForm(props: Props) {
               validate: (selectedEmail: string) => {
                 return InviteContactToRoomValidation.checkIfEmailIsNotInCurrentRoom(
                   selectedEmail,
-                  contactsOutsideCurrentRoom
+                  unsubscribedContacts
                 )
               }
             })}
           >
             <option value="choose" disabled>Choisir contact</option>
-            {contactsOutsideCurrentRoom.map(({ email, username, id }) => {
+            {unsubscribedContacts.map(({ email, username, id }) => {
               return <option key={id} value={email}>{username} : ({email})</option>
             })}
           </select>
