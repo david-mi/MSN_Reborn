@@ -53,7 +53,11 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
 
       for (const userId of nonFriendUsers.unsubscribed) {
         const nonFriendUnsubscribedUserProfile = await UserService.getProfile(userId)
-        nonFriendUsersProfile[nonFriendUnsubscribedUserProfile.id] = nonFriendUnsubscribedUserProfile
+        const profileWithoutAllInfos: UserProfile = {
+          ...nonFriendUnsubscribedUserProfile,
+          avatarSrc: ""
+        }
+        nonFriendUsersProfile[nonFriendUnsubscribedUserProfile.id] = profileWithoutAllInfos
 
         dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile: nonFriendUsersProfile }))
       }
