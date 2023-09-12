@@ -24,10 +24,10 @@ function ChatOptions(props: Props) {
   const [inviteContactToRoomFormOpen, setInviteContactToRoomFormOpen] = useState(false)
   const [displayLeaveRoomAlert, setDisplayLeaveRoomAlert] = useState(false)
   const contactsProfile = useAppSelector(({ contact }) => contact.contactsProfile)
-  const contactsOutsideCurrentRoom = useMemo(() => {
+  const unsubscribedContacts = useMemo(() => {
     return Object
       .values(contactsProfile)
-      .filter((contact) => users[contact.id])
+      .filter((contact) => users[contact.id] === false)
   }, [contactsProfile, users])
   const usersPanelClassName = displayUsersPanel ? styles.isOpen : ""
 
@@ -50,7 +50,7 @@ function ChatOptions(props: Props) {
         <InviteContactToRoomForm
           roomType={roomType}
           toggleInviteContactToRoomForm={toggleInviteContactToRoomForm}
-          contactsOutsideCurrentRoom={contactsOutsideCurrentRoom}
+          unsubscribedContacts={unsubscribedContacts}
           currentRoomUsersProfile={currentRoomUsersProfile}
         />
       )}
@@ -58,7 +58,7 @@ function ChatOptions(props: Props) {
         onClick={toggleInviteContactToRoomForm}
         src={addUserToChatIcon}
         className={styles.addContactButton}
-        disabled={contactsOutsideCurrentRoom.length === 0}
+        disabled={unsubscribedContacts.length === 0}
       />
       {roomType === "manyToMany" && (
         <>
