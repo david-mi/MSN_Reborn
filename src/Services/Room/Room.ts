@@ -1,5 +1,5 @@
 import { firebase } from "@/firebase/config"
-import { Room, RoomType } from "@/redux/slices/room/types"
+import { DatabaseRoom, Room, RoomType } from "@/redux/slices/room/types"
 import {
   addDoc,
   collection,
@@ -8,7 +8,10 @@ import {
   doc,
   setDoc,
   updateDoc,
-  deleteField
+  deleteField,
+  getDoc,
+  deleteDoc,
+  getDocs
 }
   from "firebase/firestore"
 
@@ -89,8 +92,43 @@ export class RoomService {
   public static async leaveRoom(roomId: string) {
     const roomRef = doc(firebase.firestore, "rooms", roomId)
 
-    return updateDoc(roomRef, {
+    await updateDoc(roomRef, {
       [`users.${this.currentUser.uid}`]: false
     })
+
+    await this.deleteRoomIfEveryMembersUnsubscribed(roomId)
+  }
+
+  public static async deleteRoomIfEveryMembersUnsubscribed(roomId: string) {
+    const roomRef = doc(firebase.firestore, "rooms", roomId)
+
+    const roomSnapshot = await getDoc(roomRef)
+    const roomUsers = (roomSnapshot.data() as DatabaseRoom).users
+
+    const amountOfSubscribedUsersLeft = Object
+      .values(roomUsers)
+      .filter(Boolean)
+      .length
+
+    if (amountOfSubscribedUsersLeft === 0) {
+      await this.deleteRoom(roomId)
+      await this.deleteRoomMessages(roomId)
+    }
+  }
+
+  private static async deleteRoom(roomId: string) {
+    const roomRef = doc(firebase.firestore, "rooms", roomId)
+
+    return deleteDoc(roomRef)
+  }
+
+  private static async deleteRoomMessages(roomId: string) {
+    const roomMessagesRef = collection(firebase.firestore, "rooms", roomId, "messages")
+
+    const messagesSnapshot = await getDocs(roomMessagesRef)
+
+    for (const message of messagesSnapshot.docs) {
+      await deleteDoc(message.ref)
+    }
   }
 }
