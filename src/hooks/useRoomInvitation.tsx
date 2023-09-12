@@ -26,7 +26,7 @@ function useRoomInvitation() {
         const roomRef = pendingRoomsInvitation[roomInvitationId]
 
         const roomSnapshot = await getDoc(roomRef)
-        const { name: roomName, users: roomUsersId } = roomSnapshot.data() as DatabaseCustomRoom
+        const { name: roomName, users } = roomSnapshot.data() as DatabaseCustomRoom
 
         const pendingRoomInvitationToSend: PendingRoomInvitation = {
           id: roomInvitationId,
@@ -35,8 +35,11 @@ function useRoomInvitation() {
           roomUsersProfile: {}
         }
 
-        for (const roomUserId in roomUsersId) {
+        for (const roomUserId in users) {
           const roomUserProfileRef = ref(firebase.database, `profiles/${roomUserId}`)
+          const isUserSubscribed = users[roomUserId] === true
+          if (isUserSubscribed === false) continue
+
           const roomUserProfileSnapshot = await get(roomUserProfileRef)
           roomUserProfileSnapshot.key
           const roomUserProfile = {
