@@ -67,10 +67,6 @@
   padding-inline: var(--chat-gap);
   display: flex;
 
-  &.system {
-    font-weight: bold;
-  }
-
   &:hover > .date {
     opacity: 0.6;
   }

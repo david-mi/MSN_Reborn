@@ -5,8 +5,9 @@ import { Avatar } from "@/Components/Shared";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { markRoomMessageAsRead } from "@/redux/slices/room/room";
 import CheckMarkIcon from "./CheckMarkIcon/CheckMarkIcon";
-import styles from "./chatMessage.module.css";
 import ReadByList from "./ReadByList/ReadByList";
+import SystemMessage from "./SystemMessage/SystemMessage";
+import styles from "./chatMessage.module.css";
 
 interface Props {
   message: Message,
@@ -51,6 +52,10 @@ function ChatMessage(props: Props) {
     }
   }, [dispatch])
 
+  if (user.id === "system") {
+    return <SystemMessage message={message} parseTimestamp={parseTimestamp} />
+  }
+
   const chatText = roomType === "manyToMany"
     ? (
       <span
@@ -77,17 +82,6 @@ function ChatMessage(props: Props) {
         }
       </span>
     )
-
-  if (user.id === "system") {
-    const classNames = `${styles.simpleChatMessage} ${styles.system}`
-
-    return (
-      <div className={classNames}>
-        <p className={styles.date}>{parseTimestamp(createdAt, true)}</p>
-        <p>{text}</p>
-      </div>
-    )
-  }
 
   return (
     displayAllInfos

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile } from "./types";
+import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsersProfile } from "./types";
 import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
@@ -180,8 +180,8 @@ const roomSlice = createSlice({
 
 export const sendMessage = createAppAsyncThunk(
   "room/sendMessage",
-  async ({ content, roomId, users }: { content: string, roomId: string, users: RoomUsers, }) => {
-    return MessageService.add(content, roomId, users)
+  async ({ content, roomId }: { content: string, roomId: string }) => {
+    return MessageService.add(content, roomId)
   })
 
 export const markRoomMessageAsRead = createAppAsyncThunk(
@@ -208,7 +208,7 @@ export const acceptRoomInvitation = createAppAsyncThunk(
     { roomInvitationId, roomId, username }:
       { roomInvitationId: string, roomId: string, username: string }) => {
     await RoomService.acceptRoomInvitation(roomInvitationId, roomId)
-    return MessageService.addFromSystem(`▶ ${username} a rejoint le salon`, roomId)
+    return MessageService.addFromSystem(`:arrow_join: ${username} a rejoint le salon`, roomId)
   })
 
 export const createCustomRoom = createAppAsyncThunk(
@@ -229,7 +229,7 @@ export const leaveRoom = createAppAsyncThunk(
   "room/leave",
   async ({ roomId, username }: { roomId: string, username: string }) => {
     await RoomService.leaveRoom(roomId)
-    await MessageService.addFromSystem(`◀ ${username} a quitté le salon`, roomId)
+    await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)
     return roomId
   })
 
