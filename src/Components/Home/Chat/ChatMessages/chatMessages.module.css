@@ -17,10 +17,10 @@
   flex-direction: column;
   gap: 10px;
   flex: 1;
-  min-width: 350px;
+  min-width: 300px;
 }
 
-@media (width < 850px) {
+@media (width < 750px) {
   .chatMessages {
     min-width: auto;
   }

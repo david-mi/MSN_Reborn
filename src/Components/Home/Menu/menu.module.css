@@ -6,10 +6,11 @@
   gap: var(--menu-vertical-gap);
   display: flex;
   flex-direction: column;
+  min-width: 250px;
   max-width: 325px;
 }
 
-@media (width < 850px) {
+@media (width < 750px) {
   .menu {
     max-width: none;
 

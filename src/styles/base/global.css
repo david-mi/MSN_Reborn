@@ -30,7 +30,7 @@ button {
   }
 }
 
-@media (width < 850px) {
+@media (width < 750px) {
   #root {
     padding: 0;
   }

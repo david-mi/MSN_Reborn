@@ -34,7 +34,7 @@
   }
 }
 
-@media (width < 850px) {
+@media (width < 750px) {
   .chat {
     height: 100dvh;
   }

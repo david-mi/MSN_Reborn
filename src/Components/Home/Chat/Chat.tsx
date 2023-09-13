@@ -18,7 +18,7 @@ function Chat() {
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
   const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
-  const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 850px)").matches)
+  const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 750px)").matches)
   const classNames = `${styles.chat} ${styles[type]}`
   const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === Object.keys(users).length
 

@@ -4,7 +4,7 @@
   background-color: #e6eff3;
   border: solid 1px var(--separators-clr);
   margin-left: var(--chat-gap);
-  width: clamp(200px, 20vw, 250px);
+  width: clamp(140px, 17vw, 250px);
   background-color: #e9f6fa;
 
   & ul {
@@ -72,7 +72,7 @@
   }
 }
 
-@media (width < 850px) {
+@media (width < 750px) {
   .chatUsersPanel {
     /* display: none; */
     position: absolute;
