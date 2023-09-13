@@ -13,7 +13,8 @@ interface Props {
 function LeaveRoomAlert({ roomName, roomAvatarSrc, setDisplayLeaveRoomAlert }: Props) {
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ room }) => room.leaveRoomRequest)
-  const roomId = useAppSelector(({ room }) => room.currentRoomId as string)
+  const currentUserName = useAppSelector(({ user }) => user.username)
+  const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
 
   function closeLeaveRoomAlert() {
     setDisplayLeaveRoomAlert(false)
@@ -21,7 +22,7 @@ function LeaveRoomAlert({ roomName, roomAvatarSrc, setDisplayLeaveRoomAlert }: P
 
   async function handleAcceptButtonClick() {
     try {
-      await dispatch(leaveRoom(roomId)).unwrap()
+      await dispatch(leaveRoom({ roomId: currentRoomId!, username: currentUserName })).unwrap()
       closeLeaveRoomAlert()
     } catch (error) {
       console.log(error)

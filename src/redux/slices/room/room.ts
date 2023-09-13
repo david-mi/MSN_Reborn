@@ -101,7 +101,11 @@ const roomSlice = createSlice({
       const targetRoom = state.roomsList[payload.roomId]
       const foundMessageIndex = targetRoom.messages.findIndex((message) => message.id === payload.message.id)!
 
-      targetRoom.messages[foundMessageIndex] = payload.message
+      if (foundMessageIndex !== -1) {
+        targetRoom.messages[foundMessageIndex] = payload.message
+      } else {
+        targetRoom.messages.push(payload.message)
+      }
     },
     setRoomUserProfile(state, { payload: userProfile }: PayloadAction<UserProfile>) {
       for (const roomList in state.roomsList) {
@@ -200,8 +204,11 @@ export const sendNewRoomInvitation = createAppAsyncThunk(
 
 export const acceptRoomInvitation = createAppAsyncThunk(
   "room/acceptInvitation",
-  async ({ roomInvitationId, roomId }: { roomInvitationId: string, roomId: string }) => {
-    return RoomService.acceptRoomInvitation(roomInvitationId, roomId)
+  async (
+    { roomInvitationId, roomId, username }:
+      { roomInvitationId: string, roomId: string, username: string }) => {
+    await RoomService.acceptRoomInvitation(roomInvitationId, roomId)
+    return MessageService.addFromSystem(`▶ ${username} a rejoint le salon`, roomId)
   })
 
 export const createCustomRoom = createAppAsyncThunk(
@@ -218,10 +225,13 @@ export const denyRoomInvitation = createAppAsyncThunk(
     return RoomService.denyRoomInvitation(requestingUserId)
   })
 
-export const leaveRoom = createAppAsyncThunk("room/leave", async (roomId: string) => {
-  await RoomService.leaveRoom(roomId)
-  return roomId
-})
+export const leaveRoom = createAppAsyncThunk(
+  "room/leave",
+  async ({ roomId, username }: { roomId: string, username: string }) => {
+    await RoomService.leaveRoom(roomId)
+    await MessageService.addFromSystem(`◀ ${username} a quitté le salon`, roomId)
+    return roomId
+  })
 
 export const {
   setcurrentDisplayedRoom,

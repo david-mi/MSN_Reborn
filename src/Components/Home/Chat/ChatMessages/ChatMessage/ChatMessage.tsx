@@ -78,6 +78,17 @@ function ChatMessage(props: Props) {
       </span>
     )
 
+  if (user.id === "system") {
+    const classNames = `${styles.simpleChatMessage} ${styles.system}`
+
+    return (
+      <div className={classNames}>
+        <p className={styles.date}>{parseTimestamp(createdAt, true)}</p>
+        <p>{text}</p>
+      </div>
+    )
+  }
+
   return (
     displayAllInfos
       ? (

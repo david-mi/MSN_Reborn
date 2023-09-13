@@ -57,6 +57,20 @@ export class MessageService {
     await addDoc(messagesCollectionRef, message)
   }
 
+  public static async addFromSystem(content: string, roomId: RoomId) {
+    const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
+
+    const message = {
+      userId: "system",
+      message: content,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      readBy: {}
+    }
+
+    await addDoc(messagesCollectionRef, message)
+  }
+
   public static async markRoomMessageAsRead(roomId: string, messageId: string) {
     const messageToMarkAsReadRef = doc(firebase.firestore, "rooms", roomId, "messages", messageId)
     return updateDoc(messageToMarkAsReadRef, {

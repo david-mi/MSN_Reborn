@@ -43,10 +43,10 @@ function useRoom() {
             dispatch(initializeRoom(roomData))
 
             const unSubscribeRoomMessages = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
-              // if (roomMessagesSnapshot.metadata.hasPendingWrites) return
+              if (roomMessagesSnapshot.metadata.hasPendingWrites) return
+
               roomMessagesSnapshot.docChanges().forEach(change => {
                 const message = MessageService.getMessageFromSnapshot(change.doc)
-
                 switch (change.type) {
                   case "added": {
                     if (hasAddedOldestRoomMessageDate.current === false) {
@@ -56,7 +56,7 @@ function useRoom() {
 
                     dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
 
-                    if (message.readBy[firebase.auth.currentUser!.uid] === false) {
+                    if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
                       dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
                     }
 

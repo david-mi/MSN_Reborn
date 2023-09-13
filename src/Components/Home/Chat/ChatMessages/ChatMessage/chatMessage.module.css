@@ -67,12 +67,19 @@
   padding-inline: var(--chat-gap);
   display: flex;
 
+  &.system {
+    font-weight: bold;
+  }
+
   &:hover > .date {
-    opacity: 1;
+    opacity: 0.6;
   }
 
   & > .date {
     opacity: 0;
     flex: 0 0 50px;
+    font-weight: bold;
+    font-size: clamp(0.7rem, 0.8rem - 0.2vw, 0.8rem);
+    align-self: center;
   }
 }

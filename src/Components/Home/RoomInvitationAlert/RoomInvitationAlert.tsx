@@ -13,9 +13,10 @@ function RoomInvitationAlert({ roomInvitation }: Props) {
   const { roomName, roomId, roomUsersProfile, id: invitationId } = roomInvitation
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ contact }) => contact.request)
+  const currentUserName = useAppSelector(({ user }) => user.username)
 
   function handleAcceptButtonClick() {
-    dispatch(acceptRoomInvitation({ roomInvitationId: invitationId, roomId }))
+    dispatch(acceptRoomInvitation({ roomInvitationId: invitationId, roomId, username: currentUserName }))
   }
 
   function handleDenyButtonClick() {
