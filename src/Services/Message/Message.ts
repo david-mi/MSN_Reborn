@@ -40,18 +40,23 @@ export class MessageService {
   public static async add(content: string, roomId: RoomId, users: RoomUsers) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
+    const readBy: Record<string, boolean> = Object.entries(users)
+      .reduce((readBy, [userId, isSubscribed]) => {
+        if (userId === this.currentUser.uid) {
+          readBy[userId] = true
+        } else if (isSubscribed) {
+          readBy[userId] = false
+        }
+
+        return readBy
+      }, {} as Record<string, boolean>)
+
     const message = {
       userId: this.currentUser.uid,
       message: content,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      readBy: Object.keys(users)
-        .reduce((readBy, userId) => {
-          return {
-            ...readBy,
-            [userId]: userId === this.currentUser.uid,
-          };
-        }, {})
+      readBy
     }
 
     await addDoc(messagesCollectionRef, message)

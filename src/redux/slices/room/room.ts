@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsersProfile } from "./types";
+import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile } from "./types";
 import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
@@ -180,8 +180,8 @@ const roomSlice = createSlice({
 
 export const sendMessage = createAppAsyncThunk(
   "room/sendMessage",
-  async ({ content, roomId }: { content: string, roomId: string }) => {
-    return MessageService.add(content, roomId)
+  async ({ content, roomId, users }: { content: string, roomId: string, users: RoomUsers }) => {
+    return MessageService.add(content, roomId, users)
   })
 
 export const markRoomMessageAsRead = createAppAsyncThunk(
