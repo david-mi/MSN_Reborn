@@ -30,7 +30,23 @@ export interface DatabaseMessage {
   message: string
 }
 
-export type RoomUsers = { [userId: string]: boolean }
+export interface RoomUsers {
+  subscribed: {
+    [userId: UserId]: SubscribedUser
+  },
+  unsubscribed: {
+    [userId: UserId]: UnsubscribedUser
+  }
+}
+
+export interface DatabaseRoomUsers {
+  subscribed: {
+    [userId: UserId]: SubscribedDatabaseUser
+  },
+  unsubscribed: {
+    [userId: UserId]: UnsubscribedDatabaseUser
+  }
+}
 
 export interface Room {
   name: null | string
@@ -44,14 +60,35 @@ export interface Room {
   oldestRetrievedMessageDate: number | null
 }
 
+type Role = "user" | "admin"
+
+interface SubscribedUser {
+  role: Role
+}
+
+interface SubscribedDatabaseUser {
+  // joinedAt: FieldValue
+  role: Role
+}
+
+interface UnsubscribedUser {
+  // leftAt: number
+  username: string
+}
+
+interface UnsubscribedDatabaseUser {
+  // leftAt: FieldValue
+  username: string
+}
+
 export type DatabaseRoom = {
   id: string
   name: string | null
   type: RoomType
-  users: {
-    [userId: string]: boolean
-  }
+  users: RoomUsers
 }
+
+
 
 export type DatabaseCustomRoom = DatabaseRoom & {
   name: string

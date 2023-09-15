@@ -5,7 +5,6 @@ import { setRoomNonFriendUsersProfile } from "@/redux/slices/room/room";
 import { UserProfile } from "@/redux/slices/user/types";
 import { RoomType, UserId } from "@/redux/slices/room/types";
 import { onValue, ref, Unsubscribe } from "firebase/database";
-import { UserService } from "@/Services";
 
 function useRoomUsers(roomId: string, roomType: RoomType) {
   const dispatch = useAppDispatch()
@@ -21,7 +20,11 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
     for (const contactId in contactsProfile) {
       const contactProfile = contactsProfile[contactId]
 
-      if (currentRoom.users[contactId] !== undefined) {
+      if (currentRoom.users.subscribed[contactId] !== undefined) {
+        currentRoomUsersProfile.set(contactId, contactProfile)
+      }
+
+      if (currentRoom.users.unsubscribed[contactId] !== undefined) {
         currentRoomUsersProfile.set(contactId, contactProfile)
       }
     }
@@ -34,38 +37,26 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
     if (roomType === "oneToOne") return
 
     (async function () {
-      const nonFriendUsers = Object
-        .entries(currentRoom.users)
-        .reduce<{ unsubscribed: UserId[], subscribed: UserId[] }>((nonFriendUsers, [userId, isSubscribed]) => {
-          if (contactsIds.indexOf(userId) !== -1 || userId === currentUser.id) {
-            return nonFriendUsers
-          }
-
-          if (isSubscribed) {
-            nonFriendUsers.subscribed.push(userId)
-          } else {
-            nonFriendUsers.unsubscribed.push(userId)
-          }
-
-          return nonFriendUsers
-        }, { unsubscribed: [], subscribed: [] })
-
       const nonFriendUsersProfile: { [id: string]: UserProfile } = {}
 
-      for (const userId of nonFriendUsers.unsubscribed) {
-        const nonFriendUnsubscribedUserProfile = await UserService.getProfile(userId)
+      for (const userId in currentRoom.users.unsubscribed) {
         const profileWithoutAllInfos: UserProfile = {
-          ...nonFriendUnsubscribedUserProfile,
-          avatarSrc: ""
+          id: userId,
+          email: "",
+          avatarSrc: "",
+          username: currentRoom.users.unsubscribed[userId].username,
+          personalMessage: "",
+          displayedStatus: "offline",
+          statusBeforeDisconnect: "offline"
         }
-        nonFriendUsersProfile[nonFriendUnsubscribedUserProfile.id] = profileWithoutAllInfos
+        nonFriendUsersProfile[userId] = profileWithoutAllInfos
 
-        dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile: nonFriendUsersProfile }))
+        dispatch(setRoomNonFriendUsersProfile({ roomId, nonFriendUsersProfile }))
       }
 
-      if (nonFriendUsers.subscribed.length === 0) return
+      if (Object.entries(currentRoom.users.subscribed).length === 0) return
 
-      for (const userId of nonFriendUsers.subscribed) {
+      for (const userId in currentRoom.users.subscribed) {
         const subscribedNonFriendUserProfileRef = ref(firebase.database, `profiles/${userId}`)
 
         const unsubscribeNonRoomUserProfile = onValue(subscribedNonFriendUserProfileRef, async (snapshot) => {
@@ -73,7 +64,6 @@ function useRoomUsers(roomId: string, roomType: RoomType) {
             ...snapshot.val(),
             id: snapshot.key
           } as UserProfile
-
 
           nonFriendUsersProfile[subscribedNonFriendUserProfile.id] = subscribedNonFriendUserProfile
 

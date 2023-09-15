@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo } from "react"
-import { onSnapshot, collection, query, orderBy, where, startAt } from "firebase/firestore";
+import { onSnapshot, collection, query, orderBy, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate } from "@/redux/slices/room/room";
@@ -21,7 +21,7 @@ function useRoom() {
   useEffect(() => {
     const userSubscribedRoomsQuery = query(
       collection(firebase.firestore, "rooms"),
-      where(`users.${firebase.auth.currentUser!.uid}`, "==", true),
+      orderBy(`users.subscribed.${firebase.auth.currentUser!.uid}`)
     )
 
     const unSubscribeRooms = onSnapshot(userSubscribedRoomsQuery, async (roomQuerySnapshot) => {

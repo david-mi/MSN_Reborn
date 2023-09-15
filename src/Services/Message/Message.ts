@@ -40,12 +40,12 @@ export class MessageService {
   public static async add(content: string, roomId: RoomId, users: RoomUsers) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
-    const readBy: Record<string, boolean> = Object.entries(users)
-      .reduce((readBy, [userId, isSubscribed]) => {
-        if (userId === this.currentUser.uid) {
-          readBy[userId] = true
-        } else if (isSubscribed) {
-          readBy[userId] = false
+    const readBy: Record<string, boolean> = Object.keys(users.subscribed)
+      .reduce((readBy, subscribedUserId) => {
+        if (subscribedUserId === this.currentUser.uid) {
+          readBy[subscribedUserId] = true
+        } else {
+          readBy[subscribedUserId] = false
         }
 
         return readBy

@@ -58,8 +58,15 @@ export class ContactService {
 
   public static async acceptFriendRequest(userWhoSentFriendRequestId: string) {
     const roomId = await RoomService.createRoom("oneToOne", {
-      [this.currentUser.uid]: true,
-      [userWhoSentFriendRequestId]: true
+      subscribed: {
+        [this.currentUser.uid]: {
+          role: "user"
+        },
+        [userWhoSentFriendRequestId]: {
+          role: "user"
+        }
+      },
+      unsubscribed: {}
     })
 
     await this.addUserToContacts(userWhoSentFriendRequestId, this.currentUser.uid, roomId)

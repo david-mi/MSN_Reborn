@@ -20,7 +20,9 @@ function Chat() {
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 750px)").matches)
   const classNames = `${styles.chat} ${styles[type]}`
-  const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === Object.keys(users).length
+  const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === (
+    Object.keys(users.subscribed).length + Object.keys(users.unsubscribed).length
+  )
 
   if (
     getCurrentUserProfileStatus === "PENDING" ||

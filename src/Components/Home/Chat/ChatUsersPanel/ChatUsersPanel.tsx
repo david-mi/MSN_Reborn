@@ -16,7 +16,7 @@ function ChatUsersPanel({ currentRoomUsersProfile, users }: Props) {
       <ul className={styles.container}>
         {Array
           .from(currentRoomUsersProfile.values())
-          .filter((userProfile) => users[userProfile.id])
+          .filter((userProfile) => users.subscribed[userProfile.id])
           .map(({ id, avatarSrc, username, personalMessage, displayedStatus }) => {
             return (
               <li className={styles.displayedContact} key={id}>

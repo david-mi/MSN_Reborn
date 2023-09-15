@@ -27,7 +27,7 @@ function ChatOptions(props: Props) {
   const unsubscribedContacts = useMemo(() => {
     return Object
       .values(contactsProfile)
-      .filter((contact) => !users[contact.id])
+      .filter((contact) => !users.subscribed[contact.id])
   }, [contactsProfile, users])
   const usersPanelClassName = displayUsersPanel ? styles.isOpen : ""
 

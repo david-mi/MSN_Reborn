@@ -4,7 +4,6 @@ import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, Roo
 import { MessageService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
-import { UserProfile } from "../user/types";
 import { firebase } from "@/firebase/config";
 
 export const initialChatState: RoomSlice = {
@@ -105,14 +104,6 @@ const roomSlice = createSlice({
         targetRoom.messages[foundMessageIndex] = payload.message
       } else {
         targetRoom.messages.push(payload.message)
-      }
-    },
-    setRoomUserProfile(state, { payload: userProfile }: PayloadAction<UserProfile>) {
-      for (const roomList in state.roomsList) {
-        const room = state.roomsList[roomList]
-        if (room.users[userProfile.id]) {
-          room.nonFriendUsersProfile[userProfile.id] = userProfile
-        }
       }
     },
     setRoomsLoaded(state) {
@@ -216,7 +207,14 @@ export const createCustomRoom = createAppAsyncThunk(
   async ({ name }: { name: string }) => {
     const currentUserId = firebase.auth.currentUser!.uid
 
-    return RoomService.createRoom("manyToMany", { [currentUserId]: true }, name)
+    return RoomService.createRoom("manyToMany", {
+      subscribed: {
+        [currentUserId]: {
+          role: "admin"
+        }
+      },
+      unsubscribed: {}
+    }, name)
   })
 
 export const denyRoomInvitation = createAppAsyncThunk(
@@ -228,7 +226,7 @@ export const denyRoomInvitation = createAppAsyncThunk(
 export const leaveRoom = createAppAsyncThunk(
   "room/leave",
   async ({ roomId, username }: { roomId: string, username: string }) => {
-    await RoomService.leaveRoom(roomId)
+    await RoomService.leaveRoom(roomId, username)
     await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)
     return roomId
   })
@@ -240,7 +238,6 @@ export const {
   setRoomNonFriendUsersProfile,
   setUnreadMessageCount,
   editRoomMessage,
-  setRoomUserProfile,
   setRoomsLoaded,
   setPendingRoomsInvitation,
   removeUserFromRoomNonContactUsersProfile,

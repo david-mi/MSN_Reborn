@@ -35,10 +35,8 @@ function useRoomInvitation() {
           roomUsersProfile: {}
         }
 
-        for (const roomUserId in users) {
+        for (const roomUserId in users.subscribed) {
           const roomUserProfileRef = ref(firebase.database, `profiles/${roomUserId}`)
-          const isUserSubscribed = users[roomUserId] === true
-          if (isUserSubscribed === false) continue
 
           const roomUserProfileSnapshot = await get(roomUserProfileRef)
           roomUserProfileSnapshot.key
