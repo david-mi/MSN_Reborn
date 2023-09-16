@@ -57,11 +57,10 @@ function ChatMessages(props: Props) {
   useEffect(() => {
     if (shouldScrollToBottomRef.current === true) {
       chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
-    } else {
-      containerRef!.current.scrollTop = 50
     }
 
     if (messages[0] && messages[0].createdAt !== currentRoomOldestRetrievedMessageDate) {
+      containerRef!.current.scrollTop = 50
       dispatch(setOldestRoomMessageDate({ roomId, date: messages[0].createdAt }))
     }
   }, [messages])
