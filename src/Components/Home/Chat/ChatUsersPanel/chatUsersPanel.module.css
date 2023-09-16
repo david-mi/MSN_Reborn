@@ -50,6 +50,28 @@
           width: 13px;
         }
       }
+
+      & > :nth-child(3) {
+        box-sizing: content-box;
+        position: absolute;
+        background-color: black;
+        border-radius: 50%;
+        border-top: solid 1px #D8D9D9;
+        border-right: solid 1px #D8D9D9;
+        display: grid;
+        place-items: center;
+        top: -8px;
+        left: -8px;
+        padding: 2px;
+        height: 13px;
+        width: 13px;
+
+        & path {
+          fill: yellow;
+          height: 13px;
+          width: 13px;
+        }
+      }
     }
 
     & > :nth-child(2) {

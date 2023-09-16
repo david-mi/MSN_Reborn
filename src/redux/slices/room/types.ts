@@ -60,7 +60,7 @@ export interface Room {
   oldestRetrievedMessageDate: number | null
 }
 
-type Role = "user" | "admin"
+export type Role = "user" | "admin"
 
 interface SubscribedUser {
   role: Role
