@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import { UserId, type DatabaseRoom } from "@/redux/slices/room/types";
@@ -67,8 +67,8 @@ function useRoom() {
                   }
                 }
               })
-
             })
+
             unSubscribeMessagesCallbacksRef.current.set(roomData.id, unSubscribeRoomMessages)
             break;
           }
@@ -77,6 +77,7 @@ function useRoom() {
             break;
           }
           case "removed": {
+            dispatch(removeRoom(roomData.id))
             const unsubscribeRoomMessages = unSubscribeMessagesCallbacksRef.current.get(roomData.id)
 
             if (unsubscribeRoomMessages) {

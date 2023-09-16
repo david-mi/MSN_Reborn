@@ -133,4 +133,8 @@ export interface RoomSlice {
     status: RequestStatus,
     error: string | null
   }
+  deleteRoomRequest: {
+    status: RequestStatus,
+    error: string | null
+  }
 }

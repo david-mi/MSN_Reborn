@@ -29,6 +29,10 @@ export const initialChatState: RoomSlice = {
   leaveRoomRequest: {
     status: "IDLE",
     error: null
+  },
+  deleteRoomRequest: {
+    status: "IDLE",
+    error: null
   }
 }
 
@@ -125,6 +129,10 @@ const roomSlice = createSlice({
       if (targetRoom) {
         targetRoom.previousMessagesScrollTop = payload.scrollTop
       }
+    },
+    removeRoom(state, { payload }: PayloadAction<string>) {
+      state.currentRoomId = null
+      delete state.roomsList[payload]
     }
   },
   extraReducers: (builder) => {
@@ -156,14 +164,23 @@ const roomSlice = createSlice({
       state.leaveRoomRequest.status = "PENDING"
       state.leaveRoomRequest.error = null
     })
-    builder.addCase(leaveRoom.fulfilled, (state, { payload }) => {
+    builder.addCase(leaveRoom.fulfilled, (state) => {
       state.leaveRoomRequest.status = "IDLE"
-      delete state.roomsList[payload]
-      state.currentRoomId = null
     })
     builder.addCase(leaveRoom.rejected, (state, { error }) => {
       state.leaveRoomRequest.status = "REJECTED"
       state.leaveRoomRequest.error = (error as FirebaseError).message
+    })
+    builder.addCase(deleteRoom.pending, (state) => {
+      state.deleteRoomRequest.status = "PENDING"
+      state.deleteRoomRequest.error = null
+    })
+    builder.addCase(deleteRoom.fulfilled, (state) => {
+      state.deleteRoomRequest.status = "IDLE"
+    })
+    builder.addCase(deleteRoom.rejected, (state, { error }) => {
+      state.deleteRoomRequest.status = "REJECTED"
+      state.deleteRoomRequest.error = (error as FirebaseError).message
     })
     builder.addCase(disconnectAction, () => initialChatState)
   }
@@ -225,10 +242,18 @@ export const denyRoomInvitation = createAppAsyncThunk(
 
 export const leaveRoom = createAppAsyncThunk(
   "room/leave",
-  async ({ roomId, username }: { roomId: string, username: string }) => {
+  async ({ roomId, username }: { roomId: string, username: string }, { dispatch }) => {
     await RoomService.leaveRoom(roomId, username)
     await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)
-    return roomId
+    dispatch(removeRoom(roomId))
+  })
+
+export const deleteRoom = createAppAsyncThunk(
+  "room/delete",
+  async ({ roomId }: { roomId: string }, { dispatch }) => {
+    await RoomService.deleteRoom(roomId)
+    await RoomService.deleteRoomMessages(roomId)
+    dispatch(removeRoom(roomId))
   })
 
 export const {
@@ -244,6 +269,7 @@ export const {
   modifyRoom,
   setOldestRoomMessageDate,
   setPreviousScrollTop,
+  removeRoom
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer

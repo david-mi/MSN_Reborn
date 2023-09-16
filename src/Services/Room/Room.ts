@@ -121,13 +121,13 @@ export class RoomService {
     }
   }
 
-  private static async deleteRoom(roomId: string) {
+  public static async deleteRoom(roomId: string) {
     const roomRef = doc(firebase.firestore, "rooms", roomId)
 
     return deleteDoc(roomRef)
   }
 
-  private static async deleteRoomMessages(roomId: string) {
+  public static async deleteRoomMessages(roomId: string) {
     const roomMessagesRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
     const messagesSnapshot = await getDocs(roomMessagesRef)
