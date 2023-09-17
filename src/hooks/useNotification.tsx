@@ -4,7 +4,6 @@ import { doc } from "firebase/firestore"
 import { firebase } from "@/firebase/config";
 import { UserService } from "@/Services";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { DatabaseNotification } from "@/redux/slices/notification/types";
 import type { Notification } from "@/redux/slices/notification/types";
 import { setNotifications } from "@/redux/slices/notification/notification";
 
