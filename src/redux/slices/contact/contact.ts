@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
-import { UserService, ContactService } from "@/Services";
+import { UserService, ContactService, NotificationService } from "@/Services";
 import { DocumentData } from "firebase/firestore";
 import { UserProfile } from "../user/types";
 
@@ -110,14 +110,28 @@ export const sendFriendRequest = createAppAsyncThunk(
 
 export const acceptFriendRequest = createAppAsyncThunk(
   "contact/acceptFriendRequest",
-  async (requestingUserId: string) => {
-    return ContactService.acceptFriendRequest(requestingUserId)
+  async ({ requestingUserId, requestedUsername }: { requestingUserId: string, requestedUsername: string }) => {
+    await ContactService.acceptFriendRequest(requestingUserId)
+    await NotificationService.add(
+      {
+        content: "Demande d'ami refusée",
+        target: requestedUsername
+      },
+      [requestingUserId]
+    )
   })
 
 export const denyFriendRequest = createAppAsyncThunk(
   "contact/denyFriendRequest",
-  async (requestingUserId: string) => {
-    return ContactService.denyFriendRequest(requestingUserId)
+  async ({ requestingUserId, requestedUsername }: { requestingUserId: string, requestedUsername: string }) => {
+    await ContactService.denyFriendRequest(requestingUserId)
+    await NotificationService.add(
+      {
+        content: "Demande d'ami refusée",
+        target: requestedUsername
+      },
+      [requestingUserId]
+    )
   })
 
 export const getUsersWhoSentFriendRequest = createAppAsyncThunk(

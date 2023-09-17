@@ -15,11 +15,17 @@ function FriendRequestAlert({ userWhoSentFriendRequest }: Props) {
   const request = useAppSelector(({ contact }) => contact.request)
 
   function handleAcceptButtonClick() {
-    dispatch(acceptFriendRequest(id))
+    dispatch(acceptFriendRequest({
+      requestingUserId: id,
+      requestedUsername: username
+    }))
   }
 
   function handleDenyButtonClick() {
-    dispatch(denyFriendRequest(id))
+    dispatch(denyFriendRequest({
+      requestingUserId: id,
+      requestedUsername: username
+    }))
   }
 
   return (
