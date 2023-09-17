@@ -3,6 +3,7 @@ import { registerReducer } from "./slices/register/register";
 import { userReducer } from "./slices/user/user";
 import { loginReducer } from "./slices/login/login";
 import { contactReducer } from "./slices/contact/contact";
+import { notificationReducer } from "./slices/notification/notification";
 import { roomReducer } from "./slices/room/room";
 
 const rootReducer = combineReducers({
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
   login: loginReducer,
   user: userReducer,
   contact: contactReducer,
-  room: roomReducer
+  room: roomReducer,
+  notification: notificationReducer
 })
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
