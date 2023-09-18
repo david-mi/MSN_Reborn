@@ -101,8 +101,6 @@ export class RoomService {
       },
       [`users.subscribed.${this.currentUser.uid}`]: deleteField()
     })
-
-    await this.deleteRoomIfEveryMembersUnsubscribed(roomId)
   }
 
   public static async deleteRoomIfEveryMembersUnsubscribed(roomId: string) {
@@ -118,7 +116,10 @@ export class RoomService {
     if (amountOfSubscribedUsersLeft === 0) {
       await this.deleteRoom(roomId)
       await this.deleteRoomMessages(roomId)
+      return true
     }
+
+    return false
   }
 
   public static async deleteRoom(roomId: string) {

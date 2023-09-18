@@ -241,6 +241,11 @@ export const denyRoomInvitation = createAppAsyncThunk(
   })
 
 export const leaveRoom = createAppAsyncThunk(
+    const isRoomDeleted = await RoomService.deleteRoomIfEveryMembersUnsubscribed(roomId)
+    if (isRoomDeleted === false) {
+      await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)
+    }
+
   "room/leave",
   async ({ roomId, username }: { roomId: string, username: string }, { dispatch }) => {
     await RoomService.leaveRoom(roomId, username)
