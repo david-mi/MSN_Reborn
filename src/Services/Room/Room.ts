@@ -66,6 +66,16 @@ export class RoomService {
     })
   }
 
+  public static async setAdmin(roomId: string, userId: string): Promise<void> {
+    const roomRef = doc(firebase.firestore, "rooms", roomId)
+
+    return updateDoc(roomRef, {
+      [`users.subscribed.${userId}`]: {
+        role: "admin"
+      }
+    })
+  }
+
   public static async sendNewRoomInvitation(roomId: string, userIdToInvite: string) {
     const receivedRoomRequestsDocumentRef = doc(firebase.firestore, "receivedRoomRequests", userIdToInvite)
     const roomInvitationOriginRef = doc(firebase.firestore, "rooms", roomId)

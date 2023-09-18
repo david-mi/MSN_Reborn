@@ -5,6 +5,7 @@ import { MessageService, NotificationService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { firebase } from "@/firebase/config";
+import { UserProfile } from "../user/types";
 
 export const initialChatState: RoomSlice = {
   currentRoomId: null,
@@ -241,11 +242,33 @@ export const denyRoomInvitation = createAppAsyncThunk(
   })
 
 export const leaveRoom = createAppAsyncThunk(
+  "room/leave",
+  async (
+    { roomId, username, userToPromote, roomName }:
+      { roomId: string, username: string, userToPromote?: UserProfile, roomName: string }, { dispatch }) => {
+    await RoomService.leaveRoom(roomId, username)
     const isRoomDeleted = await RoomService.deleteRoomIfEveryMembersUnsubscribed(roomId)
+
     if (isRoomDeleted === false) {
       await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)
     }
 
+    if (userToPromote) {
+      await RoomService.setAdmin(roomId, userToPromote.id)
+      NotificationService.add(
+        {
+          target: roomName,
+          content: "Vous avez été promu Administrateur"
+        },
+        [userToPromote.id]
+      )
+      MessageService.addFromSystem(`:admin_star: ${userToPromote.username} a été promu Administrateur`, roomId)
+    }
+
+    dispatch(removeRoom(roomId))
+  })
+
+export const leaveRoomAsAdmin = createAppAsyncThunk(
   "room/leave",
   async ({ roomId, username }: { roomId: string, username: string }, { dispatch }) => {
     await RoomService.leaveRoom(roomId, username)

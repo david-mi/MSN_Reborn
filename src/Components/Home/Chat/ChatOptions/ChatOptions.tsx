@@ -59,7 +59,14 @@ function ChatOptions(props: Props) {
           subscribedRoomUsers={users.subscribed}
         />
       )}
-      {displayLeaveRoomAlert && <LeaveRoomAlert roomName={roomName as string} setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert} />}
+      {displayLeaveRoomAlert && (
+        <LeaveRoomAlert
+          subscribedRoomUsers={users.subscribed}
+          currentRoomUsersProfile={currentRoomUsersProfile}
+          roomName={roomName as string}
+          setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert}
+        />
+      )}
       {inviteContactToRoomFormOpen && (
         <InviteContactToRoomForm
           roomType={roomType}

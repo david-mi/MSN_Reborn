@@ -8,6 +8,11 @@ export const systemIcons = {
     <svg xmlns="http://www.w3.org/2000/svg" color="green" width="1.2em" viewBox="0 0 24 24">
       <path fill="currentColor" d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"></path>
     </svg>
+  ),
+  ":admin_star:": (
+    <svg xmlns="http://www.w3.org/2000/svg" color="yellow" width="1.2em" viewBox="0 0 24 24">
+      <path fill="currentColor" d="m5.825 22l2.325-7.6L2 10h7.6L12 2l2.4 8H22l-6.15 4.4l2.325 7.6L12 17.3L5.825 22Z"></path>
+    </svg>
   )
 }
 

@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--modale-gap);
+  gap: calc(var(--modale-gap) / 1.3);
   text-align: center;
 
   & p {
@@ -26,6 +26,10 @@
   .email {
     margin-top: calc(var(--modale-gap) * -1);
     font-style: italic;
+  }
+
+  .description {
+    color: black;
   }
 }
 
