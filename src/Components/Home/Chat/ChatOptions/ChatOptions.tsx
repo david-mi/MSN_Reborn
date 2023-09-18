@@ -52,7 +52,13 @@ function ChatOptions(props: Props) {
 
   return (
     <div className={styles.chatOptions}>
-      {displayDeleteRoomAlert && <DeleteRoomAlert roomName={roomName as string} setDisplayDeleteRoomAlert={setDisplayDeleteRoomAlert} />}
+      {displayDeleteRoomAlert && (
+        <DeleteRoomAlert
+          roomName={roomName as string}
+          setDisplayDeleteRoomAlert={setDisplayDeleteRoomAlert}
+          subscribedRoomUsers={users.subscribed}
+        />
+      )}
       {displayLeaveRoomAlert && <LeaveRoomAlert roomName={roomName as string} setDisplayLeaveRoomAlert={setDisplayLeaveRoomAlert} />}
       {inviteContactToRoomFormOpen && (
         <InviteContactToRoomForm

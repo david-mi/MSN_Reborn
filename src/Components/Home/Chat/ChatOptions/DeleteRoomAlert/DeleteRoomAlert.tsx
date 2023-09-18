@@ -3,14 +3,18 @@ import { Dispatch, SetStateAction } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import styles from "./deleteRoomAlert.module.css";
 import { deleteRoom } from "@/redux/slices/room/room";
+import { SubscribedUser, UserId } from "@/redux/slices/room/types";
 
 interface Props {
   roomName: string,
   roomAvatarSrc?: string
+  subscribedRoomUsers: {
+    [userId: UserId]: SubscribedUser
+  }
   setDisplayDeleteRoomAlert: Dispatch<SetStateAction<boolean>>
 }
 
-function DeleteRoomAlert({ roomName, roomAvatarSrc, setDisplayDeleteRoomAlert }: Props) {
+function DeleteRoomAlert({ roomName, roomAvatarSrc, setDisplayDeleteRoomAlert, subscribedRoomUsers }: Props) {
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ room }) => room.deleteRoomRequest)
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
@@ -21,7 +25,11 @@ function DeleteRoomAlert({ roomName, roomAvatarSrc, setDisplayDeleteRoomAlert }:
 
   async function handleAcceptButtonClick() {
     try {
-      await dispatch(deleteRoom({ roomId: currentRoomId! })).unwrap()
+      await dispatch(deleteRoom({
+        roomId: currentRoomId!,
+        subscribedRoomUsers,
+        roomName: roomName
+      })).unwrap()
       closeDeleteRoomAlert()
     } catch (error) {
       console.log(error)

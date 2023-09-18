@@ -62,11 +62,11 @@ export interface Room {
 
 export type Role = "user" | "admin"
 
-interface SubscribedUser {
+export interface SubscribedUser {
   role: Role
 }
 
-interface SubscribedDatabaseUser {
+export interface SubscribedDatabaseUser {
   // joinedAt: FieldValue
   role: Role
 }

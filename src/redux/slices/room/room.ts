@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile } from "./types";
-import { MessageService, RoomService } from "@/Services";
+import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile, SubscribedUser, UserId } from "./types";
+import { MessageService, NotificationService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
 import { firebase } from "@/firebase/config";
@@ -250,9 +250,22 @@ export const leaveRoom = createAppAsyncThunk(
 
 export const deleteRoom = createAppAsyncThunk(
   "room/delete",
-  async ({ roomId }: { roomId: string }, { dispatch }) => {
+  async (
+    { roomId, subscribedRoomUsers, roomName }:
+      { roomId: string, subscribedRoomUsers: { [userId: UserId]: SubscribedUser }, roomName: string }, { dispatch }) => {
     await RoomService.deleteRoom(roomId)
     await RoomService.deleteRoomMessages(roomId)
+
+    const subscribedUsersIds = Object
+      .keys(subscribedRoomUsers)
+      .filter((userId) => userId !== firebase.auth.currentUser!.uid)
+    NotificationService.add(
+      {
+        target: roomName,
+        content: "Salon supprimé"
+      },
+      subscribedUsersIds
+    )
     dispatch(removeRoom(roomId))
   })
 
