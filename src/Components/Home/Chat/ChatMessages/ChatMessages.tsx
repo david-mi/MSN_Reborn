@@ -26,6 +26,7 @@ function ChatMessages(props: Props) {
   const loaderRef = useRef<HTMLDivElement>(null!)
   const containerRef = useRef<HTMLDivElement>(null!)
   const containerRefScrollTopRef = useRef<null | number>(null)
+  const hasUserScrolledRef = useRef<boolean>(false)
   const displayLoader = !retrievingPreviousMessages && canPaginate && currentRoomOldestRetrievedMessageDate !== null
   function shouldDisplayAllMessageInfos(currentMessageIndex: number, currentMessage: Message) {
     if (currentMessageIndex === 0) {
@@ -47,21 +48,27 @@ function ChatMessages(props: Props) {
   }
 
   function handleScroll() {
+    if (hasUserScrolledRef.current === false) return
     const { clientHeight, scrollHeight, scrollTop } = containerRef!.current
     const hasReachedBottom = clientHeight + Math.ceil(scrollTop) === scrollHeight
     containerRefScrollTopRef.current = scrollTop
-
     shouldScrollToBottomRef.current = hasReachedBottom
   }
 
-  useEffect(() => {
-    if (shouldScrollToBottomRef.current === true) {
-      chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
+  function setHasUserScrolledRef() {
+    if (hasUserScrolledRef.current === false) {
+      hasUserScrolledRef.current = true
     }
+  }
 
+  useEffect(() => {
     if (messages[0] && messages[0].createdAt !== currentRoomOldestRetrievedMessageDate) {
       containerRef!.current.scrollTop = 50
       dispatch(setOldestRoomMessageDate({ roomId, date: messages[0].createdAt }))
+    }
+
+    if (shouldScrollToBottomRef.current === true) {
+      chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages])
 
@@ -70,9 +77,8 @@ function ChatMessages(props: Props) {
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting === false) return
-      shouldScrollToBottomRef.current = false
       paginate()
-    }, { root: containerRef.current, threshold: 0.9 })
+    }, { root: containerRef.current, threshold: 0.5 })
 
     observer.observe(loaderRef.current)
 
@@ -83,6 +89,7 @@ function ChatMessages(props: Props) {
 
   useEffect(() => {
     if (previousMessagesScrollTop !== null) {
+      shouldScrollToBottomRef.current = false
       containerRef!.current.scrollTop = previousMessagesScrollTop
     }
 
@@ -92,16 +99,27 @@ function ChatMessages(props: Props) {
         scrollTop: containerRefScrollTopRef.current
       }))
     }
-  }, [roomId])
+  }, [])
+
+  useEffect(() => {
+    if (shouldScrollToBottomRef.current === true) {
+      chatMessagesBottomRef.current!.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [displayLoader])
 
   return (
-    <div className={styles.chatMessagesContainer} ref={containerRef} onScroll={handleScroll}>
+    <div
+      className={styles.chatMessagesContainer}
+      ref={containerRef}
+      onScroll={handleScroll}
+      onWheel={setHasUserScrolledRef}
+      onTouchMove={setHasUserScrolledRef}
+    >
       <div className={styles.paginationContainer}>
         {displayLoader && (
           <Loader
             size={"2rem"}
             ref={loaderRef}
-            className={styles.pagination}
           />
         )}
       </div>
