@@ -114,7 +114,7 @@ export const acceptFriendRequest = createAppAsyncThunk(
     await ContactService.acceptFriendRequest(requestingUserId)
     await NotificationService.add(
       {
-        content: "Demande d'ami refusée",
+        content: "Demande d'ami acceptée",
         target: requestedUsername
       },
       [requestingUserId]
