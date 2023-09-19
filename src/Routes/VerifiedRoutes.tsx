@@ -20,7 +20,9 @@ function VerifiedRoutes() {
     const connectedRef = ref(firebase.database, ".info/connected");
     const userStatusEntriesRef = ref(firebase.database, `/profiles/${currentUserId}`);
 
-    return onValue(connectedRef, () => {
+    return onValue(connectedRef, (snapshot) => {
+      if (snapshot.val() == false) return
+
       onDisconnect(userStatusEntriesRef)
         .update({ displayedStatus: "offline" })
 
