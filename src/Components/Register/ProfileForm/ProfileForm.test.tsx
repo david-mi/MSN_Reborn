@@ -8,6 +8,7 @@ import { initialUserState } from "@/redux/slices/user/user";
 import { initialLoginState } from "@/redux/slices/login/login";
 import { initialContactState } from "@/redux/slices/contact/contact";
 import { initialChatState } from "@/redux/slices/room/room";
+import { initialNotificationState } from "@/redux/slices/notification/notification";
 
 const { body } = document
 
@@ -51,6 +52,9 @@ describe("ProfileForm", () => {
       },
       room: {
         ...initialChatState
+      },
+      notification: {
+        ...initialNotificationState
       }
     };
 

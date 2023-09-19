@@ -8,6 +8,7 @@ import { initialLoginState } from "@/redux/slices/login/login";
 import { initialContactState } from "@/redux/slices/contact/contact";
 import { RootState } from "@/redux/store";
 import { initialChatState } from "@/redux/slices/room/room";
+import { initialNotificationState } from "@/redux/slices/notification/notification";
 
 const email = "user-register-mock@gmail.com"
 
@@ -47,6 +48,9 @@ describe("PasswordForm", () => {
       },
       room: {
         ...initialChatState
+      },
+      notification: {
+        ...initialNotificationState
       }
     };
   });
