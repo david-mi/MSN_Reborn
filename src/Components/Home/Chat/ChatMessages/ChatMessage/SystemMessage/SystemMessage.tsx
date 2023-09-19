@@ -1,5 +1,5 @@
 import { Message } from "@/redux/slices/room/types";
-import { systemIcons } from "./systemIcons";
+import { systemIcons } from "./systemIcons/systemIcons";
 import styles from "./systemMessage.module.css";
 
 interface Props {

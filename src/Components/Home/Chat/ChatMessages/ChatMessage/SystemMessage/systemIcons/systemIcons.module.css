@@ -1,0 +1,11 @@
+.admin {
+  background-color: black;
+  border-radius: 50%;
+  border-top: solid 1px #D8D9D9;
+  border-right: solid 1px #D8D9D9;
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  height: 1.3em;
+  width: 1.3em;
+}
