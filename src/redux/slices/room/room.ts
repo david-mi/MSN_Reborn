@@ -269,7 +269,7 @@ export const leaveRoom = createAppAsyncThunk(
   })
 
 export const leaveRoomAsAdmin = createAppAsyncThunk(
-  "room/leave",
+  "room/leaveAsAdmin",
   async ({ roomId, username }: { roomId: string, username: string }, { dispatch }) => {
     await RoomService.leaveRoom(roomId, username)
     await MessageService.addFromSystem(`:arrow_leave: ${username} a quitté le salon`, roomId)

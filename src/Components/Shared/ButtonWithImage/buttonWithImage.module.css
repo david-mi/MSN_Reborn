@@ -1,4 +1,6 @@
 .buttonWithImage {
+  display: grid;
+  place-items: center;
   position: relative;
   border: solid transparent 1px;
   height: clamp(25px, 35px - 2vw, 30px);
