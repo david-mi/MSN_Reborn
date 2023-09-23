@@ -6,6 +6,7 @@ import { ChatFormFields } from "./type";
 import { MessageValidation } from "@/utils/Validation";
 import styles from "./chatForm.module.css";
 import { RoomUsers } from "@/redux/slices/room/types";
+import ChatFormOptions from "./ChatFormOptions/ChatFormOptions";
 
 interface Props {
   roomId: string
@@ -50,6 +51,7 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.chatForm}>
+      <ChatFormOptions roomId={roomId} />
       <textarea
         {...register("content", { validate: MessageValidation.validateFromInput, onChange: () => clearErrors() })}
         onKeyDown={handleKeyDown}

@@ -1,18 +1,17 @@
 .chatForm {
   grid-area: sendMessage;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   background-color: white;
   --clr-textarea: rgb(234, 251, 255);
   background-color: var(--clr-textarea);
   border-style: solid;
   border-width: 1px;
   border-image: linear-gradient(180deg,
-      rgba(44, 98, 138, 1) 0%,
+      rgba(44, 98, 138, 0.6) 0%,
       rgba(44, 98, 138, 0.58) 50%,
       rgba(44, 98, 138, 0.42) 60%,
       var(--separators-clr) 100%) 1;
-
 
   & textarea {
     background-color: var(--clr-textarea);

@@ -1,0 +1,8 @@
+.chatFormOptions {
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  background: linear-gradient(180deg, #fdfefe 4.88%, #e8f0f3 52.51%, #dde9ee 53.26%, #e6eff3 97.22%);
+  border-bottom: solid 1px var(--separators-clr);
+}
