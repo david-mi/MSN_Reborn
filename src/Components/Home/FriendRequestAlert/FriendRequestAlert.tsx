@@ -11,20 +11,21 @@ interface Props {
 
 function FriendRequestAlert({ userWhoSentFriendRequest }: Props) {
   const { avatarSrc, username, id, email } = userWhoSentFriendRequest
+  const currentUsername = useAppSelector(({ user }) => user.username)
   const dispatch = useAppDispatch()
   const request = useAppSelector(({ contact }) => contact.request)
 
   function handleAcceptButtonClick() {
     dispatch(acceptFriendRequest({
       requestingUserId: id,
-      requestedUsername: username
+      requestedUsername: currentUsername
     }))
   }
 
   function handleDenyButtonClick() {
     dispatch(denyFriendRequest({
       requestingUserId: id,
-      requestedUsername: username
+      requestedUsername: currentUsername
     }))
   }
 
