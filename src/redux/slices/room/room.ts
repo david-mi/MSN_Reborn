@@ -54,7 +54,8 @@ const roomSlice = createSlice({
         nonFriendUsersProfile: {},
         unreadMessagesCount: 0,
         oldestRetrievedMessageDate: null,
-        previousMessagesScrollTop: null
+        previousMessagesScrollTop: null,
+        playWizz: false
       }
     },
     modifyRoom(state, { payload: roomToEdit }: PayloadAction<DatabaseRoom>) {
@@ -134,6 +135,10 @@ const roomSlice = createSlice({
     removeRoom(state, { payload }: PayloadAction<string>) {
       state.currentRoomId = null
       delete state.roomsList[payload]
+    },
+    setPlayWizz(state, { payload }: PayloadAction<{ roomId: string, playWizz: boolean }>) {
+      const targetRoom = state.roomsList[payload.roomId]
+      targetRoom.playWizz = payload.playWizz
     }
   },
   extraReducers: (builder) => {
@@ -297,6 +302,12 @@ export const deleteRoom = createAppAsyncThunk(
     dispatch(removeRoom(roomId))
   })
 
+export const sendWizz = createAppAsyncThunk(
+  "room/sendWizz",
+  async ({ roomId, username }: { roomId: string, username: string }) => {
+    return MessageService.addFromSystem(`:wizz: ${username} a envoyé un wizz`, roomId)
+  })
+
 export const {
   setcurrentDisplayedRoom,
   setRoomMessage,
@@ -310,7 +321,8 @@ export const {
   modifyRoom,
   setOldestRoomMessageDate,
   setPreviousScrollTop,
-  removeRoom
+  removeRoom,
+  setPlayWizz
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer

@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom, setPlayWizz } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import { UserId, type DatabaseRoom } from "@/redux/slices/room/types";
@@ -58,6 +58,14 @@ function useRoom() {
 
                     if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
                       dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
+                    }
+
+                    if (
+                      message.userId === "system" &&
+                      message.message.includes(":wizz:") &&
+                      (Date.now() - message.createdAt) < 2000
+                    ) {
+                      dispatch(setPlayWizz({ roomId: roomSnapshot.id, playWizz: true }))
                     }
 
                     break

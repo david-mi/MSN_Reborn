@@ -58,6 +58,7 @@ export interface Room {
   messages: Message[]
   unreadMessagesCount: number
   oldestRetrievedMessageDate: number | null
+  playWizz: boolean
 }
 
 export type Role = "user" | "admin"

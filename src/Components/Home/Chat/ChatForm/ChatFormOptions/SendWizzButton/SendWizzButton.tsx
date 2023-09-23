@@ -52,10 +52,10 @@ function SendWizzButton({ roomId }: Props) {
   }, [timeoutRef])
 
   useEffect(() => {
-    console.log({ playWizz })
+    if (playWizz === false) return
+
     wizzSound.play()
-      .then((played) => {
-        console.log("wizz played")
+      .then(() => {
         dispatch(setPlayWizz({ roomId, playWizz: false }))
       })
   }, [playWizz])
