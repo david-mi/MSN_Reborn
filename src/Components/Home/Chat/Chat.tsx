@@ -13,13 +13,13 @@ import { Loader } from "@/Components/Shared";
 
 function Chat() {
   const room = useAppSelector(({ room }) => room.roomsList[room.currentRoomId as string])
-  const { id, messages, users, type, previousMessagesScrollTop, name } = room
+  const { id, messages, users, type, previousMessagesScrollTop, name, playWizz } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
   const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 750px)").matches)
-  const classNames = `${styles.chat} ${styles[type]}`
+  const classNames = `${styles.chat} ${playWizz ? styles.playWizz : ""}`
   const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === (
     Object.keys(users.subscribed).length + Object.keys(users.unsubscribed).length
   )
