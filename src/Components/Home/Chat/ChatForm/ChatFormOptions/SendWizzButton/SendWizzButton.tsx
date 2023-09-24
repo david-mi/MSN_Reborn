@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ButtonWithImage } from "@/Components/Shared";
 import wizzIcon from "./wizz-icon.png"
-import wizzSoundSrc from "./wizz.mp3"
 import styles from "./sendWizzButton.module.css";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { sendWizz, setPlayWizz } from "@/redux/slices/room/room";
+import { sendWizz } from "@/redux/slices/room/room";
 
 interface Props {
   roomId: string
@@ -14,12 +13,6 @@ function SendWizzButton({ roomId }: Props) {
   const dispatch = useAppDispatch()
   const currentUsername = useAppSelector(({ user }) => user.username)
   const playWizz = useAppSelector(({ room }) => room.roomsList[roomId].playWizz)
-  const wizzSound = useMemo(() => {
-    const wizzSound = new Audio(wizzSoundSrc)
-    wizzSound.volume = 0.3
-
-    return wizzSound
-  }, [])
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const wizzTimeout = 2000
   const [wizzButtonDisabled, setWizzButtonDisabled] = useState(false)
@@ -38,9 +31,7 @@ function SendWizzButton({ roomId }: Props) {
         timeoutRef.current = null
         setWizzButtonDisabled(false)
       }, wizzTimeout)
-    } catch (error) {
-
-    }
+    } catch (error) { }
   }
 
   useEffect(() => {
@@ -50,15 +41,6 @@ function SendWizzButton({ roomId }: Props) {
       }
     }
   }, [timeoutRef])
-
-  useEffect(() => {
-    if (playWizz === false) return
-
-    wizzSound.play()
-      .then(() => {
-        dispatch(setPlayWizz({ roomId, playWizz: false }))
-      })
-  }, [playWizz])
 
   return (
     <div className={styles.sendWizzButtonContainer}>

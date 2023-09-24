@@ -6,11 +6,13 @@ import useRoomInvitation from "@/hooks/useRoomInvitation";
 import RoomInvitationAlert from "@/Components/Home/RoomInvitationAlert/RoomInvitationAlert";
 import useNotification from "@/hooks/useNotification";
 import Notification from "@/Components/Shared/Notification/Notification";
+import useWizz from "@/hooks/useWizz";
 
 function Home() {
   const { usersWhoSentFriendRequest, haveFriendRequest } = useFriendRequest()
   const { havePendingRoomInvitation, pendingRoomsInvitation } = useRoomInvitation()
   const { haveNotifications, notifications } = useNotification()
+  useWizz()
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
   const isChatDisplayed = currentRoomId !== null
 
