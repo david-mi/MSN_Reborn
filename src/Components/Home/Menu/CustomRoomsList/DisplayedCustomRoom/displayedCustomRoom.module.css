@@ -8,6 +8,12 @@
   margin-bottom: auto;
   margin-inline: 19px;
 
+  &.playWizz {
+    &:global {
+      animation: wizzShake 150ms infinite;
+    }
+  }
+
   &:hover {
     border: 1px solid #4890c8;
     cursor: pointer;

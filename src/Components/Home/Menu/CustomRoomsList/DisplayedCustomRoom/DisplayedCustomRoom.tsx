@@ -12,6 +12,8 @@ function DisplayedCustomRoom({ room }: Props) {
   const { unreadMessagesCount, id: roomId } = room
   const dispatch = useAppDispatch()
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
+  const playWizz = useAppSelector(({ room }) => room.roomsList[roomId].playWizz)
+  const classNames = `${styles.displayedCustomRoom} ${playWizz && currentRoomId !== roomId ? styles.playWizz : ""}`
 
   function handleCustomRoomClick(roomId: string) {
     if (roomId !== currentRoomId) {
@@ -21,7 +23,7 @@ function DisplayedCustomRoom({ room }: Props) {
 
   return (
     <li
-      className={styles.displayedCustomRoom}
+      className={classNames}
       key={roomId}
       onClick={() => handleCustomRoomClick(roomId)}
     >

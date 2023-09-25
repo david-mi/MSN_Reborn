@@ -16,6 +16,8 @@ function DisplayedContact({ contact }: Props) {
   const unreadMessagesCount = useAppSelector(({ room }) => {
     return room.roomsList[contact.roomId]?.unreadMessagesCount
   })
+  const playWizz = useAppSelector(({ room }) => room.roomsList[roomId]?.playWizz)
+  const classNames = `${styles.displayedContact} ${playWizz && currentRoomId !== roomId ? styles.playWizz : ""}`
 
   function handleContactClick(roomId: string) {
     if (roomId !== currentRoomId) {
@@ -25,7 +27,7 @@ function DisplayedContact({ contact }: Props) {
 
   return (
     <li
-      className={styles.displayedContact}
+      className={classNames}
       key={id}
       onClick={() => handleContactClick(roomId)}
     >
