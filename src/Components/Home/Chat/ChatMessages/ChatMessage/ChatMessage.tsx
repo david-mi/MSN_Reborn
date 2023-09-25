@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, MouseEvent } from "react";
+import { useCallback, useEffect, useState, MouseEvent, useRef } from "react";
 import { Message, RoomType } from "@/redux/slices/room/types";
 import { UserProfile } from "@/redux/slices/user/types";
 import { Avatar } from "@/Components/Shared";
@@ -37,6 +37,7 @@ function ChatMessage(props: Props) {
   const isMessageReadList = Object.entries(readBy)
   const readByCount = (isMessageReadList.filter(([_, isRead]) => isRead)).length
   const roomUsersCount = isMessageReadList.length
+  const isMarkingAsRead = useRef(false)
 
   function toogleDisplayUsersWhoReadMessage(event: MouseEvent) {
     event.stopPropagation()
@@ -46,11 +47,11 @@ function ChatMessage(props: Props) {
   useEffect(() => {
     const isMessageUnread = !message.readBy[currentUserId]
 
-    if (isMessageUnread) {
-      const markRoomMessageAsReadDispatch = dispatch(markRoomMessageAsRead({ roomId, messageId: message.id }))
-      return markRoomMessageAsReadDispatch.abort
+    if (isMessageUnread && isMarkingAsRead.current === false) {
+      isMarkingAsRead.current = true
+      dispatch(markRoomMessageAsRead({ roomId, messageId: message.id }))
     }
-  }, [dispatch])
+  }, [])
 
   if (user.id === "system") {
     return <SystemMessage message={message} parseTimestamp={parseTimestamp} />

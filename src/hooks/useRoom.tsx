@@ -43,7 +43,7 @@ function useRoom() {
             dispatch(initializeRoom(roomData))
 
             const unSubscribeRoomMessages = onSnapshot(observerQuery, (roomMessagesSnapshot) => {
-              if (roomMessagesSnapshot.metadata.hasPendingWrites) return
+              // if (roomMessagesSnapshot.metadata.hasPendingWrites) return
 
               roomMessagesSnapshot.docChanges().forEach(change => {
                 const message = MessageService.getMessageFromSnapshot(change.doc)
