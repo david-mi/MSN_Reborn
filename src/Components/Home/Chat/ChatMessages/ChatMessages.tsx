@@ -50,7 +50,9 @@ function ChatMessages(props: Props) {
   function handleScroll() {
     const { clientHeight, scrollHeight, scrollTop } = containerRef!.current
     const hasReachedBottom = clientHeight + Math.ceil(scrollTop) === scrollHeight
-    containerRefScrollTopRef.current = scrollTop
+    containerRefScrollTopRef.current = hasReachedBottom
+      ? null
+      : scrollTop
     shouldScrollToBottomRef.current = hasReachedBottom
   }
 
