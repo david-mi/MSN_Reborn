@@ -9,6 +9,7 @@ import { initialLoginState } from "@/redux/slices/login/login";
 import { initialContactState } from "@/redux/slices/contact/contact";
 import { initialChatState } from "@/redux/slices/room/room";
 import { initialNotificationState } from "@/redux/slices/notification/notification";
+import { initialOptionsState } from "@/redux/slices/options/options";
 
 const { body } = document
 
@@ -55,6 +56,9 @@ describe("ProfileForm", () => {
       },
       notification: {
         ...initialNotificationState
+      },
+      options: {
+        ...initialOptionsState
       }
     };
 
