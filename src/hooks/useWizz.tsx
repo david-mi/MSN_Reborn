@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useRef } from "react"
 import { useAppSelector, useAppDispatch } from "@/redux/hooks"
 import { setPlayWizz } from "@/redux/slices/room/room"
 import wizzSoundSrc from "/sounds/wizz.mp3"
@@ -6,29 +6,32 @@ import wizzSoundSrc from "/sounds/wizz.mp3"
 function useWizz() {
   const dispatch = useAppDispatch()
   const roomsList = useAppSelector(({ room }) => room.roomsList)
-  const wizzSound = useMemo(() => {
-    const wizzSound = new Audio(wizzSoundSrc)
-    wizzSound.volume = 0.3
-
-    return wizzSound
-  }, [])
+  const wizzSoundsRef = useRef<{ [roomId: string]: HTMLAudioElement }>({})
 
   useEffect(() => {
     for (const roomId in roomsList) {
       const room = roomsList[roomId]
 
-      if (room.playWizz === false) continue
+      if (
+        room.playWizz === false ||
+        wizzSoundsRef.current[roomId] !== undefined
+      ) continue
+
+      wizzSoundsRef.current[roomId] = new Audio(wizzSoundSrc)
 
       function handleAudioEnd() {
         dispatch(setPlayWizz({ roomId, playWizz: false }))
-        wizzSound.removeEventListener("ended", handleAudioEnd)
+        wizzSoundsRef.current[roomId].removeEventListener("ended", handleAudioEnd)
+        delete wizzSoundsRef.current[roomId]
       }
 
-      wizzSound.addEventListener("ended", handleAudioEnd)
-      wizzSound.play()
-      break
+      wizzSoundsRef.current[roomId].addEventListener("ended", handleAudioEnd)
+      wizzSoundsRef.current[roomId].play()
+        .catch((error) => {
+          console.error(error)
+          handleAudioEnd()
+        })
     }
-
   }, [roomsList])
 }
 
