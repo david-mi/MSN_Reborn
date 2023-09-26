@@ -221,8 +221,8 @@ export const acceptRoomInvitation = createAppAsyncThunk(
   async (
     { roomInvitationId, roomId, username }:
       { roomInvitationId: string, roomId: string, username: string }) => {
-    await RoomService.acceptRoomInvitation(roomInvitationId, roomId)
-    return MessageService.addFromSystem(`:arrow_join: ${username} a rejoint le salon`, roomId)
+    await MessageService.addFromSystem(`:arrow_join: ${username} a rejoint le salon`, roomId)
+    return RoomService.acceptRoomInvitation(roomInvitationId, roomId)
   })
 
 export const createCustomRoom = createAppAsyncThunk(
