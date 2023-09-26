@@ -9,23 +9,28 @@ interface Props {
     [userId: string]: boolean
   }
   messageUserId: string
+  currentUserId: string
 }
 
-function ReadByList({ currentRoomUsersProfile, messageReadBy, messageUserId }: Props) {
+function ReadByList({ currentRoomUsersProfile, messageReadBy, messageUserId, currentUserId }: Props) {
   return (
     <ul className={styles.readByList}>
       {Array.from(currentRoomUsersProfile.values()).map(({ avatarSrc, username, id }) => {
-        return (
-          messageReadBy[id] && id !== messageUserId
-            ? (
-              <li key={id}>
-                <Avatar src={avatarSrc} size="micro" />
-                <p>{username}</p>
-                <CheckMarkIcon />
-              </li>
-            )
-            : null
+        const displayUser = (
+          messageReadBy[id] &&
+          id !== messageUserId &&
+          id !== currentUserId
         )
+
+        return displayUser
+          ? (
+            <li key={id}>
+              <Avatar src={avatarSrc} size="micro" />
+              <p>{username}</p>
+              <CheckMarkIcon />
+            </li>
+          )
+          : null
       })}
     </ul>
   );

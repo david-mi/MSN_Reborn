@@ -70,6 +70,7 @@ function ChatMessage(props: Props) {
             currentRoomUsersProfile={currentRoomUsersProfile}
             messageReadBy={readBy}
             messageUserId={userId}
+            currentUserId={currentUserId}
           />
         )}
       </span>
