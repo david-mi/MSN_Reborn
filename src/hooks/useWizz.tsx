@@ -7,6 +7,7 @@ function useWizz() {
   const dispatch = useAppDispatch()
   const roomsList = useAppSelector(({ room }) => room.roomsList)
   const wizzSoundsRef = useRef<{ [roomId: string]: HTMLAudioElement }>({})
+  const currentUserWizzVolumeOption = useAppSelector(({ options }) => options.user.wizzVolume)
 
   useEffect(() => {
     for (const roomId in roomsList) {
@@ -18,6 +19,7 @@ function useWizz() {
       ) continue
 
       wizzSoundsRef.current[roomId] = new Audio(wizzSoundSrc)
+      wizzSoundsRef.current[roomId].volume = currentUserWizzVolumeOption
 
       function handleAudioEnd() {
         dispatch(setPlayWizz({ roomId, playWizz: false }))
@@ -32,7 +34,7 @@ function useWizz() {
           handleAudioEnd()
         })
     }
-  }, [roomsList])
+  }, [roomsList, currentUserWizzVolumeOption])
 }
 
 export default useWizz

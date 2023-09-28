@@ -13,7 +13,9 @@ function DisplayedCustomRoom({ room }: Props) {
   const dispatch = useAppDispatch()
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
   const playWizz = useAppSelector(({ room }) => room.roomsList[roomId].playWizz)
-  const classNames = `${styles.displayedCustomRoom} ${playWizz && currentRoomId !== roomId ? styles.playWizz : ""}`
+  const currentUserWizzShakeOption = useAppSelector(({ options }) => options.user.wizzShake)
+  const shouldPlayWizzShake = currentUserWizzShakeOption && playWizz && currentRoomId !== roomId
+  const classNames = `${styles.displayedCustomRoom} ${shouldPlayWizzShake ? styles.playWizz : ""}`
 
   function handleCustomRoomClick(roomId: string) {
     if (roomId !== currentRoomId) {

@@ -17,7 +17,9 @@ function DisplayedContact({ contact }: Props) {
     return room.roomsList[contact.roomId]?.unreadMessagesCount
   })
   const playWizz = useAppSelector(({ room }) => room.roomsList[roomId]?.playWizz)
-  const classNames = `${styles.displayedContact} ${playWizz && currentRoomId !== roomId ? styles.playWizz : ""}`
+  const currentUserWizzShakeOption = useAppSelector(({ options }) => options.user.wizzShake)
+  const shouldPlayWizzShake = currentUserWizzShakeOption && playWizz && currentRoomId !== roomId
+  const classNames = `${styles.displayedContact} ${shouldPlayWizzShake ? styles.playWizz : ""}`
 
   function handleContactClick(roomId: string) {
     if (roomId !== currentRoomId) {

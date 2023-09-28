@@ -16,10 +16,13 @@ function Chat() {
   const { id, messages, users, type, previousMessagesScrollTop, name, playWizz } = room
   const getCurrentUserProfileStatus = useAppSelector(({ user }) => user.getProfile.status)
   const getContactsProfileStatus = useAppSelector(({ contact }) => contact.getContactsProfile.status)
+  const currentUserWizzShakeOption = useAppSelector(({ options }) => options.user.wizzShake)
   const { getRoomNonFriendProfilesRequest, currentRoomUsersProfile } = useRoomUsers(id, type)
   const shouldScrollToBottomRef = useRef<boolean>(true)
   const [displayUsersPanel, setDisplayUsersPanel] = useState(matchMedia("(min-width: 750px)").matches)
-  const classNames = `${styles.chat} ${playWizz ? styles.playWizz : ""}`
+
+  const shouldPlayWizzShake = currentUserWizzShakeOption && playWizz
+  const classNames = `${styles.chat} ${shouldPlayWizzShake ? styles.playWizz : ""}`
   const isEveryRoomUsersLoaded = currentRoomUsersProfile.size === (
     Object.keys(users.subscribed).length + Object.keys(users.unsubscribed).length
   )

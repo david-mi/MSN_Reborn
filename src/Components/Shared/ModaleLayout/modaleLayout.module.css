@@ -32,7 +32,8 @@
   user-select: none;
   border-bottom: solid 1px var(--separators-clr);
   padding-inline: 10px;
-  margin-inline: calc(var(--modale-inline-padding) * -1)
+  margin-inline: calc(var(--modale-inline-padding) * -1);
+  color: black;
 }
 
 .header h1 {
