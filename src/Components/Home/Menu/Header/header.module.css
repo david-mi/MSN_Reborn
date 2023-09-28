@@ -2,22 +2,27 @@
   padding-block: 8px 10px;
   width: 100%;
   display: flex;
-  gap: 5px;
+  gap: clamp(10px, 25px - 3vw, 20px);
   align-items: center;
-  color: white;
-  user-select: none;
 
   & .title {
     font-size: clamp(0.9rem, 1rem - 0.2vw, 1rem);
     font-weight: 400;
+    color: white;
+    user-select: none;
 
     & b {
       font-weight: 500;
     }
   }
-  & button {
+
+  & button:is(.optionsButton, .disconnectButton) {
     background-color: transparent;
     border: none;
+
+    &.optionsButton {
+      margin-left: auto;
+    }
 
     &::disabled path {
       fill: #C1C1C1;
