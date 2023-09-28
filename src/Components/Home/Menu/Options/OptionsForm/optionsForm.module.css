@@ -1,0 +1,10 @@
+.optionsForm {
+  & .wizzShakeContainer {
+    display: flex;
+    align-items: center;
+  }
+
+  & input[type="checkbox"] {
+    margin-left: auto;
+  }
+}
