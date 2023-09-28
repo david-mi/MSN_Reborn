@@ -3,8 +3,10 @@ import windowsLogo from "./windows-logo.png"
 import { useAppDispatch } from "@/redux/hooks";
 import { disconnect } from "@/redux/slices/user/user";
 import styles from "./header.module.css";
+import useOptions from "@/hooks/useOptions";
 
 function Header() {
+  useOptions()
   const dispatch = useAppDispatch()
 
   function handleDisconnect() {
