@@ -30,6 +30,10 @@ function useWizz() {
       wizzSoundsRef.current[roomId].addEventListener("ended", handleAudioEnd)
       wizzSoundsRef.current[roomId].play()
         .catch((error) => {
+          /** 
+          {@link https://developer.chrome.com/blog/autoplay/}
+          can't play a wizz sound unless user has interaction with DOM 
+          */
           console.error(error)
           handleAudioEnd()
         })
