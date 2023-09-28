@@ -15,4 +15,26 @@
       font-weight: 500;
     }
   }
+  & button {
+    background-color: transparent;
+    border: none;
+
+    &::disabled path {
+      fill: #C1C1C1;
+    }
+
+    &:hover path {
+      fill: white;
+    }
+
+    & svg {
+      position: relative;
+      top: 1px;
+
+      & path {
+        transition: 200ms;
+        fill: rgb(233, 233, 233);
+      }
+    }
+  }
 }
