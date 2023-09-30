@@ -17,8 +17,7 @@
     background-color: var(--clr-textarea);
     position: relative;
     z-index: 11;
-    flex: 1;
-    height: 50px;
+    height: 40px;
     padding: var(--chat-gap);
     resize: none;
     border: none;
@@ -37,6 +36,6 @@
   & small {
     width: 100%;
     color: red;
-    height: 20px;
+    /* height: 20px; */
   }
 }
