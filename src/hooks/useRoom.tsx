@@ -47,6 +47,7 @@ function useRoom() {
 
               roomMessagesSnapshot.docChanges().forEach(change => {
                 const message = MessageService.getMessageFromSnapshot(change.doc)
+                console.log(change.type)
                 switch (change.type) {
                   case "added": {
                     if (hasAddedOldestRoomMessageDate.current === false) {
@@ -59,7 +60,11 @@ function useRoom() {
                     if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
                       dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
                     }
-
+                    console.log({
+                      delta: Date.now() - message.createdAt,
+                      userId: message.userId,
+                      includesWizz: message.message.includes(":wizz:")
+                    })
                     if (
                       message.userId === "system" &&
                       message.message.includes(":wizz:") &&
