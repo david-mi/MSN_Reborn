@@ -68,7 +68,7 @@ function useRoom() {
                     if (
                       message.userId === "system" &&
                       message.message.includes(":wizz:") &&
-                      (Date.now() - message.createdAt) < 1000
+                      (Date.now() - message.createdAt) < 2000
                     ) {
                       dispatch(setPlayWizz({ roomId: roomSnapshot.id, playWizz: true }))
                     }
