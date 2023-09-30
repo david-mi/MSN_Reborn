@@ -1,6 +1,14 @@
 .chatForm {
+  position: relative;
   grid-area: sendMessage;
-  display: flex;
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "options options"
+    "textarea button"
+    "error error"
+  ;
   flex-direction: column;
   background-color: white;
   --clr-textarea: rgb(234, 251, 255);
@@ -13,7 +21,13 @@
       rgba(44, 98, 138, 0.42) 60%,
       var(--separators-clr) 100%) 1;
 
+  & > :nth-child(1) {
+    background-color: red;
+    grid-area: options;
+  }
+
   & textarea {
+    grid-area: textarea;
     background-color: var(--clr-textarea);
     position: relative;
     z-index: 11;
@@ -23,6 +37,7 @@
     border: none;
     font-size: clamp(1rem, 1.1rem - 0.2vw, 1.1rem);
     font-weight: 500;
+    overflow-y: scroll;
 
     &:focus {
       outline: none;
@@ -30,10 +45,32 @@
   }
 
   .submitButton {
-    align-self: center;
+    display: none;
+  }
+
+  @media (width < 750px) {
+    .submitButton {
+      display: block;
+      grid-area: button;
+      padding: 5px 10px;
+      background-color: #0088e0;
+
+      &:active {
+        background-color: #0086e0b6;
+      }
+
+      & svg {
+        transition: 200ms;
+
+        & path {
+          fill: white;
+        }
+      }
+    }
   }
 
   & small {
+    grid-area: error;
     width: 100%;
     color: red;
     /* height: 20px; */
