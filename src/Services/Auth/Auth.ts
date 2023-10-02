@@ -88,6 +88,9 @@ export class AuthService {
 
   public static async loginWithGoogle() {
     const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({
+      prompt: "select_account"
+    })
     const userCredentials = await signInWithPopup(firebase.auth, provider)
     return userCredentials.user
   }
