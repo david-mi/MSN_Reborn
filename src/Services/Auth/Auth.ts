@@ -9,7 +9,9 @@ import {
   setPersistence,
   browserSessionPersistence,
   indexedDBLocalPersistence,
-  signOut
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "firebase/auth";
 import { ref, update } from "firebase/database";
 import { UserService } from "..";
@@ -82,6 +84,12 @@ export class AuthService {
 
   public static async login(email: string, password: string) {
     return signInWithEmailAndPassword(firebase.auth, email, password)
+  }
+
+  public static async loginWithGoogle() {
+    const provider = new GoogleAuthProvider()
+    const userCredentials = await signInWithPopup(firebase.auth, provider)
+    return userCredentials.user
   }
 
   static async disconnect() {

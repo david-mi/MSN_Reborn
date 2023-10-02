@@ -28,10 +28,10 @@ export class UserService {
     return this.currentUser.getIdToken(true)
   }
 
-  static async getProfile(userId: string) {
-    const nonFriendRoomUserIdWhoLeftRef = ref(firebase.database, `profiles/${userId}`)
-    const nonFriendRoomUserIdWhoLeftSnapshot = await get(nonFriendRoomUserIdWhoLeftRef)
-    return nonFriendRoomUserIdWhoLeftSnapshot.val() as UserProfile
+  static async checkIfCurrentUserProfileExist() {
+    const userProfileRef = ref(firebase.database, `profiles/${this.currentUser.uid}`)
+    const userProfileSnapshot = await get(userProfileRef)
+    return userProfileSnapshot.exists()
   }
 
   static async updateProfile(profileData: Partial<UserProfile>) {
