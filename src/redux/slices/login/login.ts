@@ -1,5 +1,5 @@
 import { LoginSlice } from "./types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
 import { AuthService, OptionsService, UserService } from "@/Services";
 import { LoginFormFields } from "@/Components/Login/LoginForm/types";
@@ -7,8 +7,8 @@ import { FirebaseError } from "firebase/app";
 import { disconnectAction, setAuthenticationState, setVerified } from "../user/user";
 import { UserProfile } from "../user/types";
 
-
 export const initialLoginState: LoginSlice = {
+  isUsingOAuth: false,
   request: {
     status: "IDLE",
     error: null
@@ -18,7 +18,17 @@ export const initialLoginState: LoginSlice = {
 const loginSlice = createSlice({
   name: "user",
   initialState: initialLoginState,
-  reducers: {},
+  reducers: {
+    setIsUsingOAuth(state, { payload }: PayloadAction<boolean>) {
+      state.isUsingOAuth = payload
+    },
+    resetRequestState(state) {
+      state.request = {
+        status: "IDLE",
+        error: null
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(loginAndUpdateDisplayStatus.pending, (state) => {
       state.request.status = "PENDING"
@@ -59,6 +69,7 @@ export const loginAndUpdateDisplayStatus = createAppAsyncThunk(
 export const authenticateWithGoogle = createAppAsyncThunk(
   "user/authenticateWithGoogle",
   async (_, { dispatch }) => {
+    dispatch(setIsUsingOAuth(true))
     const user = await AuthService.loginWithGoogle()
     const userProfile: Pick<UserProfile, "avatarSrc" | "email" | "username"> = {
       avatarSrc: user.photoURL!,
@@ -74,6 +85,8 @@ export const authenticateWithGoogle = createAppAsyncThunk(
 
     dispatch(setAuthenticationState("AUTHENTICATED"))
     dispatch(setVerified(true))
+    dispatch(setIsUsingOAuth(false))
   })
 
 export const loginReducer = loginSlice.reducer
+export const { setIsUsingOAuth, resetRequestState } = loginSlice.actions
