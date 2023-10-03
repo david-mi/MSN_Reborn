@@ -29,6 +29,8 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
   const sendMessageRequest = useAppSelector(({ room }) => room.sendMessageRequest)
 
   async function onSubmit({ content }: ChatFormFields) {
+    shouldScrollToBottomRef.current = true
+
     try {
       await dispatch(sendMessage({ roomId, users, content })).unwrap()
       setFocus("content")
@@ -43,7 +45,6 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
 
     if (event.key === "Enter" && event.shiftKey === false) {
       handleSubmit(onSubmit)()
-      shouldScrollToBottomRef.current = true
       event.preventDefault()
     }
   }
