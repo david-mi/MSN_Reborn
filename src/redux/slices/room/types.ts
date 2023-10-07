@@ -30,6 +30,12 @@ export interface DatabaseMessage {
   message: string
 }
 
+export interface NotificationMessage {
+  message: string
+  id: string
+  roomId: RoomId
+}
+
 export interface RoomUsers {
   subscribed: {
     [userId: UserId]: SubscribedUser
@@ -113,6 +119,7 @@ export interface RoomSlice {
   roomsList: {
     [roomId: RoomId]: Room
   }
+  messagesToNotify: NotificationMessage[]
   pendingRoomsInvitation: PendingRoomInvitation[]
   getRoomNonFriendProfilesRequest: {
     status: RequestStatus,

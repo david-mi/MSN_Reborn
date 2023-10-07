@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom, setPlayWizz } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom, setPlayWizz, setMessageToNotify } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import { UserId, type DatabaseRoom } from "@/redux/slices/room/types";
@@ -47,7 +47,7 @@ function useRoom() {
 
               roomMessagesSnapshot.docChanges().forEach(change => {
                 const message = MessageService.getMessageFromSnapshot(change.doc)
-                console.log(change.type)
+
                 switch (change.type) {
                   case "added": {
                     if (hasAddedOldestRoomMessageDate.current === false) {
@@ -58,13 +58,17 @@ function useRoom() {
                     dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
 
                     if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
+                      if ((Date.now() - message.createdAt) < 2000) {
+                        dispatch(setMessageToNotify({
+                          roomId: roomSnapshot.id,
+                          message: message.message,
+                          id: message.id
+                        }))
+                      }
+
                       dispatch(setUnreadMessageCount({ count: 1, roomId: roomSnapshot.id }))
                     }
-                    console.log({
-                      delta: Date.now() - message.createdAt,
-                      userId: message.userId,
-                      includesWizz: message.message.includes(":wizz:")
-                    })
+
                     if (
                       message.userId === "system" &&
                       message.message.includes(":wizz:") &&

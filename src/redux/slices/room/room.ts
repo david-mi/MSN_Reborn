@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "@/redux/types";
-import { DatabaseRoom, Message, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile, SubscribedUser, UserId } from "./types";
+import { DatabaseRoom, Message, NotificationMessage, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile, SubscribedUser, UserId } from "./types";
 import { MessageService, NotificationService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
 import { disconnectAction } from "../user/user";
@@ -11,6 +11,7 @@ export const initialChatState: RoomSlice = {
   currentRoomId: null,
   roomsList: {},
   pendingRoomsInvitation: [],
+  messagesToNotify: [],
   getRoomNonFriendProfilesRequest: {
     status: "IDLE",
     error: null
@@ -139,7 +140,15 @@ const roomSlice = createSlice({
     setPlayWizz(state, { payload }: PayloadAction<{ roomId: string, playWizz: boolean }>) {
       const targetRoom = state.roomsList[payload.roomId]
       targetRoom.playWizz = payload.playWizz
-    }
+    },
+    setMessageToNotify(state, { payload: messageToNotify }: PayloadAction<NotificationMessage>) {
+      if (state.currentRoomId !== messageToNotify.roomId) {
+        state.messagesToNotify.push(messageToNotify)
+      }
+    },
+    deleteMessageToNotify(state, { payload: messageId }: PayloadAction<string>) {
+      state.messagesToNotify = state.messagesToNotify.filter((message) => message.id !== messageId)
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(sendMessage.pending, (state) => {
@@ -322,7 +331,9 @@ export const {
   setOldestRoomMessageDate,
   setPreviousScrollTop,
   removeRoom,
-  setPlayWizz
+  setPlayWizz,
+  setMessageToNotify,
+  deleteMessageToNotify
 } = roomSlice.actions
 
 export const roomReducer = roomSlice.reducer

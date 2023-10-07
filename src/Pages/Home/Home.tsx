@@ -1,5 +1,5 @@
 import useFriendRequest from "@/hooks/useFriendRequest";
-import { Menu, FriendRequestAlert, Chat } from "@/Components/Home";
+import { Menu, FriendRequestAlert, Chat, MessagesNotifications } from "@/Components/Home";
 import styles from "./home.module.css"
 import { useAppSelector } from "@/redux/hooks";
 import useRoomInvitation from "@/hooks/useRoomInvitation";
@@ -23,6 +23,7 @@ function Home() {
       {haveNotifications && <Notification notification={notifications[0]} />}
       <Menu isChatDisplayed={isChatDisplayed} />
       {isChatDisplayed && <Chat />}
+      <MessagesNotifications />
     </div>
   );
 }
