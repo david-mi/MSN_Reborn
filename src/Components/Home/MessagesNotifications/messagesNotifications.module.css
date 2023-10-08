@@ -1,3 +1,7 @@
-.messagesNotifications {
-  background-color: red;
+.toastContainer {
+  max-width: 300px;
+}
+
+.progressBar {
+  background: #8dd679;
 }

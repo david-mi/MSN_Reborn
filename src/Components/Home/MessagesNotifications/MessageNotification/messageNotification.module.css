@@ -1,0 +1,53 @@
+.messageNotification {
+  transition: 100ms;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  grid-template-areas:
+    "avatar name"
+    "avatar message";
+  align-content: space-between;
+
+  & .avatar {
+    grid-area: avatar;
+  }
+
+  & .name {
+    color: black;
+    grid-area: name;
+    font-weight: bold;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & .message {
+    grid-area: message;
+  }
+}
+
+:global(.Toastify__toast-theme--light) {
+  cursor: pointer;
+  border-style: solid;
+  border-width: 1px;
+  border-image: linear-gradient(180deg,
+      rgba(44, 98, 138, 0.6) 0%,
+      rgba(44, 98, 138, 0.58) 50%,
+      rgba(44, 98, 138, 0.42) 60%,
+      var(--separators-clr) 100%) 1;
+
+  &:hover {
+    transition: 100ms;
+    background-color: #ecf3f6;
+  }
+
+  &:hover .messageNotification {
+    filter: drop-shadow(3px 3px 1px rgba(119, 119, 119, 0.2));
+  }
+}
+
+:global(.Toastify__toast-container) {
+  margin: calc(var(--padding-root) * -1);
+}

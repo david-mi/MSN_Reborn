@@ -4,6 +4,7 @@ import styles from "./messagesNotifications.module.css";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect, useRef } from "react"
 import { deleteMessageToNotify } from "@/redux/slices/room/room";
+import MessageNotification from "./MessageNotification/MessageNotification";
 
 function MessagesNotifications() {
   const dispatch = useAppDispatch()
@@ -12,12 +13,12 @@ function MessagesNotifications() {
   const toastsIdRefs = useRef<Map<Id, Id>>(new Map())
 
   useEffect(() => {
-    messagesToNofify.forEach(({ message, id, roomId }) => {
-      const toastId = crypto.randomUUID() + "#" + roomId
-      toast(message, { toastId })
+    messagesToNofify.forEach((messageToNotify) => {
+      const toastId = crypto.randomUUID() + "#" + messageToNotify.roomId
+      toast(<MessageNotification messageToNotify={messageToNotify} />, { toastId, bodyClassName: styles.body })
 
       toastsIdRefs.current.set(toastId, toastId)
-      dispatch(deleteMessageToNotify(id))
+      dispatch(deleteMessageToNotify(messageToNotify.id))
     })
   }, [messagesToNofify])
 
@@ -45,15 +46,17 @@ function MessagesNotifications() {
     <div className={styles.messageNotification}>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={4000}
+        closeOnClick={false}
         hideProgressBar={false}
+        progressClassName={styles.progressBar}
         newestOnTop={false}
-        closeOnClick
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
         draggable
-        pauseOnHover
         theme="light"
+        className={styles.toastContainer}
       />
     </div>
   );
