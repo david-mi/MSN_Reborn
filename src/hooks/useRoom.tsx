@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react"
 import { onSnapshot, collection, query, orderBy, startAt } from "firebase/firestore";
 import { firebase } from "@/firebase/config";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom, setPlayWizz, setMessageToNotify } from "@/redux/slices/room/room";
+import { initializeRoom, setRoomMessage, setUnreadMessageCount, editRoomMessage, setRoomsLoaded, modifyRoom, setOldestRoomMessageDate, removeRoom, setPlayWizz, createMessageToNotify } from "@/redux/slices/room/room";
 import { MessageService } from "@/Services";
 import { Unsubscribe } from "firebase/firestore";
 import { UserId, type DatabaseRoom } from "@/redux/slices/room/types";
@@ -59,10 +59,11 @@ function useRoom() {
 
                     if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
                       if ((Date.now() - message.createdAt) < 2000) {
-                        dispatch(setMessageToNotify({
+                        dispatch(createMessageToNotify({
                           roomId: roomSnapshot.id,
                           message: message.message,
-                          id: message.id
+                          id: message.id,
+                          userId: message.userId
                         }))
                       }
 

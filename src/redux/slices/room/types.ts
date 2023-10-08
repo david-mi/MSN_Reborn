@@ -31,9 +31,12 @@ export interface DatabaseMessage {
 }
 
 export interface NotificationMessage {
-  message: string
   id: string
-  roomId: RoomId
+  roomId: string
+  userId: string
+  message: string
+  roomOrContactName: string
+  roomOrContactAvatarSrc?: string
 }
 
 export interface RoomUsers {

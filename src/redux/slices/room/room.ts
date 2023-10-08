@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createAppAsyncThunk } from "@/redux/types";
+import { AppThunk, createAppAsyncThunk } from "@/redux/types";
 import { DatabaseRoom, Message, NotificationMessage, PendingRoomInvitation, RoomSlice, RoomUsers, RoomUsersProfile, SubscribedUser, UserId } from "./types";
 import { MessageService, NotificationService, RoomService } from "@/Services";
 import { FirebaseError } from "firebase/app";
@@ -142,9 +142,7 @@ const roomSlice = createSlice({
       targetRoom.playWizz = payload.playWizz
     },
     setMessageToNotify(state, { payload: messageToNotify }: PayloadAction<NotificationMessage>) {
-      if (state.currentRoomId !== messageToNotify.roomId) {
-        state.messagesToNotify.push(messageToNotify)
-      }
+      state.messagesToNotify.push(messageToNotify)
     },
     deleteMessageToNotify(state, { payload: messageId }: PayloadAction<string>) {
       state.messagesToNotify = state.messagesToNotify.filter((message) => message.id !== messageId)
@@ -316,6 +314,29 @@ export const sendWizz = createAppAsyncThunk(
   async ({ roomId, username }: { roomId: string, username: string }) => {
     return MessageService.addFromSystem(`:wizz: ${username} a envoyé un wizz`, roomId)
   })
+
+export function createMessageToNotify(messageToNotify: Omit<NotificationMessage, "roomOrContactName" | "roomOrContactAvatarSrc">): AppThunk {
+  return (dispatch, getState) => {
+    const { room, contact } = getState()
+    if (room.currentRoomId === messageToNotify.roomId) return
+
+    const foundRoom = room.roomsList[messageToNotify.roomId]!
+
+    const roomOrContactName = foundRoom.name !== null
+      ? foundRoom.name
+      : contact.contactsProfile[messageToNotify.userId].username
+
+    const roomOrContactAvatarSrc = foundRoom.name !== null
+      ? undefined
+      : contact.contactsProfile[messageToNotify.userId].avatarSrc
+
+    dispatch(setMessageToNotify({
+      ...messageToNotify,
+      roomOrContactName,
+      roomOrContactAvatarSrc
+    }))
+  }
+}
 
 export const {
   setcurrentDisplayedRoom,
