@@ -57,7 +57,7 @@ function useRoom() {
 
                     dispatch(setRoomMessage({ message, roomId: roomSnapshot.id }))
 
-                    if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId !== "system") {
+                    if (message.readBy[firebase.auth.currentUser!.uid] === false && message.userId.startsWith("system") === false) {
                       if ((Date.now() - message.createdAt) < 2000) {
                         dispatch(createMessageToNotify({
                           roomId: roomSnapshot.id,
@@ -71,7 +71,7 @@ function useRoom() {
                     }
 
                     if (
-                      message.userId === "system" &&
+                      message.userId.startsWith("system") &&
                       message.message.includes(":wizz:") &&
                       (Date.now() - message.createdAt) < 2000
                     ) {

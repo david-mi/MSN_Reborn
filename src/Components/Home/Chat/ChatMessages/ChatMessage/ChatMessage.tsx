@@ -53,7 +53,7 @@ function ChatMessage(props: Props) {
     }
   }, [])
 
-  if (user.id === "system") {
+  if (user.id.startsWith("system")) {
     return <SystemMessage message={message} parseTimestamp={parseTimestamp} />
   }
 

@@ -62,11 +62,11 @@ export class MessageService {
     await addDoc(messagesCollectionRef, message)
   }
 
-  public static async addFromSystem(content: string, roomId: RoomId) {
+  public static async addFromSystem(content: string, roomId: RoomId, relatedUserId?: string) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
     const message = {
-      userId: "system",
+      userId: `system#${relatedUserId ?? this.currentUser.uid}`,
       message: content,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),

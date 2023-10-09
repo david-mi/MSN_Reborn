@@ -274,7 +274,7 @@ export const leaveRoom = createAppAsyncThunk(
         },
         [userToPromote.id]
       )
-      MessageService.addFromSystem(`:admin_star: ${userToPromote.username} a été promu Administrateur`, roomId)
+      MessageService.addFromSystem(`:admin_star: ${userToPromote.username} a été promu Administrateur`, roomId, userToPromote.id)
     }
 
     dispatch(removeRoom(roomId))

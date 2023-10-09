@@ -130,7 +130,7 @@ function ChatMessages(props: Props) {
               user={currentRoomUsersProfile.get(message.userId) || {
                 avatarSrc: "",
                 displayedStatus: "offline",
-                id: "system",
+                id: message.userId,
                 email: "",
                 personalMessage: "",
                 statusBeforeDisconnect: "offline",
