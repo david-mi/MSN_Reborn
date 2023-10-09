@@ -7,6 +7,7 @@ import { FirebaseError } from "firebase/app";
 export const defaultOptions: Options = {
   wizzShake: true,
   wizzVolume: 0.5,
+  messageNotificationVolume: 0.5
 }
 
 export const initialOptionsState: OptionsSlice = {
