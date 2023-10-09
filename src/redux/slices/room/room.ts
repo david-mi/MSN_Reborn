@@ -320,15 +320,19 @@ export function createMessageToNotify(messageToNotify: Omit<NotificationMessage,
     const { room, contact } = getState()
     if (room.currentRoomId === messageToNotify.roomId) return
 
+    let userId = messageToNotify.userId.startsWith("system")
+      ? messageToNotify.userId.replace(/.+#/, "")
+      : messageToNotify.userId
+
     const foundRoom = room.roomsList[messageToNotify.roomId]!
 
     const roomOrContactName = foundRoom.name !== null
       ? foundRoom.name
-      : contact.contactsProfile[messageToNotify.userId].username
+      : contact.contactsProfile[userId].username
 
     const roomOrContactAvatarSrc = foundRoom.name !== null
       ? undefined
-      : contact.contactsProfile[messageToNotify.userId].avatarSrc
+      : contact.contactsProfile[userId].avatarSrc
 
     dispatch(setMessageToNotify({
       ...messageToNotify,

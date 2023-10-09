@@ -26,8 +26,11 @@ function MessagesNotifications() {
   }
 
   useEffect(() => {
-    messagesToNofify.forEach(() => {
-      if (canPlayNotificationSoundRef.current === false) return
+    messagesToNofify.forEach((messageToNotify) => {
+      if (
+        canPlayNotificationSoundRef.current === false ||
+        messageToNotify.userId.startsWith("system")
+      ) return
 
       function handleAudioEnd() {
         canPlayNotificationSoundRef.current = true
@@ -83,7 +86,7 @@ function MessagesNotifications() {
     <div className={styles.messageNotification}>
       <ToastContainer
         position="top-right"
-        autoClose={4000}
+        autoClose={2500}
         closeOnClick={false}
         hideProgressBar={false}
         progressClassName={styles.progressBar}

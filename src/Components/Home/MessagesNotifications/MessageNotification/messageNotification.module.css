@@ -24,7 +24,14 @@
   }
 
   & .message {
+    display: flex;
+    gap: 8px;
     grid-area: message;
+  }
+
+  & .icon {
+    display: flex;
+    justify-content: center;
   }
 }
 

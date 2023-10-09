@@ -76,6 +76,12 @@ function useRoom() {
                       (Date.now() - message.createdAt) < 2000
                     ) {
                       dispatch(setPlayWizz({ roomId: roomSnapshot.id, playWizz: true }))
+                      dispatch(createMessageToNotify({
+                        roomId: roomSnapshot.id,
+                        message: message.message,
+                        id: message.id,
+                        userId: message.userId
+                      }))
                     }
 
                     break
