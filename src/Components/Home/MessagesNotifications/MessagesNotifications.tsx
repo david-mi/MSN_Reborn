@@ -4,6 +4,7 @@ import styles from "./messagesNotifications.module.css";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect, useRef } from "react"
 import { deleteMessageToNotify } from "@/redux/slices/room/room";
+import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 import MessageNotification from "./MessageNotification/MessageNotification";
 
 function MessagesNotifications() {
@@ -12,10 +13,17 @@ function MessagesNotifications() {
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
   const toastsIdRefs = useRef<Map<Id, Id>>(new Map())
 
+  function handleToastClick(roomId: string) {
+    dispatch(setcurrentDisplayedRoom(roomId))
+  }
+
   useEffect(() => {
     messagesToNofify.forEach((messageToNotify) => {
       const toastId = crypto.randomUUID() + "#" + messageToNotify.roomId
-      toast(<MessageNotification messageToNotify={messageToNotify} />, { toastId, bodyClassName: styles.body })
+      toast(<MessageNotification messageToNotify={messageToNotify} />, {
+        toastId, bodyClassName: styles.body,
+        onClick: () => handleToastClick(messageToNotify.roomId)
+      })
 
       toastsIdRefs.current.set(toastId, toastId)
       dispatch(deleteMessageToNotify(messageToNotify.id))
