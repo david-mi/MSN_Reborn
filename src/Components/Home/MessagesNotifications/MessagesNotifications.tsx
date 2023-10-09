@@ -54,7 +54,8 @@ function MessagesNotifications() {
       const toastId = crypto.randomUUID() + "#" + messageToNotify.roomId
       toast(<MessageNotification messageToNotify={messageToNotify} />, {
         toastId, bodyClassName: styles.body,
-        onClick: () => handleToastClick(messageToNotify.roomId)
+        onClick: () => handleToastClick(messageToNotify.roomId),
+        pauseOnFocusLoss: false
       })
 
       toastsIdRefs.current.set(toastId, toastId)

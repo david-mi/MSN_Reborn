@@ -1,13 +1,14 @@
 .messageNotification {
+  --messageNotificationGap: 8px;
   transition: 100ms;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto auto 1fr;
   grid-template-rows: auto auto;
-  column-gap: 8px;
   grid-template-areas:
-    "avatar name"
-    "avatar message";
+    "avatar name name"
+    "avatar username message";
   align-content: space-between;
+  align-items: center;
 
   & .avatar {
     grid-area: avatar;
@@ -21,17 +22,41 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-left: var(--messageNotificationGap);
+  }
+
+  & .username {
+    grid-area: username;
+    color: black;
+    font-weight: bold;
+    font-style: normal !important;
+    margin-left: var(--messageNotificationGap);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
   }
 
   & .message {
     display: flex;
+    align-items: center;
     gap: 8px;
     grid-area: message;
+    margin-left: var(--messageNotificationGap);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & .icon {
     display: flex;
     justify-content: center;
+  }
+
+  & .text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -55,6 +80,18 @@
   }
 }
 
-:global(.Toastify__toast-container) {
-  margin: calc(var(--padding-root) * -1);
+:global(.Toastify__toast) {
+  font-family: inherit;
+}
+
+:global(.Toastify__toast-container--top-right) {
+  top: 0;
+  right: 0;
+}
+
+:global(.Toastify__close-button) {
+  & svg {
+    max-width: 14px;
+    max-height: 16px;
+  }
 }

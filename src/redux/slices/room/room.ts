@@ -316,7 +316,7 @@ export const sendWizz = createAppAsyncThunk(
     return MessageService.addFromSystem(`:wizz: ${username} a envoyé un wizz`, roomId)
   })
 
-export function createMessageToNotify(messageToNotify: Omit<NotificationMessage, "roomOrContactName" | "roomOrContactAvatarSrc">): AppThunk {
+export function createMessageToNotify(messageToNotify: Omit<NotificationMessage, "roomOrContactName" | "roomOrContactAvatarSrc" | "roomType">): AppThunk {
   return (dispatch, getState) => {
     const { room, contact } = getState()
     if (room.currentRoomId === messageToNotify.roomId) return
@@ -327,18 +327,19 @@ export function createMessageToNotify(messageToNotify: Omit<NotificationMessage,
 
     const foundRoom = room.roomsList[messageToNotify.roomId]!
 
-    const roomOrContactName = foundRoom.name !== null
-      ? foundRoom.name
+    const roomOrContactName = foundRoom.type === "manyToMany"
+      ? foundRoom.name!
       : contact.contactsProfile[userId].username
 
-    const roomOrContactAvatarSrc = foundRoom.name !== null
+    const roomOrContactAvatarSrc = foundRoom.type === "manyToMany"
       ? undefined
       : contact.contactsProfile[userId].avatarSrc
 
     dispatch(setMessageToNotify({
       ...messageToNotify,
       roomOrContactName,
-      roomOrContactAvatarSrc
+      roomOrContactAvatarSrc,
+      roomType: foundRoom.type
     }))
   }
 }

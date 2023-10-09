@@ -9,7 +9,7 @@ interface Props {
 }
 
 function MessageNotification({ messageToNotify }: Partial<ToastContentProps> & Props) {
-  const { roomOrContactName, message, roomOrContactAvatarSrc, userId } = messageToNotify
+  const { roomOrContactName, message, roomOrContactAvatarSrc, userId, roomType, username } = messageToNotify
 
   return (
     <div className={styles.messageNotification}>
@@ -19,13 +19,14 @@ function MessageNotification({ messageToNotify }: Partial<ToastContentProps> & P
         className={styles.avatar}
       />
       <p className={styles.name}>{roomOrContactName}</p>
+      {roomType === "manyToMany" && userId.startsWith("system") === false && <small className={styles.username}>{username} : </small>}
       <div className={styles.message}>
         {userId.startsWith("system")
           ? message.split(/(?<=:)\s/g).map((text) => text in systemIcons
-            ? <p key={text} className={styles.icon}>{systemIcons[text as keyof typeof systemIcons]}</p>
-            : <small key={text} className={styles.text}>Alerte Wizz</small>
+            ? <span key={text} className={styles.icon}>{systemIcons[text as keyof typeof systemIcons]}</span>
+            : <small key={text} className={styles.text}>{text}</small>
           )
-          : message
+          : <p className={styles.text}>{message}</p>
         }
       </div>
     </div>
