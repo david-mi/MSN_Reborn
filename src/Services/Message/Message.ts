@@ -37,7 +37,7 @@ export class MessageService {
     } as Message
   }
 
-  public static async add(content: string, roomId: RoomId, users: RoomUsers) {
+  public static async add(content: string, roomId: RoomId, users: RoomUsers, usernameSnapshot: string) {
     const messagesCollectionRef = collection(firebase.firestore, "rooms", roomId, "messages")
 
     const readBy: Record<string, boolean> = Object.keys(users.subscribed)
@@ -53,6 +53,7 @@ export class MessageService {
 
     const message = {
       userId: this.currentUser.uid,
+      usernameSnapshot: usernameSnapshot,
       message: content,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -70,6 +71,7 @@ export class MessageService {
       message: content,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      usernameSnapshot: "",
       readBy: {}
     }
 

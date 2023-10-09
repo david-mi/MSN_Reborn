@@ -201,9 +201,10 @@ const roomSlice = createSlice({
 
 export const sendMessage = createAppAsyncThunk(
   "room/sendMessage",
-  async ({ content, roomId, users }: { content: string, roomId: string, users: RoomUsers }) => {
-    return MessageService.add(content, roomId, users)
-  })
+  async (
+    { content, roomId, users, usernameSnapshot }:
+      { content: string, roomId: string, users: RoomUsers, usernameSnapshot: string }
+  ) => MessageService.add(content, roomId, users, usernameSnapshot))
 
 export const markRoomMessageAsRead = createAppAsyncThunk(
   "room/markRoomMessageAsRead",

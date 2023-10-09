@@ -14,6 +14,7 @@ export interface Message {
   userId: string
   createdAt: number
   updatedAt: number
+  usernameSnapshot: string
   readBy: {
     [userId: string]: boolean
   }
@@ -24,6 +25,7 @@ export interface DatabaseMessage {
   userId: string
   createdAt: Timestamp
   updatedAt: Timestamp
+  usernameSnapshot: string
   readBy: {
     [userId: string]: boolean
   }
@@ -34,6 +36,7 @@ export interface NotificationMessage {
   id: string
   roomId: string
   userId: string
+  username: string
   message: string
   roomOrContactName: string
   roomOrContactAvatarSrc?: string

@@ -27,12 +27,18 @@ function ChatForm({ roomId, users, shouldScrollToBottomRef }: Props) {
     clearErrors
   } = useForm<ChatFormFields>({ reValidateMode: "onSubmit" })
   const sendMessageRequest = useAppSelector(({ room }) => room.sendMessageRequest)
+  const currentUsername = useAppSelector(({ user }) => user.username)
 
   async function onSubmit({ content }: ChatFormFields) {
     shouldScrollToBottomRef.current = true
 
     try {
-      await dispatch(sendMessage({ roomId, users, content })).unwrap()
+      await dispatch(sendMessage({
+        roomId,
+        users,
+        content,
+        usernameSnapshot: currentUsername
+      })).unwrap()
       setFocus("content")
       reset()
     } catch (error) {

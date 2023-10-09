@@ -63,7 +63,8 @@ function useRoom() {
                           roomId: roomSnapshot.id,
                           message: message.message,
                           id: message.id,
-                          userId: message.userId
+                          userId: message.userId,
+                          username: message.usernameSnapshot
                         }))
                       }
 
@@ -80,7 +81,8 @@ function useRoom() {
                         roomId: roomSnapshot.id,
                         message: message.message,
                         id: message.id,
-                        userId: message.userId
+                        userId: message.userId,
+                        username: ""
                       }))
                     }
 
