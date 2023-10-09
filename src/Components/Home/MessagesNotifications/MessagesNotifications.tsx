@@ -1,21 +1,50 @@
 import { ToastContainer, toast, Id, ToastItem } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from "./messagesNotifications.module.css";
+import messageNotificationSoundSrc from "/sounds/message_notification.mp3"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useMemo } from "react"
 import { deleteMessageToNotify } from "@/redux/slices/room/room";
 import { setcurrentDisplayedRoom } from "@/redux/slices/room/room";
 import MessageNotification from "./MessageNotification/MessageNotification";
+import styles from "./messagesNotifications.module.css";
 
 function MessagesNotifications() {
   const dispatch = useAppDispatch()
   const messagesToNofify = useAppSelector(({ room }) => room.messagesToNotify)
   const currentRoomId = useAppSelector(({ room }) => room.currentRoomId)
+  const messageNotificationVolume = useAppSelector(({ options }) => options.user.messageNotificationVolume)
+  const messageNotificationSound = useMemo(() => {
+    const messageNotificationSound = new Audio(messageNotificationSoundSrc)
+    messageNotificationSound.volume = messageNotificationVolume
+    return messageNotificationSound
+  }, [messageNotificationVolume])
   const toastsIdRefs = useRef<Map<Id, Id>>(new Map())
+  const canPlayNotificationSoundRef = useRef(true)
 
   function handleToastClick(roomId: string) {
     dispatch(setcurrentDisplayedRoom(roomId))
   }
+
+  useEffect(() => {
+    messagesToNofify.forEach(() => {
+      if (canPlayNotificationSoundRef.current === false) return
+
+      function handleAudioEnd() {
+        canPlayNotificationSoundRef.current = true
+      }
+
+      messageNotificationSound.addEventListener("ended", handleAudioEnd)
+      messageNotificationSound.play()
+        .catch((error) => {
+          /** 
+          {@link https://developer.chrome.com/blog/autoplay/}
+          can't play a wizz sound unless user has interaction with DOM 
+          */
+          console.error(error)
+          handleAudioEnd()
+        })
+    })
+  }, [messagesToNofify, messageNotificationVolume])
 
   useEffect(() => {
     messagesToNofify.forEach((messageToNotify) => {
