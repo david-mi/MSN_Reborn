@@ -20,6 +20,7 @@ function MessagesNotifications() {
   }, [messageNotificationVolume])
   const toastsIdRefs = useRef<Map<Id, Id>>(new Map())
   const canPlayNotificationSoundRef = useRef(true)
+  const isOnMobileResolution = matchMedia("(min-width: 750px)").matches === false
 
   function handleToastClick(roomId: string) {
     dispatch(setcurrentDisplayedRoom(roomId))
@@ -93,6 +94,7 @@ function MessagesNotifications() {
         progressClassName={styles.progressBar}
         newestOnTop={false}
         rtl={false}
+        limit={isOnMobileResolution ? 1 : 5}
         pauseOnFocusLoss={false}
         pauseOnHover={false}
         draggable
