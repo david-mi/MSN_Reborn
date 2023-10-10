@@ -28,15 +28,18 @@
   "options": {
     "JEDnuWjZFgqMkbhrWDycjiirng5S": {
       "wizzVolume": 0.2,
-      "wizzShake": false
+      "wizzShake": false,
+      "messageNotificationVolume": 0.5
     },
     "atq3qPD8J8oFHbtNEuQrYWJ7xtIl": {
       "wizzVolume": 0.8,
-      "wizzShake": true
+      "wizzShake": true,
+      "messageNotificationVolume": 1
     },
     "cvps94l9baM6WACh5mpX6t1ae5DM": {
       "wizzVolume": 0.5,
-      "wizzShake": true
+      "wizzShake": true,
+      "messageNotificationVolume": 0.5
     }
   }
 }
